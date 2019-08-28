@@ -14,6 +14,8 @@ Pour les règles voir ce lien: [https://fr.wikipedia.org/wiki/Motus_%28jeu_t%C3%
 * Nouvelle ligne avec la touche **&** ou **1**
 * Nouvelle ligne avec lettre bonus avec la touche **é** ou **2**
 * Reinitialisation de la partie avec la touche **"** ou **3**
+* Affichage de la solution avec la touche **'** ou **4**
+* Suppression de la ligne avec la touche **(** ou **5**
 
 * Le mot à trouver est affiché dans la console du navigateur
 
