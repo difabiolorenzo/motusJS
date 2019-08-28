@@ -1,46 +1,60 @@
         
-		var mot_longueur = 8;
-        var nombre_coups_max = 6; // Nombre de coups autorisés ; Hauteur de la grille
-        var timer = 300; // Millisecondes de vérification par lettres
+		//
+		//	Configuraiton  //
+		//
+
+
+		var word_length = 8;
+        var try_number_max = 6; // Nombre de coups autorisés ; Hauteur de la grille
+		var timer = 300; // Millisecondes de vérification par lettres
 		
-		var nombre_mots = dictionnaire_8.length; // Nombre mots contenus dans la table dico
-		var mot_hasard_index = Math.floor(Math.random() * nombre_mots); // Tirer aléatoirement un nombre inférieur à dico.length
-		var mot = dictionnaire_8[mot_hasard_index]; // Stocker le mot tiré
-		console.log(mot); // Affichage du mot tiré dans la console
+
 		
-		var nombre_coups = 0;
+
+		 
+		//
+		//	Initialisation  //
+		//
+
+		// creation de variables
+		var word_count = dictionary.length; // Nombre mots contenus dans la table dico
+		var word_random_index = Math.floor(Math.random() * word_count); // Tirer aléatoirement un nombre inférieur à dico.length
+		var word_to_find = dictionary[word_random_index]; // Stocker le word_to_find tiré
+		console.log(word_to_find); // Affichage du word_to_find tiré dans la console
+		
+		var try_count_index = 0;
 		var verification_index = 0;
-		var son_lettre_ok = new Audio('src/sound/lettre_ok.mp3');
-		var son_lettre_mauvaise = new Audio('src/sound/lettre_mauvaise.mp3');
-		var son_lettre_absente = new Audio('src/sound/lettre_absente.mp3');
-		var son_erreur = new Audio('src/sound/erreur.mp3');
-		son_lettre_ok.volume = 0.5;
-		son_lettre_mauvaise.volume = 0.5;
-		son_lettre_absente.volume = 0.5;
-		son_erreur.volume = 0.5;
+		var sound_ok = new Audio('src/sound/lettre_ok.mp3');
+		var sound_bad = new Audio('src/sound/lettre_mauvaise.mp3');
+		var sound_missing = new Audio('src/sound/lettre_absente.mp3');
+		var son_wrong = new Audio('src/sound/erreur.mp3');
+		sound_ok.volume = 0.5;
+		sound_bad.volume = 0.5;
+		sound_missing.volume = 0.5;
+		son_wrong.volume = 0.5;
 				
-		var mot_tableau = new Array(); // Mise dans le tableau mot_tab le mot_a_trouver
+		var word_tab = new Array(); // Mise dans le tableau mot_tab le mot_a_trouver
         for (var i = 0; i < 8; i++) {
-          mot_tableau[i] = mot.substr(i, 1);
+          word_tab[i] = word_to_find.substr(i, 1);
         }
 		
-		var mot_propose_tableau = new Array();
-		var lettre_ok = new Array(mot_tableau[0], '', '', '', '', '', '', '');
-		var placements = new Array(1, 0, 0, 0, 0, 0, 0, 0); //Vérification du placement des lettres proposées
+		var word_proposed_tab = new Array();
+		var lettre_ok = new Array(word_tab[0], '', '', '', '', '', '', '');
+		var placing = new Array(1, 0, 0, 0, 0, 0, 0, 0); //Vérification du placement des lettres proposées
 		//Placement
 		//
 		// 0 - lettre non présente
 		// 1 - lettre bien placée
 		// 2 - lettre mal placée
-		var lettre_plus = Math.floor(Math.random() * (mot_longueur - 2) + 2); // Seconde lettre au premier mot
-		placements[lettre_plus] = 1; // La seconde lettre est une lettre correcte
+		var letter_plus = Math.floor(Math.random() * (word_length - 2) + 2); // Seconde lettre au premier word_to_find
+		placing[letter_plus] = 1; // La seconde lettre est une lettre correcte
 
 
 		// tableau HTML
 		var table_html = "<table id=\"motus\">";
-        for (var j = 0; j <= nombre_coups_max-1; j++) {
+        for (var j = 0; j <= try_number_max-1; j++) {
           table_html += "<tr>";
-          for (var i = 0; i < mot_longueur; i++) {
+          for (var i = 0; i < word_length; i++) {
             table_html += "<td id=" + j + "_" + i + " class='absent'></td>";
           }
           table_html += "</tr>";
@@ -49,247 +63,283 @@
         document.write(table_html);
 		
 	
-		// Affichge du premier mot
-		for (var i = 0; i < mot_longueur; i++) {
+		// Affichge du premier word_to_find
+		for (var i = 0; i < word_length; i++) {
 			document.getElementById(0 + '_' + i).innerHTML = ".";
 		}
-		document.getElementById(0 + '_' + 0).innerHTML = mot_tableau[0]; // Première lettre
-		document.getElementById(0 + '_' + lettre_plus).innerHTML = mot_tableau[lettre_plus]; // Seconde lettre
+		document.getElementById(0 + '_' + 0).innerHTML = word_tab[0]; // Première lettre
+		document.getElementById(0 + '_' + letter_plus).innerHTML = word_tab[letter_plus]; // Seconde lettre
+
+
+		
+		
+
+		
+
+		 
+		//
+		//	affichageMot  //
+		//
 
 
 		// Remplacement de chaque lettre par la proposition
 		function affichageMot() {
-			if (mot_propose_tableau.length != 0) {
-				document.getElementById(nombre_coups + '_' + (mot_propose_tableau.length - 1)).innerHTML = mot_propose_tableau[mot_propose_tableau.length-1];
+			if (word_proposed_tab.length != 0) {
+				document.getElementById(try_count_index + '_' + (word_proposed_tab.length - 1)).innerHTML = word_proposed_tab[word_proposed_tab.length-1];
 			}
 		}
 		
-		// Vérification de la présence du mot proposé dans le dictionnaire
-		function verifPresence(mot_propose) {
-			
-			existeDictionnaire = false;
-			for (i = 0; i < dictionnaire_8.length; i++) {
-				if (mot_propose == dictionnaire_8[i]) {
-					existeDictionnaire = true;
+		
+
+		
+
+		 
+		//
+		//	verifPrésence  //
+		//
+
+
+		// Vérification de la présence du word_to_find proposé dans le dictionary
+		function verifPresence(word_proposed) {
+			in_dictionary = false;
+			for (i = 0; i < dictionary.length; i++) {
+				if (word_proposed == dictionary[i]) {
+					in_dictionary = true;
 				} else {
 				}
 			}
-			return existeDictionnaire;
+			return in_dictionary;
         }
 		
+		
+
+		
+
+		 
+		//
+		//	nouvelleLigne  //
+		//
+
+
 		// Ajoute une nouvelle ligne avec les bonnes lettres proposées
 		function nouvelleLigne() {
-			nombre_coups++;
-			if (nombre_coups != nombre_coups_max) {
-				for (var i = 0; i < mot_longueur; i++) {
-					document.getElementById(nombre_coups + '_' + i).innerHTML = ".";
-					if (placements[i] == 1) {
-						document.getElementById(nombre_coups + '_' + i).innerHTML = mot_tableau[i];
+			try_count_index++;
+			if (try_count_index != try_number_max) {
+				for (var i = 0; i < word_length; i++) {
+					document.getElementById(try_count_index + '_' + i).innerHTML = ".";
+					if (placing[i] == 1) {
+						document.getElementById(try_count_index + '_' + i).innerHTML = word_tab[i];
 					}
 				}
-				mot_propose_tableau = [];
-				mot_propose = "";
+				word_proposed_tab = [];
+				word_proposed = "";
 
 			} else {
 				solutionInterval = setInterval(function() {affichageSolution()}, timer);
 			}
 		}
 
+		
+
+		
+
+		 
+		//
+		//	lettreBonus  //
+		//
+
+
 		function lettreBonus() {
-			for (var i = 0; i < mot_longueur; i++) {
-				if (placements[i] == 0) {
-					document.getElementById(nombre_coups + '_' + i).innerHTML = mot_tableau[i];
-					placements[i] = 1;
+			for (var i = 0; i < word_length; i++) {
+				if (placing[i] == 0) {
+					document.getElementById(try_count_index + '_' + i).innerHTML = word_tab[i];
+					placing[i] = 1;
 					break;
 				}
 			}
 		}
 
-		function affichageSolution() {
-			document.getElementById(nombre_coups_max-1 + '_' + verification_index).innerHTML = mot_tableau[verification_index];
-			document.getElementById(nombre_coups_max-1 + '_' + verification_index).className = 'correct';
-			son_lettre_ok.play();
+		
 
-			if (verification_index == mot_longueur) { // Fin de la vérification
+		
+
+		 
+		//
+		//	affichageSolution  //
+		//
+
+
+		function affichageSolution() {
+			document.getElementById(try_number_max-1 + '_' + verification_index).innerHTML = word_tab[verification_index];
+			document.getElementById(try_number_max-1 + '_' + verification_index).className = 'correct';
+			sound_ok.play();
+
+			if (verification_index == word_length) { // Fin de la vérification
 				clearInterval(solutionInterval);
 				verification_index = 0;
-				mot_propose_tableau = [];
+				word_proposed_tab = [];
 				
 			}
 		}
+
+		
+
+		
+
+		 
+		//
+		//	suppressionLigne  //
+		//
+
 
 		function suppressionLigne() {
-			for (var i = 0; i < mot_longueur; i++) {
-					document.getElementById(nombre_coups + '_' + i).innerHTML = "";
-					document.getElementById(nombre_coups + '_' + i).className = 'absent';
+			for (var i = 0; i < word_length; i++) {
+					document.getElementById(try_count_index + '_' + i).innerHTML = "";
+					document.getElementById(try_count_index + '_' + i).className = 'absent';
 				}
-			var placements = new Array(0, 0, 0, 0, 0, 0, 0, 0);
-			nombre_coups--;
+			var placing = new Array(0, 0, 0, 0, 0, 0, 0, 0);
+			try_count_index--;
 		}
 
-		function reinitialisation() {
-			nombre_coups = 0;
-			mot_propose_tableau = [];
-			mot_propose = "";
-
-			for (var j = 0; j <= nombre_coups_max-1; j++) {
-				for (var i = 0; i < mot_longueur; i++) {
-					document.getElementById(j + '_' + i).innerHTML = "";
-					document.getElementById(j + '_' + i).className = 'absent';
-				}
-				var placements = new Array(0, 0, 0, 0, 0, 0, 0, 0);
-			}
-
-			var nombre_mots = dictionnaire_8.length; // Nombre mots contenus dans la table dico
-			var mot_hasard_index = Math.floor(Math.random() * nombre_mots); // Tirer aléatoirement un nombre inférieur à dico.length
-			var mot = dictionnaire_8[mot_hasard_index]; // Stocker le mot tiré
-			console.log(mot); // Affichage du mot tiré dans la console
-				
-			 // Mise dans le tableau mot_tab le mot_a_trouver
-        	for (var i = 0; i < 8; i++) {
-         		mot_tableau[i] = mot.substr(i, 1);
-        	}
 		
-			var lettre_ok = new Array(mot_tableau[0], '', '', '', '', '', '', '');
-			var placements = new Array(1, 0, 0, 0, 0, 0, 0, 0); //Vérification du placement des lettres proposées
-			//Placement
-			//
-			// 0 - lettre non présente
-			// 1 - lettre bien placée
-			// 2 - lettre mal placée
-			var lettre_plus = Math.floor(Math.random() * (mot_longueur - 2) + 2); // Seconde lettre au premier mot
-			placements[lettre_plus] = 1; // La seconde lettre est une lettre correcte
-
-			for (var i = 0; i < mot_longueur; i++) {
-				document.getElementById(0 + '_' + i).innerHTML = ".";
-			}
-			document.getElementById(0 + '_' + 0).innerHTML = mot_tableau[0]; // Première lettre
-			document.getElementById(0 + '_' + lettre_plus).innerHTML = mot_tableau[lettre_plus]; // Seconde lettre
-		}
-
-
-
-
 
 		
-		// Véfification de chaque lettre en fonction du mot
+
+		 
+		//
+		//	verifieLettre  //
+		//
+
+
+		// Véfification de chaque lettre en fonction du word_to_find
 		function verifieLettre() {
+
 			
-			if (mot_tableau[verification_index] == mot_propose_tableau[verification_index]) { //lettre bien placées
-				lettre_ok[verification_index] = mot_tableau[verification_index];
-				placements[verification_index] = 1;
-				son_lettre_ok.play();
-				document.getElementById(nombre_coups + '_' + verification_index).className = 'correct';
+			console.log(placing);
+			
+			if (word_tab[verification_index] == word_proposed_tab[verification_index]) { //lettre bien placées
+				lettre_ok[verification_index] = word_tab[verification_index];
+				placing[verification_index] = 1;
+				sound_ok.play();
+				document.getElementById(try_count_index + '_' + verification_index).className = 'correct';
             }
-			if (placements[verification_index] != 1) { //lettre au mauvais endroit
-				for (var j = 0; j < mot_longueur; j++) { //boucle de vérification des lettres dans le mot pour la lettre proposition[i]
-					if ((mot_propose_tableau[verification_index] == mot_tableau[j]) && (placements[j] == 0)) {
-						placements[j] = 2;
-						j = mot_longueur;
+			if (placing[verification_index] != 1) { //lettre au mauvais endroit
+				for (var j = 0; j < word_length; j++) { //boucle de vérification des lettres dans le word_to_find pour la lettre proposition[i]
+					if ((word_proposed_tab[verification_index] == word_tab[j]) && (placing[j] == 0)) {
+						placing[j] = 2;
+						j = word_length;
 					}
 				}
 				
-				if (placements[verification_index] == 2) {
-					son_lettre_mauvaise.play();
-					document.getElementById(nombre_coups + '_' + verification_index).className = 'incorrect';
+				if (placing[verification_index] == 2) {
+					sound_bad.play();
+					document.getElementById(try_count_index + '_' + verification_index).className = 'incorrect';
 				}
 				
-				if (placements[verification_index] == 0) {
-					son_lettre_absente.play();
+				if (placing[verification_index] == 0) {
+					sound_missing.play();
 				}
 			} 
 			
 			verification_index++;
 				
-			if (verification_index == mot_longueur) { // Fin de la vérification
+			if (verification_index == word_length) { // Fin de la vérification
 				clearInterval(verificationInterval);
 				verification_index = 0;
-				mot_propose_tableau = [];
+				word_proposed_tab = [];
 				
-				if (mot_propose == mot) { // Mot trouvé
-					 setTimeout(function() { reinitialisation(); } , 2000); //rafraichissement de la page
+				if (word_proposed == word_to_find) { // Mot trouvé
+					 setTimeout(function() { reinitialisation() } , 2000); //rafraichissement de la page
 				} else {
 					nouvelleLigne();
-				}
-				
+				}			
 			}
-			
 		}
 		
+		
+
+		
+
+		 
+		//
+		//	toucheTapées  //
+		//
+
+
 		// Touches tapées
 		document.addEventListener("keydown", function(event) {
-            if (mot_propose_tableau.length < mot_longueur ) {
+			if (word_proposed_tab.length < word_length ) {
 				if (event.keyCode == 65 || event.keyCode == 97) {
-					mot_propose_tableau.push('A');
+					word_proposed_tab.push('A');
 				} else if (event.keyCode == 66 || event.keyCode == 98) {
-					mot_propose_tableau.push('B');
+					word_proposed_tab.push('B');
 				} else if (event.keyCode == 67 || event.keyCode == 99) {
-					mot_propose_tableau.push('C');
+					word_proposed_tab.push('C');
 				} else if (event.keyCode == 68 || event.keyCode == 100) {
-					mot_propose_tableau.push('D');
+					word_proposed_tab.push('D');
 				} else if (event.keyCode == 69 || event.keyCode == 101) {
-					mot_propose_tableau.push('E');
+					word_proposed_tab.push('E');
 				} else if (event.keyCode == 70 || event.keyCode == 102) {
-					mot_propose_tableau.push('F');
+					word_proposed_tab.push('F');
 				} else if (event.keyCode == 71 || event.keyCode == 103) {
-					mot_propose_tableau.push('G');
+					word_proposed_tab.push('G');
 				} else if (event.keyCode == 72 || event.keyCode == 104) {
-					mot_propose_tableau.push('H');
+					word_proposed_tab.push('H');
 				} else if (event.keyCode == 73 || event.keyCode == 105) {
-					mot_propose_tableau.push('I');
+					word_proposed_tab.push('I');
 				} else if (event.keyCode == 74 || event.keyCode == 106) {
-					mot_propose_tableau.push('J');
+					word_proposed_tab.push('J');
 				} else if (event.keyCode == 75 || event.keyCode == 107) {
-					mot_propose_tableau.push('K');
+					word_proposed_tab.push('K');
 				} else if (event.keyCode == 76 || event.keyCode == 108) {
-					mot_propose_tableau.push('L');
+					word_proposed_tab.push('L');
 				} else if (event.keyCode == 77 || event.keyCode == 109) {
-					mot_propose_tableau.push('M');
+					word_proposed_tab.push('M');
 				} else if (event.keyCode == 78 || event.keyCode == 110) {
-					mot_propose_tableau.push('N');
+					word_proposed_tab.push('N');
 				} else if (event.keyCode == 79 || event.keyCode == 111) {
-					mot_propose_tableau.push('O');
+					word_proposed_tab.push('O');
 				} else if (event.keyCode == 80 || event.keyCode == 112) {
-					mot_propose_tableau.push('P');
+					word_proposed_tab.push('P');
 				} else if (event.keyCode == 81 || event.keyCode == 113) {
-					mot_propose_tableau.push('Q');
+					word_proposed_tab.push('Q');
 				} else if (event.keyCode == 82 || event.keyCode == 114) {
-					mot_propose_tableau.push('R');
+					word_proposed_tab.push('R');
 				} else if (event.keyCode == 83 || event.keyCode == 115) {
-					mot_propose_tableau.push('S');
+					word_proposed_tab.push('S');
 				} else if (event.keyCode == 84 || event.keyCode == 116) {
-					mot_propose_tableau.push('T');
+					word_proposed_tab.push('T');
 				} else if (event.keyCode == 85 || event.keyCode == 117) {
-					mot_propose_tableau.push('U');
+					word_proposed_tab.push('U');
 				} else if (event.keyCode == 86 || event.keyCode == 118) {
-					mot_propose_tableau.push('V');
+					word_proposed_tab.push('V');
 				} else if (event.keyCode == 87 || event.keyCode == 119) {
-					mot_propose_tableau.push('W');
+					word_proposed_tab.push('W');
 				} else if (event.keyCode == 88 || event.keyCode == 120) {
-					mot_propose_tableau.push('X');
+					word_proposed_tab.push('X');
 				} else if (event.keyCode == 89 || event.keyCode == 121) {
-					mot_propose_tableau.push('Y');
+					word_proposed_tab.push('Y');
 				} else if (event.keyCode == 90 || event.keyCode == 122) {
-					mot_propose_tableau.push('Z');
+					word_proposed_tab.push('Z');
 				}
 			} 
 			if (event.keyCode == 8) {  // Retour arrière
                 console.log('Erase');
-				document.getElementById(nombre_coups + '_' + (mot_propose_tableau.length - 1)).innerHTML = ".";
-                mot_propose_tableau.pop();
+				document.getElementById(try_count_index + '_' + (word_proposed_tab.length - 1)).innerHTML = ".";
+                word_proposed_tab.pop();
 				
 			} else if (event.keyCode == 13) { // Entrer
                 console.log('Entrer');
 				
-				if (mot_propose_tableau.length != mot_longueur) {  //vérification de la longueur du mot
-					console.log("La longueur du mot n'est pas la bonne.");
-					son_erreur.play();
+				if (word_proposed_tab.length != word_length) {  //vérification de la longueur du word_to_find
+					console.log("La longueur du word_to_find n'est pas la bonne.");
+					son_wrong.play();
 				} else {
-					verifPresence(mot_propose);
+					verifPresence(word_proposed);
 					
-					if (existeDictionnaire === false) {
-						console.log("Mot non présent dans le dictionnaire");
-						son_erreur.play();
+					if (in_dictionary === false) {
+						console.log("Mot non présent dans le dictionary");
+						son_wrong.play();
 					} else {
 						verificationInterval = setInterval(function() {verifieLettre()}, timer);
 					}
@@ -312,11 +362,59 @@
 				console.log("Touche ( (5)");
 				suppressionLigne();
 			}
-			
-			console.log(mot_propose_tableau);  // Affichage du tableau mot_propose_tableau
-			mot_propose = mot_propose_tableau.join(''); // Affichage du mot proposé
-			
+
+			word_proposed = word_proposed_tab.join(''); // Affichage du word_to_find proposé
 			affichageMot();
 		}
+
 	)
+
+	
+
 		
+
+		 
+		//
+		//	reinitialisation  //
+		//
+
+
+		function reinitialisation() {
+
+		for (var i = 0; i < word_length; i++) {  //reinit placing
+			placing[i] = "0";
+		}
+
+		word_count = dictionary.length;
+		word_random_index = Math.floor(Math.random() * word_count);
+		word_to_find = dictionary[word_random_index];
+		console.log(word_to_find);
+		
+		try_count_index = 0;
+		verification_index = 0;
+				
+		word_tab = new Array(); // Mise dans le tableau mot_tab le mot_a_trouver
+        for (var i = 0; i < 8; i++) {
+          word_tab[i] = word_to_find.substr(i, 1);
+        }
+		
+		word_proposed_tab = [];
+		lettre_ok = new Array(word_tab[0], '', '', '', '', '', '', '');
+		placing = new Array(1, 0, 0, 0, 0, 0, 0, 0); //Vérification du placement des lettres proposées
+		letter_plus = Math.floor(Math.random() * (word_length - 2) + 2); // Seconde lettre au premier word_to_find
+		placing[letter_plus] = 1; // La seconde lettre est une lettre correcte
+
+		for (var j = 0; j <= try_number_max-1; j++) {
+			for (var i = 0; i < word_length; i++) {
+				document.getElementById(j + '_' + i).innerHTML = "";
+				document.getElementById(j + '_' + i).className = 'absent';
+			}
+		}
+			
+		// Affichge du premier word_to_find
+		for (var i = 0; i < word_length; i++) {
+			document.getElementById(0 + '_' + i).innerHTML = ".";
+		}
+		document.getElementById(0 + '_' + 0).innerHTML = word_tab[0]; // Première lettre
+		document.getElementById(0 + '_' + letter_plus).innerHTML = word_tab[letter_plus]; // Seconde lettre
+	}

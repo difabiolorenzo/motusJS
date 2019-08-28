@@ -1,5 +1,5 @@
-//mots de 8 lettres sans les verbes conjugués
-var dictionnaire_8 = new Array(
+//mots de 8 lettres sans les verbes conjuguï¿½s
+var dictionary = new Array(
     "AALENIEN",
     "ABAISSEE", "ABAISSER", "ABAISSES", "ABAJOUES", "ABALONES", "ABANDONS", "ABATAGES", "ABATANTS", "ABATARDI", "ABATTAGE", "ABATTANT", "ABATTEES",
     "ABATTEUR", "ABATTOIR", "ABATTUES", "ABATTURE", "ABBATIAL", "ABBESSES", "ABCEDANT", "ABCEDEES", "ABDIQUEE", "ABDIQUER", "ABDIQUES", "ABDOMENS",
