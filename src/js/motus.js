@@ -118,6 +118,15 @@
 			}
 		}
 
+		function suppressionLigne() {
+			for (var i = 0; i < mot_longueur; i++) {
+					document.getElementById(nombre_coups + '_' + i).innerHTML = "";
+					document.getElementById(nombre_coups + '_' + i).className = 'absent';
+				}
+			var placements = new Array(0, 0, 0, 0, 0, 0, 0, 0);
+			nombre_coups--;
+		}
+
 		function reinitialisation() {
 			nombre_coups = 0;
 			mot_propose_tableau = [];
@@ -128,7 +137,7 @@
 					document.getElementById(j + '_' + i).innerHTML = "";
 					document.getElementById(j + '_' + i).className = 'absent';
 				}
-					var placements = new Array(0, 0, 0, 0, 0, 0, 0, 0);
+				var placements = new Array(0, 0, 0, 0, 0, 0, 0, 0);
 			}
 
 			var nombre_mots = dictionnaire_8.length; // Nombre mots contenus dans la table dico
@@ -299,6 +308,9 @@
 			} else if (event.keyCode == 52) { // "
 				console.log("Touche ' (4)");
 				reinitialisation();
+			} else if (event.keyCode == 53) { // "
+				console.log("Touche ( (5)");
+				suppressionLigne();
 			}
 			
 			console.log(mot_propose_tableau);  // Affichage du tableau mot_propose_tableau
