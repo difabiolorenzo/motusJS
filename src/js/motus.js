@@ -198,7 +198,7 @@
 				mot_propose_tableau = [];
 				
 				if (mot_propose == mot) { // Mot trouvé
-					 setTimeout(function() { location.reload(true); } , 2000); //rafraichissement de la page
+					 setTimeout(function() { reinitialisation(); } , 2000); //rafraichissement de la page
 				} else {
 					nouvelleLigne();
 				}
