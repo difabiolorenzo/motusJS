@@ -1,0 +1,74 @@
+body { 
+	width: 970px;
+	margin: auto;
+	margin-top: 5px;
+	margin-bottom: 10px;
+	text-align: center;
+	font-family: verdana, "Arial", serif;
+	color: rgb(49,94,213);
+	font-size: 0.9em;
+	background-color: #C82714;
+	overflow: none;
+}
+table {
+border-spacing: 0;
+width: 120%;
+display: inline-block;
+margin-left: -10%;
+margin-top: 7.25%;
+}
+hr{
+	width: 75%;
+	color: rgb(49,94,213);
+	background-color: rgb(49,94,213);
+	height: 3px;
+}
+ul{
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+
+#motus td {
+	border: 1px solid #e2e2e2;
+	width: 150px;
+	height: 125px;
+	text-align: center;
+	font-weight: bold;
+	font-size: 80px;
+    color: white;
+}
+#proposition {
+	text-transform: uppercase;
+	letter-spacing: 20px;
+    height: 40px;
+    width: 320px;
+    padding-left: 10px;
+    padding-right: 10px;
+    text-align-last: center;
+    background-image: linear-gradient(to bottom , #11A7FF, #0065CF);
+    font-weight: bold;
+    font-size: 25;
+    color: white;
+    border-color: #0055af;
+    border-style: solid;
+    border-width: thin;
+}
+
+.absent {
+	background-image: linear-gradient(to bottom , #11A7FF, #0065CF);
+    color: white;
+	text-shadow: 2px 2px 5px #003a77;
+}
+
+.correct {
+	background-image: linear-gradient(#f2826a, #ba4428);
+    color: rgb(255, 255, 255);
+        text-shadow: 2px 2px 5px #1f0802;
+}
+
+.incorrect {
+	background-image: linear-gradient(to bottom , #ffff86, #efdc00);
+    color: rgb(255, 255, 255);
+    text-shadow: 2px 2px 5px #948200;
+}
