@@ -1,0 +1,55 @@
+body { 
+	width: 970px;
+	margin: auto;
+	margin-top: 5px;
+	margin-bottom: 10px;
+	text-align: center;
+	font-family: verdana, "Arial", sans-serif;
+	background-color: #C82714;
+    font-size: 15px;
+    line-height: 1.5;
+    overflow: hidden;
+}
+
+.sidebar {
+	width: 15%;
+    left: 0;
+    top: 0;
+    position: absolute;
+    height: 100%;
+	background-color: #b11f0e;
+    color: white;
+    font-size: large;
+}
+
+.sidebar-item {
+	display: block;
+    padding: 15px 0px;
+    border: none;
+    white-space: normal;
+    text-decoration: none;
+    text-align: center;
+    color: black;
+    background-color: #a01100;
+    padding-top: 15px;
+    width: 100%;
+    font-size: large;
+}
+#team-yellow-name { background-color: #FBC800; }
+#team-blue-name { background-color: #1681C7; }
+
+.sidebar label {
+    display: block;
+    padding: 10px 0px;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+#letter_count_choise {
+    width: 100%;
+    display: inline-block;
+    box-shadow: inset 0 1px 3px #ddd;
+    padding-left: 50%;
+    padding-top: 3%;
+    padding-bottom: 3%;
+}

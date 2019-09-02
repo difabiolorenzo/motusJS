@@ -3,17 +3,51 @@
     <meta charset="utf-8">
     <title>Motus</title>
     <meta name="Author" content="sogroo">
-    <link rel="stylesheet" media="screen" type="text/css" title="css" href="styles.css">
+    <link rel="stylesheet" type="text/css" title="css" href="src/css/style_page.css">
+    <link rel="stylesheet" type="text/css" title="css" href="src/css/style_motus.css">
   </head>
   <body>
-    <div>
-      <script type="text/javascript" src="./src/js/dictionary.js"></script>
-      <script type="text/javascript" src="./src/js/motus.js"></script>
-      <form onsubmit="return false" autocomplete="off">
-        <p>
-          <!-- <input type="text" id="proposition" size="30" value="" maxlength="8" onkeypress="javascript:if(quelle_touche(event)){compare();}"> -->
-        </p>
+    <div class="sidebar" style="width:25%">
+      <h3 class="bar-item">Paramètres</h3>
+        <form action="/action_page.php">
+        <label for="letter_count_choise">Nombre de lettre</label>
+          <input type="radio" name="letter_count_choise" id="letter_count_choise_7">7
+          <input type="radio" name="letter_count_choise" id="letter_count_choise_8" checked="true">8
+          <input type="radio" name="letter_count_choise" id="letter_count_choise_9">9
+          <input type="radio" name="letter_count_choise" id="letter_count_choise_10">10
+        <label for="display_definition">Afficher les définitions</label>
+            <input type="radio" name="display_definition" id="display_definition_on" >Oui
+            <input type="radio" name="display_definition" id="display_definition_off" checked="true">Non
+        <label for="fullscreen">Afficher la grille en plein écran</label>
+            <input type="radio" name="fullscreen" id="fullscreen_on" >Oui
+            <input type="radio" name="fullscreen" id="fullscreen_off" checked="true">Non
+            <label for="allow_duplication">Autoriser la duplications des propositions</label>
+                <input type="radio" name="allow_duplication" id="allow_duplication_on" >Oui
+                <input type="radio" name="allow_duplication" id="allow_duplication_off" checked="true">Non
+        <label for="countdown">Compte à rebours</label>
+          <input type="radio" name="countdown" id="countdown_off" checked="true">Non
+          <input type="radio" name="countdown" id="countdown_8sec">8 secondes
+          <input type="radio" name="countdown" id="countdown_10sec">10 secondes
+          <input type="radio" name="countdown" id="countdown_15sec">15 secondes
+        <label for="difficulty_choise">Difficulté</label>
+          <input type="radio" name="difficulty_choise" id="difficulty_choise_easy">Facile
+          <input type="radio" name="difficulty_choise" id="difficulty_choise_normal">Normal
+          <input type="radio" name="difficulty_choise" id="difficulty_choise_hard">Difficile
+          <input type="radio" name="difficulty_choise" id="difficulty_choise_off" checked="true">Tous les mots
+        <label for="letter_count_choise">Noms des équipes</label>
+        <input type="text" class="sidebar-item" id="team-yellow-name" name="team-yellow-name" placeholder="Equipe Jaune" value="Equipe Jaune">
+        <input type="text" class="sidebar-item" id="team-blue-name" name="team-blue-name" placeholder="Equipe Bleue" value="Equipe Bleue">
+        <br>
+        <button class="sidebar-item" type="button" onclick="settings()">Lancer la partie</button>
       </form>
+    </div>
+
+    <div class="main">
+        <h1>Motus</h1>
+    </div>
+
+    <div>
+      <script type="text/javascript" src="./src/js/settings.js"></script>
     </div>
   </body>
 </html>
