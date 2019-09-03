@@ -1,24 +1,26 @@
+	var try_number_max = 6; // Nombre de coups autorisés ; Hauteur de la grille
+	var timer = 300; // Millisecondes de vérification par lettres
+	
 	var word_length = localStorage.getItem('word_length');
 	var display_definitions = localStorage.getItem('display_definitions');
-	var fullscreen = localStorage.getItem('fullscreen');
 	var allow_duplication = localStorage.getItem('allow_duplication');
 	var use_countdown = localStorage.getItem('use_countdown');
 	var countdown_time = localStorage.getItem('countdown_time');
 
-    var try_number_max = 6; // Nombre de coups autorisés ; Hauteur de la grille
-	var timer = 300; // Millisecondes de vérification par lettres
-
 	var word_count = dictionary.length; // Nombre mots contenus dans la table dictionnaire
 	var word_to_find = dictionary[Math.floor(Math.random() * word_count)]; // Stocker le word_to_find tiré
+	var word_proposed_tab_list = new Array();
+	var word_proposed_tab = new Array();
 	console.log(word_to_find); // Affichage du word_to_find tiré dans la console
 	var try_count_index = 0;
 	var verification_index = 0;
 	var already_proposed = false;
+	var pause = true;
 		
 	var team_yellow_name = localStorage.getItem('team_yellow_name');
 	var team_blue_name = localStorage.getItem('team_blue_name');
-	var blue_team_score = 0;
-	var yellow_team_score = 0;
+	var team_yellow_score = 0;
+	var team_blue_score = 0;
 
 	var sound_ok = new Audio('src/sound/lettre_ok.mp3');
 	var sound_bad = new Audio('src/sound/lettre_mauvaise.mp3');
@@ -28,22 +30,35 @@
 	sound_bad.volume = 0.5;
 	sound_missing.volume = 0.5;
 	sound_wrong.volume = 0.5;
-		
-	var word_proposed_tab_list = new Array();
-	var word_proposed_tab = new Array();
 				
+	
+
+
+
+	// score et nom d'equipes
+	document.getElementById("team-yellow-name").innerHTML = team_yellow_name;
+	document.getElementById("team-blue-name").innerHTML = team_blue_name;
+	document.getElementById("team-yellow-score").innerHTML = team_yellow_score;
+	document.getElementById("team-blue-score").innerHTML = team_blue_score;
+
 	var word_tab = new Array(); // Mise dans le tableau mot_tab le mot_a_trouver
-	for (var i = 0; i < 8; i++) {
+	for (var i = 0; i < word_length; i++) {
 		word_tab[i] = word_to_find.substr(i, 1);
 	}
 	
-	var lettre_ok = new Array(word_tab[0], '', '', '', '', '', '', '');
-	var placing = new Array(1, 0, 0, 0, 0, 0, 0, 0); //Vérification du placement des lettres proposées
-	//Placement
-	//
-	// 0 - lettre non présente
-	// 1 - lettre bien placée
-	// 2 - lettre mal placée
+	if (word_length == 7) {
+		var lettre_ok = new Array(word_tab[0], '', '', '', '', '', '');
+		var placing = new Array(1, 0, 0, 0, 0, 0, 0); //Vérification du placement des lettres proposées
+	} else if (word_length == 8) {
+		var lettre_ok = new Array(word_tab[0], '', '', '', '', '', '', '');
+		var placing = new Array(1, 0, 0, 0, 0, 0, 0, 0); //Vérification du placement des lettres proposées
+	} else if (word_length == 9) {
+		var lettre_ok = new Array(word_tab[0], '', '', '', '', '', '', '', '');
+		var placing = new Array(1, 0, 0, 0, 0, 0, 0, 0, 0); //Vérification du placement des lettres proposées
+	} else if (word_length == 10) {
+		var lettre_ok = new Array(word_tab[0], '', '', '', '', '', '', '', '', '');
+		var placing = new Array(1, 0, 0, 0, 0, 0, 0, 0, 0, 0); //Vérification du placement des lettres proposées
+	}
 	var letter_plus = Math.floor(Math.random() * (word_length - 2) + 2); // Seconde lettre au premier word_to_find
 	placing[letter_plus] = 1; // La seconde lettre est une lettre correcte
 
@@ -74,7 +89,7 @@
 		}
 	}
 	
-	
+
 	// Vérification de la présence du word_to_find proposé dans le dictionary
 	function verifPresence(word_proposed) {
 		in_dictionary = false;
@@ -95,9 +110,9 @@
 				already_proposed = true;
 			} else {
 				already_proposed = false;
-				word_proposed_tab_list.push(word_proposed);
 			}
 		}
+		word_proposed_tab_list.push(word_proposed);
 		return in_dictionary;
 	}
 	
@@ -151,40 +166,50 @@
 				document.getElementById(try_count_index + '_' + i).innerHTML = "";
 				document.getElementById(try_count_index + '_' + i).className = 'not_present';
 			}
-		var placing = new Array(0, 0, 0, 0, 0, 0, 0, 0);
+
+		if (word_length == 7) {
+			var placing = new Array(0, 0, 0, 0, 0, 0, 0);
+		} else if (word_length == 8) {
+			var placing = new Array(0, 0, 0, 0, 0, 0, 0, 0);
+		} else if (word_length == 9) {
+			var placing = new Array(0, 0, 0, 0, 0, 0, 0, 0, 0);
+		} else if (word_length == 10) {
+			var placing = new Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+		}
 		try_count_index--;
 	}
 
 	
 	// Véfification de chaque lettre en fonction du word_to_find
+	console.log(placing);
 	function verifieLettre() {
-		console.log(placing);
-		
 		if (word_tab[verification_index] == word_proposed_tab[verification_index]) { //lettre bien placées
 			lettre_ok[verification_index] = word_tab[verification_index];
 			placing[verification_index] = 1;
 			sound_ok.play();
 			document.getElementById(try_count_index + '_' + verification_index).className = 'correct';
 		}
-		if (placing[verification_index] != 1) { //lettre au mauvais endroit
-			for (var j = 0; j < word_length; j++) { //boucle de vérification des lettres dans le word_to_find pour la lettre proposition[i]
-				if ((word_proposed_tab[verification_index] == word_tab[j]) && (placing[j] == 0)) {
-					placing[j] = 2;
-					j = word_length;
+
+		if (placing[verification_index] != 1) { //lettre pas coorespondante au placement du mot
+			for (var i = 0; i < word_length; i++) {
+				if ((word_proposed_tab[verification_index] == word_tab[i]) && (placing[j] != 1)) {
+					placing[verification_index] = 2;
 				}
 			}
-			
-			if (placing[verification_index] == 2) {
-				sound_bad.play();
-				document.getElementById(try_count_index + '_' + verification_index).className = 'not_in_place';
-			}
-			
-			if (placing[verification_index] == 0) {
-				sound_missing.play();
-			}
-		} 
+		}
+
+		if (placing[verification_index] == 2) {
+			sound_bad.play();
+			document.getElementById(try_count_index + '_' + verification_index).className = 'not_in_place';
+		} else if (placing[verification_index] == 0) {
+			sound_missing.play();
+		}
+		
+
 		
 		verification_index++;
+
+		
 			
 		if (verification_index == word_length) { // Fin de la vérification
 			clearInterval(verificationInterval);
@@ -213,6 +238,11 @@
 		
 		try_count_index = 0;
 		verification_index = 0;
+
+		for (i = 0; i < word_proposed_tab_list.length; i++) {
+			word_proposed_tab_list.pop();
+			
+		}
 				
 		word_tab = new Array(); // Mise dans le tableau mot_tab le mot_a_trouver
 		for (var i = 0; i < 8; i++) {
@@ -220,8 +250,21 @@
 		}
 		
 		word_proposed_tab = [];
-		lettre_ok = new Array(word_tab[0], '', '', '', '', '', '', '');
-		placing = new Array(1, 0, 0, 0, 0, 0, 0, 0); //Vérification du placement des lettres proposées
+		
+		if (word_length == 7) {
+			lettre_ok = new Array(word_tab[0], '', '', '', '', '', '');
+			placing = new Array(1, 0, 0, 0, 0, 0, 0);
+		} else if (word_length == 8) {
+			lettre_ok = new Array(word_tab[0], '', '', '', '', '', '', '');
+			placing = new Array(1, 0, 0, 0, 0, 0, 0, 0);
+		} else if (word_length == 9) {
+			lettre_ok = new Array(word_tab[0], '', '', '', '', '', '', '', '');
+			placing = new Array(1, 0, 0, 0, 0, 0, 0, 0, 0);
+		} else if (word_length == 10) {
+			lettre_ok = new Array(word_tab[0], '', '', '', '', '', '', '', '', '');
+			placing = new Array(1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+		}
+		
 		letter_plus = Math.floor(Math.random() * (word_length - 2) + 2); // Seconde lettre au premier word_to_find
 		placing[letter_plus] = 1; // La seconde lettre est une lettre correcte
 

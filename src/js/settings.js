@@ -19,14 +19,6 @@ function settings() {
 	}
 	console.log("displaying definitions: "+display_definitions);
 
-
-	if (document.getElementById("fullscreen_on").checked == true) {
-		var fullscreen = true;
-	} else if (document.getElementById("fullscreen_off").checked == true) {
-		var fullscreen = false;
-	}
-	console.log("displaying in fullscreen: "+fullscreen);
-
 	
 	if (document.getElementById("allow_duplication_on").checked == true) {
 		var allow_duplication = true;
@@ -72,11 +64,11 @@ function settings() {
 
 	localStorage.setItem('word_length', word_length);
 	localStorage.setItem('display_definitions', display_definitions);
-	localStorage.setItem('fullscreen', fullscreen);
 	localStorage.setItem('allow_duplication', allow_duplication);
 	localStorage.setItem('use_countdown', use_countdown);
 	localStorage.setItem('countdown_time', countdown_time);
 	localStorage.setItem('team_yellow_name', team_yellow_name);
 	localStorage.setItem('team_blue_name', team_blue_name);
 
+	window.location = "./grid.html";
 }

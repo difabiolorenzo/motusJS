@@ -1,0 +1,121 @@
+    
+    body { 
+        text-align: center;
+        font-family: verdana, "Arial", sans-serif;
+        line-height: 1.5;
+        overflow: hidden;
+        margin: 0;
+        padding: 0;
+    }
+
+    #menu {
+        display: block;
+        height: 50%;
+        margin-top: 12.5%;
+        background-color: #00000080;
+        position: absolute;
+        width: 100%;
+        top: 0;
+        left: 0;
+        transition: all 0.25s cubic-bezier(0.18, 0.89, 0.32, 1.28) 0s;
+    }
+
+    #menu h1 {
+        color: white;
+        padding: 20;
+        font-variant-caps: all-small-caps;
+    }
+
+    #menu-content {
+        display: contents;
+    }
+    
+    table {
+        border-spacing: 0;
+        height: 102%;
+        width: 101%;
+        margin-left: -0.5%;
+        margin-top: -0.5%;
+    }
+
+    hr {
+        width: 75%;
+        color: rgb(49,94,213);
+        background-color: rgb(49,94,213);
+        height: 3px;
+    }
+
+    ul {
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+
+    td {
+        border: 1px solid #e2e2e2;
+        width: 150px;
+        height: 125px;
+        text-align: center;
+        font-weight: bold;
+        font-size: 80px;
+        color: white;
+    }
+
+    .not_present {
+        background-image: linear-gradient(to bottom , #11A7FF, #0065CF);
+        color: white;
+        text-shadow: 2px 2px 5px #003a77;
+    }
+
+    .correct {
+        background-image: linear-gradient(#f2826a, #ba4428);
+        color: rgb(255, 255, 255);
+            text-shadow: 2px 2px 5px #1f0802;
+    }
+
+    .not_in_place {
+        background-image: linear-gradient(to bottom , #ffff86, #efdc00);
+        color: rgb(255, 255, 255);
+        text-shadow: 2px 2px 5px #948200;
+    }
+
+    .error {
+        background-image: linear-gradient(to bottom , #bbbbbb, #636363);
+        color: white;
+        text-shadow: 2px 2px 5px #252525;
+    }
+
+
+
+
+
+
+    .score-placeolder {
+        display: inline-block;
+        *display: inline;
+        zoom: 1;
+        vertical-align: top;
+        font-size: 12px;
+        margin-left: 10%;
+        margin-right: 10%;
+        height: 50%;
+        width: 25%;
+        border: 2px solid #ffffff2e;
+      }
+      #blue {
+        background-color: rgba(0, 43, 255, 0.5);
+      }
+      #yellow {
+        background-color: rgba(255, 255, 0, 0.5);
+      }
+      .score-placeolder h2 {
+        font-variant-caps: all-small-caps;
+        font-size: x-large;
+        color: white;
+        background-color: #00000033;
+        padding: 3%;
+      }
+      .score-placeolder a {
+        font-variant-caps: all-small-caps;
+        font-size: x-large;
+        color: white;
+      }

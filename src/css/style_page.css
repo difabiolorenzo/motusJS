@@ -3,9 +3,8 @@ body {
 	margin: auto;
 	margin-top: 5px;
 	margin-bottom: 10px;
-	text-align: center;
 	font-family: verdana, "Arial", sans-serif;
-	background-color: #C82714;
+	/* background-color: #C82714; */
     font-size: 15px;
     line-height: 1.5;
     overflow: hidden;
@@ -22,19 +21,6 @@ body {
     font-size: large;
 }
 
-.sidebar-item {
-	display: block;
-    padding: 15px 0px;
-    border: none;
-    white-space: normal;
-    text-decoration: none;
-    text-align: center;
-    color: black;
-    background-color: #a01100;
-    padding-top: 15px;
-    width: 100%;
-    font-size: large;
-}
 #team-yellow-name { background-color: #FBC800; }
 #team-blue-name { background-color: #1681C7; }
 
@@ -52,4 +38,30 @@ body {
     padding-left: 50%;
     padding-top: 3%;
     padding-bottom: 3%;
+}
+
+.input-radio {
+    width: 20px;
+    height: 20px;
+    position: relative;
+    top: 5px;
+    margin-left: 20px;
+}
+
+.input-text {
+    border: 1px solid #ccc!important;
+    padding: 8px;
+    display: block;
+    width: 50%;
+    text-align: center;
+    font-weight: bold;
+    font-variant-caps: all-small-caps;
+    font-size: large;
+}
+
+button {
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    width: 50%;
 }

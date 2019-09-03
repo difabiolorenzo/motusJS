@@ -7,43 +7,48 @@
     <link rel="stylesheet" type="text/css" title="css" href="src/css/style_motus.css">
   </head>
   <body>
-    <div class="sidebar" style="width:25%">
-      <h3 class="bar-item">Paramètres</h3>
-        <form action="/action_page.php">
-        <label for="letter_count_choise">Nombre de lettre</label>
-          <input type="radio" name="letter_count_choise" id="letter_count_choise_7">7
-          <input type="radio" name="letter_count_choise" id="letter_count_choise_8" checked="true">8
-          <input type="radio" name="letter_count_choise" id="letter_count_choise_9">9
-          <input type="radio" name="letter_count_choise" id="letter_count_choise_10">10
-        <label for="display_definition">Afficher les définitions</label>
-            <input type="radio" name="display_definition" id="display_definition_on" >Oui
-            <input type="radio" name="display_definition" id="display_definition_off" checked="true">Non
-        <label for="fullscreen">Afficher la grille en plein écran</label>
-            <input type="radio" name="fullscreen" id="fullscreen_on" >Oui
-            <input type="radio" name="fullscreen" id="fullscreen_off" checked="true">Non
-            <label for="allow_duplication">Autoriser la duplications des propositions</label>
-                <input type="radio" name="allow_duplication" id="allow_duplication_on" >Oui
-                <input type="radio" name="allow_duplication" id="allow_duplication_off" checked="true">Non
-        <label for="countdown">Compte à rebours</label>
-          <input type="radio" name="countdown" id="countdown_off" checked="true">Non
-          <input type="radio" name="countdown" id="countdown_8sec">8 secondes
-          <input type="radio" name="countdown" id="countdown_10sec">10 secondes
-          <input type="radio" name="countdown" id="countdown_15sec">15 secondes
-        <label for="difficulty_choise">Difficulté</label>
-          <input type="radio" name="difficulty_choise" id="difficulty_choise_easy">Facile
-          <input type="radio" name="difficulty_choise" id="difficulty_choise_normal">Normal
-          <input type="radio" name="difficulty_choise" id="difficulty_choise_hard">Difficile
-          <input type="radio" name="difficulty_choise" id="difficulty_choise_off" checked="true">Tous les mots
-        <label for="letter_count_choise">Noms des équipes</label>
-        <input type="text" class="sidebar-item" id="team-yellow-name" name="team-yellow-name" placeholder="Equipe Jaune" value="Equipe Jaune">
-        <input type="text" class="sidebar-item" id="team-blue-name" name="team-blue-name" placeholder="Equipe Bleue" value="Equipe Bleue">
-        <br>
-        <button class="sidebar-item" type="button" onclick="settings()">Lancer la partie</button>
-      </form>
-    </div>
-
     <div class="main">
-        <h1>Motus</h1>
+      <form >
+        <div class="form-section">
+          <h2 for="letter_count_choise">Noms des équipes</h2>
+            <input type="text" class="input-text" id="team-yellow-name" name="team-yellow-name" placeholder="Equipe Jaune" value="Equipe Jaune">
+            <input type="text" class="input-text" id="team-blue-name" name="team-blue-name" placeholder="Equipe Bleue" value="Equipe Bleue">
+        </div>
+        <div class="form-section">
+          <h2 for="letter_count_choise">Nombre de lettre</h2>
+            <input class="input-radio" type="radio" name="letter_count_choise" id="letter_count_choise_7" disabled="true">7
+            <input class="input-radio" type="radio" name="letter_count_choise" id="letter_count_choise_8" checked="true">8
+            <input class="input-radio" type="radio" name="letter_count_choise" id="letter_count_choise_9" disabled="true">9
+            <input class="input-radio" type="radio" name="letter_count_choise" id="letter_count_choise_10" disabled="true">10
+        </div>
+        <div class="form-section">
+          <h2 for="display_definition">Afficher les définitions</h2>
+            <input class="input-radio" type="radio" name="display_definition" id="display_definition_on" disabled="true">Oui
+            <input class="input-radio" type="radio" name="display_definition" id="display_definition_off" checked="true">Non
+        </div>
+        <div class="form-section">
+          <h2 for="allow_duplication">Autoriser la duplications des propositions</h2>
+            <input class="input-radio" type="radio" name="allow_duplication" id="allow_duplication_on" disabled="true">Oui
+            <input class="input-radio" type="radio" name="allow_duplication" id="allow_duplication_off" checked="true">Non
+        </div>
+        <div class="form-section">
+          <h2 for="countdown">Compte à rebours</h2>
+            <input class="input-radio" type="radio" name="countdown" id="countdown_off" checked="true">Non
+            <input class="input-radio" type="radio" name="countdown" id="countdown_8sec" disabled="true">8 secondes
+            <input class="input-radio" type="radio" name="countdown" id="countdown_10sec" disabled="true">10 secondes
+            <input class="input-radio" type="radio" name="countdown" id="countdown_15sec" disabled="true">15 secondes
+        </div>
+        <div class="form-section">
+          <h2 for="difficulty_choise">Difficulté</h2>
+            <input class="input-radio" type="radio" name="difficulty_choise" id="difficulty_choise_easy" disabled="true">Facile
+            <input class="input-radio" type="radio" name="difficulty_choise" id="difficulty_choise_normal" disabled="true">Normal
+            <input class="input-radio" type="radio" name="difficulty_choise" id="difficulty_choise_hard" disabled="true">Difficile
+            <input class="input-radio" type="radio" name="difficulty_choise" id="difficulty_choise_off" checked="true">Tous les mots
+        </div>
+        <p>
+          <button class="sidebar-item" type="button" onclick="settings()">Lancer la partie</button>
+        </p>
+      </form>
     </div>
 
     <div>
