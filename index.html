@@ -2,7 +2,6 @@
   <head>
     <meta charset="utf-8">
     <title>Motus</title>
-    <meta name="Author" content="sogroo">
     <link rel="stylesheet" type="text/css" title="css" href="src/css/style_page.css">
     <link rel="stylesheet" type="text/css" title="css" href="src/css/style_motus.css">
   </head>
@@ -10,9 +9,11 @@
     <div class="main">
       <form >
         <div class="form-section">
-          <h2 for="letter_count_choise">Noms des équipes</h2>
-            <input type="text" class="input-text" id="team-yellow-name" name="team-yellow-name" placeholder="Equipe Jaune" value="Equipe Jaune">
-            <input type="text" class="input-text" id="team-blue-name" name="team-blue-name" placeholder="Equipe Bleue" value="Equipe Bleue">
+          <h2 for="team-name">Noms des équipes</h2>
+            <p>Équipe Jaune (débute la partie)</p>
+            <input type="text" class="input-text" id="team-yellow-name" name="team-yellow-name" placeholder="Equipe Jaune" value="Équipe Jaune">
+            <p>Équipe Bleue (débute la partie)</p>
+            <input type="text" class="input-text" id="team-blue-name" name="team-blue-name" placeholder="Equipe Bleue" value="Équipe Bleue">
         </div>
         <div class="form-section">
           <h2 for="letter_count_choise">Nombre de lettre</h2>
@@ -22,9 +23,26 @@
             <input class="input-radio" type="radio" name="letter_count_choise" id="letter_count_choise_10" disabled="true">10
         </div>
         <div class="form-section">
+          <h2 for="try_count">Nombre d'essais</h2>
+          <input class="input-radio" type="radio" name="try_count" id="try_count_4" >4
+          <input class="input-radio" type="radio" name="try_count" id="try_count_5" >5
+            <input class="input-radio" type="radio" name="try_count" id="try_count_6" checked="true">6
+            <input class="input-radio" type="radio" name="try_count" id="try_count_7" >7
+        </div>
+        <div class="form-section">
           <h2 for="display_definition">Afficher les définitions</h2>
             <input class="input-radio" type="radio" name="display_definition" id="display_definition_on" disabled="true">Oui
             <input class="input-radio" type="radio" name="display_definition" id="display_definition_off" checked="true">Non
+        </div>
+        <div class="form-section">
+          <h2 for="display_animation">Afficher les animations</h2>
+            <input class="input-radio" type="radio" name="display_animation" id="display_animations_on" disabled="true">Oui
+            <input class="input-radio" type="radio" name="display_animation" id="display_animations_off" checked="true">Non
+        </div>
+        <div class="form-section">
+          <h2 for="display_debug_info">Afficher les message dans la console</h2>
+            <input class="input-radio" type="radio" name="display_debug_info" id="display_debug_info_on" checked="true">Oui
+            <input class="input-radio" type="radio" name="display_debug_info" id="display_debug_info_off" disabled="true">Non
         </div>
         <div class="form-section">
           <h2 for="allow_duplication">Autoriser la duplications des propositions</h2>

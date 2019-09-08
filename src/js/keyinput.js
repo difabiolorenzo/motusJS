@@ -62,42 +62,32 @@
 			} 
 			if (event.keyCode == 8) {  // Retour arrière
 				console.log('Erase');
-				document.getElementById(try_count_index + '_' + (word_proposed_tab.length - 1)).innerHTML = ".";
-				word_proposed_tab.pop();
+				suppressionLettre()
 				
 			} else if (event.keyCode == 13) { // Entrer
 				console.log('Entrer');
-				
 				if (word_proposed_tab.length != word_length) {  //vérification de la longueur du word_to_find
-					console.log("La longueur du word_to_find n'est pas la bonne.");
-					sound_wrong.play();
+					errorHandler(1); //La longueur du word_to_find n'est pas la bonne.
 				} else {
 					verifPresence(word_proposed);
-					
 					if (in_dictionary === false) {
-						console.log("Mot non présent dans le dictionary");
-						sound_wrong.play();
+						errorHandler(2); //Mot non présent dans le dictionary
 					} else {
 						verifDuplication(word_proposed);
-	
 						if (already_proposed === true) {
-							console.log("Mot déjà proposé");
-							sound_wrong.play();
+							errorHandler(3); //Mot déjà proposé
 						} else {
-							verificationInterval = setInterval(function() {verifieLettre()}, timer);
-							
+							verificationProposition()
 						}
 					}
 				}
-				
 			} else if (event.keyCode == 49) { // &
 				console.log('Touche & (1)');
 				nouvelleLigne();
 				
 			} else if (event.keyCode == 50) { // é
 				console.log('Touche é (2)');
-				nouvelleLigne();
-				lettreBonus();
+				ajoutLettreBonus();
 	
 			} else if (event.keyCode == 51) { // "
 				console.log('Touche é (3)');
@@ -105,7 +95,7 @@
 	
 			} else if (event.keyCode == 52) { // "
 				console.log("Touche ' (4)");
-				clear_grid();
+				reinit();
 	
 			} else if (event.keyCode == 53) { // "
 				console.log("Touche ( (5)");
@@ -121,9 +111,9 @@
 	function displayMenu() {
 		if (pause == true) {
 			pause = false;
-			document.getElementById("menu").style.opacity = '0';
+			document.getElementById("score").style.opacity = '0';
 		} else {
 			pause = true;
-			document.getElementById("menu").style.opacity = '1';
+			document.getElementById("score").style.opacity = '1';
 		}
 	}

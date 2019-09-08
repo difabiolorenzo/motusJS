@@ -1,13 +1,8 @@
-body { 
-	width: 970px;
-	margin: auto;
-	margin-top: 5px;
-	margin-bottom: 10px;
+body {
+	margin-left: 15%;
 	font-family: verdana, "Arial", sans-serif;
 	/* background-color: #C82714; */
-    font-size: 15px;
-    line-height: 1.5;
-    overflow: hidden;
+	margin-right: 15%;
 }
 
 .sidebar {
@@ -22,7 +17,7 @@ body {
 }
 
 #team-yellow-name { background-color: #FBC800; }
-#team-blue-name { background-color: #1681C7; }
+#team-blue-name {background-color: #1681C7;color: white;}
 
 .sidebar label {
     display: block;
@@ -52,7 +47,7 @@ body {
     border: 1px solid #ccc!important;
     padding: 8px;
     display: block;
-    width: 50%;
+    width: 30%;
     text-align: center;
     font-weight: bold;
     font-variant-caps: all-small-caps;
@@ -63,5 +58,10 @@ button {
     border: none;
     padding: 8px 16px;
     cursor: pointer;
-    width: 50%;
+    width: 30%;
+    font-size: large;
+    font-variant: all-small-caps;
+    font-weight: bold;
+    background: #b11f0e;
+    color: white;
 }

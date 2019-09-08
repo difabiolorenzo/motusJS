@@ -1,26 +1,25 @@
 <html>
   <body>
-    <div id="menu" style="display: block;">
-      <div id="menu-content">
-        <h1></h1>
-          <div id="menu-content">
-
-            <div class="score-placeolder" id="yellow">
-              <h2 id="team-yellow-name">yellow</h2>
-              <a id="team-yellow-score">score</a>
-            </div>
-
-            <div class="score-placeolder" id="blue">
-              
-                <h2 id="team-blue-name">blue</h2>
-                <a id="team-blue-score">score</a>
-            </div>
+    <div class="menu" id="score" style="opacity: 1;">
+      <div class="menu-content">
+        <h1>PAUSE</h1>
+        <div class="menu-content">
+          <div class="score-placeolder" id="yellow">
+            <h2 id="team-yellow-name">yellow</h2>
+            <a id="team-yellow-score">score</a>
+          </div>
+          <div class="score-placeolder" id="blue">
+              <h2 id="team-blue-name">blue</h2>
+              <a id="team-blue-score">score</a>
           </div>
         </div>
       </div>
     </div>
+    <div class="message" id="message" style="opacity: 0; background-color: white;">
+            <h2 id="messagePlaceolder">text</h2>
+    </div>
   </body>
-  <head>
+  <footer>
     <meta charset="utf-8">
     <title>Motus</title>
     <meta name="Author" content="sogroo">
@@ -28,5 +27,5 @@
     <script type="text/javascript" src="./src/js/grid.js"></script>
     <script type="text/javascript" src="./src/js/keyinput.js"></script>
     <link rel="stylesheet" type="text/css" title="css" href="src/css/style_grid.css">
-  </head>
+  </footer>
 </html>
