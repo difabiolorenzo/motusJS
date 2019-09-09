@@ -3,74 +3,143 @@
     <meta charset="utf-8">
     <title>Motus</title>
     <link rel="stylesheet" type="text/css" title="css" href="src/css/style_page.css">
-    <link rel="stylesheet" type="text/css" title="css" href="src/css/style_motus.css">
+    <link rel="stylesheet" type="text/css" title="css" href="src/css/settings.css">
+    <script type="text/javascript" src="./src/js/settings.js"></script>
   </head>
   <body>
-    <div class="main">
-      <form >
+      <img id="logo" src="./src/img/motus_logo_2014.png"></img>
+      <form>
+
         <div class="form-section">
-          <h2 for="team-name">Noms des équipes</h2>
-            <p>Équipe Jaune (débute la partie)</p>
-            <input type="text" class="input-text" id="team-yellow-name" name="team-yellow-name" placeholder="Equipe Jaune" value="Équipe Jaune">
-            <p>Équipe Bleue (débute la partie)</p>
-            <input type="text" class="input-text" id="team-blue-name" name="team-blue-name" placeholder="Equipe Bleue" value="Équipe Bleue">
+          <div class="from-section-label">
+            <h3 for="team-name">Noms des équipes</h3>
+          </div>
+          <div class="from-section-inner">
+            <p>
+              <a>Équipe Jaune (débute la partie)</a>
+              <input type="text" class="input-text" id="team-yellow-name" name="team-yellow-name" placeholder="Equipe Jaune" value="Équipe Jaune">
+            </p>
+            <p>
+              <a>Équipe Bleue (débute la partie)</a>
+              <input type="text" class="input-text" id="team-blue-name" name="team-blue-name" placeholder="Equipe Bleue" value="Équipe Bleue">
+            </p>
+          </div>
         </div>
-        <div class="form-section">
-          <h2 for="letter_count_choise">Nombre de lettre</h2>
-            <input class="input-radio" type="radio" name="letter_count_choise" id="letter_count_choise_7" disabled="true">7
-            <input class="input-radio" type="radio" name="letter_count_choise" id="letter_count_choise_8" checked="true">8
-            <input class="input-radio" type="radio" name="letter_count_choise" id="letter_count_choise_9" disabled="true">9
-            <input class="input-radio" type="radio" name="letter_count_choise" id="letter_count_choise_10" disabled="true">10
+
+        <div class="form-section-disabled">
+          <div class="from-section-label">
+            <h3 for="letter_count">letter_count</h3>
+          </div>
+          <div class="from-section-inner">
+            <input class="input-radio" type="radio" name="letter_count" id="letter_count_7" disabled="true">7
+            <input class="input-radio" type="radio" name="letter_count" id="letter_count_8" checked="true">8
+            <input class="input-radio" type="radio" name="letter_count" id="letter_count_9" disabled="true">9
+            <input class="input-radio" type="radio" name="letter_count" id="letter_count_10" disabled="true">10
+          </div>
         </div>
+        </div>
+
         <div class="form-section">
-          <h2 for="try_count">Nombre d'essais</h2>
-          <input class="input-radio" type="radio" name="try_count" id="try_count_4" >4
-          <input class="input-radio" type="radio" name="try_count" id="try_count_5" >5
+          <div class="from-section-label">
+            <h3 for="team_turn">Équipe commancant la partie</h3>
+          </div>
+          <div class="from-section-inner">
+            <input class="input-radio" type="radio" name="team_turn" id="team_turn_yellow" checked="true">Jaune
+            <input class="input-radio" type="radio" name="team_turn" id="team_turn_blue" >Bleue
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="from-section-label">
+            <h3 for="try_count">try_count</h3>
+          </div>
+          <div class="from-section-inner">
+            <input class="input-radio" type="radio" name="try_count" id="try_count_4" >4
+            <input class="input-radio" type="radio" name="try_count" id="try_count_5" >5
             <input class="input-radio" type="radio" name="try_count" id="try_count_6" checked="true">6
             <input class="input-radio" type="radio" name="try_count" id="try_count_7" >7
+         </div>
         </div>
-        <div class="form-section">
-          <h2 for="display_definition">Afficher les définitions</h2>
+
+        <div class="form-section-disabled">
+          <div class="from-section-label">
+            <h3 for="display_definition">display_definition</h3>
+          </div>
+          <div class="from-section-inner">
             <input class="input-radio" type="radio" name="display_definition" id="display_definition_on" disabled="true">Oui
             <input class="input-radio" type="radio" name="display_definition" id="display_definition_off" checked="true">Non
+          </div>
         </div>
-        <div class="form-section">
-          <h2 for="display_animation">Afficher les animations</h2>
+
+        <div class="form-section-disabled">
+          <div class="from-section-label">
+            <h3 for="display_animation">display_animation</h3>
+          </div>
+          <div class="from-section-inner">
             <input class="input-radio" type="radio" name="display_animation" id="display_animations_on" disabled="true">Oui
             <input class="input-radio" type="radio" name="display_animation" id="display_animations_off" checked="true">Non
+          </div>
         </div>
-        <div class="form-section">
-          <h2 for="display_debug_info">Afficher les message dans la console</h2>
+
+        <div class="form-section-disabled">
+          <div class="from-section-label">
+            <h3 for="display_debug_info">display_debug_info</h3>
+          </div>
+          <div class="from-section-inner">
             <input class="input-radio" type="radio" name="display_debug_info" id="display_debug_info_on" checked="true">Oui
             <input class="input-radio" type="radio" name="display_debug_info" id="display_debug_info_off" disabled="true">Non
+          </div>
         </div>
-        <div class="form-section">
-          <h2 for="allow_duplication">Autoriser la duplications des propositions</h2>
+
+        <div class="form-section-disabled">
+          <div class="from-section-label">
+            <h3 for="allow_duplication">allow_duplication</h3>
+          </div>
+          <div class="from-section-inner">
             <input class="input-radio" type="radio" name="allow_duplication" id="allow_duplication_on" disabled="true">Oui
             <input class="input-radio" type="radio" name="allow_duplication" id="allow_duplication_off" checked="true">Non
+          </div>
         </div>
-        <div class="form-section">
-          <h2 for="countdown">Compte à rebours</h2>
+
+        <div class="form-section-disabled">
+          <div class="from-section-label">
+            <h3 for="countdown">countdown</h3>
+          </div>
+          <div class="from-section-inner">
             <input class="input-radio" type="radio" name="countdown" id="countdown_off" checked="true">Non
             <input class="input-radio" type="radio" name="countdown" id="countdown_8sec" disabled="true">8 secondes
             <input class="input-radio" type="radio" name="countdown" id="countdown_10sec" disabled="true">10 secondes
             <input class="input-radio" type="radio" name="countdown" id="countdown_15sec" disabled="true">15 secondes
+          </div>
         </div>
+
+        <div class="form-section-disabled">
+          <div class="from-section-label">
+            <h3 for="difficulty">difficulty</h3>
+          </div>
+          <div class="from-section-inner">
+            <input class="input-radio" type="radio" name="difficulty" id="difficulty_easy" disabled="true">Facile
+            <input class="input-radio" type="radio" name="difficulty" id="difficulty_normal" disabled="true">Normal
+            <input class="input-radio" type="radio" name="difficulty" id="difficulty_hard" disabled="true">Difficile
+            <input class="input-radio" type="radio" name="difficulty" id="difficulty_off" checked="true">Tous les mots
+          </div>
+        </div>
+
         <div class="form-section">
-          <h2 for="difficulty_choise">Difficulté</h2>
-            <input class="input-radio" type="radio" name="difficulty_choise" id="difficulty_choise_easy" disabled="true">Facile
-            <input class="input-radio" type="radio" name="difficulty_choise" id="difficulty_choise_normal" disabled="true">Normal
-            <input class="input-radio" type="radio" name="difficulty_choise" id="difficulty_choise_hard" disabled="true">Difficile
-            <input class="input-radio" type="radio" name="difficulty_choise" id="difficulty_choise_off" checked="true">Tous les mots
+          <div class="from-section-label">
+            <h3 for="grid_style">Style de la grille</h3>
+          </div>
+          <div class="from-section-inner">
+            <input class="input-radio" type="radio" name="grid_style" id="grid_style_1990" >Années 1990?<img class="image_grid" src="src/img/style_1990.png"></img>
+            <input class="input-radio" type="radio" name="grid_style" id="grid_style_2010" checked="true">Années 2010<img class="image_grid" src="src/img/style_2010.png"></img>
+            <input class="input-radio" type="radio" name="grid_style" id="grid_style_2019" >Année 2019<img class="image_grid" src="src/img/style_2019.png"></img>
+          </div>
         </div>
+
+
         <p>
           <button class="sidebar-item" type="button" onclick="settings()">Lancer la partie</button>
         </p>
       </form>
-    </div>
-
-    <div>
-      <script type="text/javascript" src="./src/js/settings.js"></script>
-    </div>
   </body>
 </html>

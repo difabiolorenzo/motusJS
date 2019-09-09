@@ -3,6 +3,10 @@
 			console.log("Touche Echap");
 			displayMenu();
 		}
+		if (event.keyCode == 54) { // "
+				console.log("Touche - (6)");
+				changeTeamTurn();
+		}
 		
 		if (pause == false) {
 			if (word_proposed_tab.length < word_length ) {

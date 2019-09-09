@@ -1,33 +1,41 @@
-	var timer = 300; // Millisecondes de vérification par lettres
+	var timer = 300;
 	
-	var try_number_max = localStorage.getItem('try_count');
-	var word_length = localStorage.getItem('word_length');
-	var display_definitions = localStorage.getItem('display_definitions');
-	var display_animation = localStorage.getItem('display_animation');
-	var display_debug_info = localStorage.getItem('display_debug_info');
-	var allow_duplication = localStorage.getItem('allow_duplication');
-	var countdown_enabled = localStorage.getItem('countdown_enabled');
-	var countdown_time = localStorage.getItem('countdown_time');
+	var grid_style = localStorage.getItem('grid_style');						//Thème de la grille
+	document.getElementById("style").href = 'src/css/grid_'+grid_style+'.css' ;														// Millisecondes de vérification par lettres
+	
+	var try_number_max = localStorage.getItem('try_count');						// Nombre de ligne dans la grille
+	var word_length = localStorage.getItem('word_length');						// Nombre de lettres
+	var display_definitions = localStorage.getItem('display_definitions');		//Inutilisé
+	var display_animation = localStorage.getItem('display_animation');			//Inutilisé
+	var display_debug_info = localStorage.getItem('display_debug_info');		//Inutilisé
+	var allow_duplication = localStorage.getItem('allow_duplication');			//	Autoriation de la duplication des propositions
+	var countdown_enabled = localStorage.getItem('countdown_enabled');			//Inutilisé
+	var countdown_time = localStorage.getItem('countdown_time');				//Inutilisé
+	
 
-	var team_yellow_name = localStorage.getItem('team_yellow_name');
-	var team_blue_name = localStorage.getItem('team_blue_name');
-	var team_yellow_score = 0;
-	var team_blue_score = 0;
-	var team_turn = "yellow";		// L'équipe jaune commence la partie
+	var team_yellow_name = localStorage.getItem('team_yellow_name');			//	Nom de l'équipe jaune
+	var team_blue_name = localStorage.getItem('team_blue_name');				//	Nom de l'équipe Bleue
+	var team_turn = localStorage.getItem('team_turn');							//	Equipe qui commence la partie
+	var team_yellow_score = 0;													// Score au début de la partie pour l'équipe jaune
+	var team_blue_score = 0;													// Score au début de la partie pour l'équipe bleue		
 
 	var try_count_index = -1;
 	var verification_index = 0;
 	var already_proposed = false;
-	var pause = true;
+	var pause = false;
 	
-	var sound_ok = new Audio('src/sound/lettre_ok.mp3');
-	var sound_bad = new Audio('src/sound/lettre_mauvaise.mp3');
-	var sound_missing = new Audio('src/sound/lettre_absente.mp3');
-	var sound_wrong = new Audio('src/sound/erreur.mp3');
-	sound_ok.volume = 0.5;
-	sound_bad.volume = 0.5;
-	sound_missing.volume = 0.5;
-	sound_wrong.volume = 0.5;
+	var playsound_letter_ok = new Audio('src/sound/lettre_ok.mp3');
+	var playsound_letter_bad = new Audio('src/sound/lettre_mauvaise.mp3');
+	var playsound_letter_missing = new Audio('src/sound/lettre_absente.mp3');
+	var playsound_letter_bonus = new Audio('src/sound/lettre_bonus.mp3');
+	var playsound_wrong = new Audio('src/sound/erreur.mp3');
+	var playsound_victory = new Audio('src/sound/victory.mp3');
+	playsound_letter_ok.volume = 0.5;
+	playsound_letter_bad.volume = 0.5;
+	playsound_letter_missing.volume = 0.5;
+	playsound_letter_bonus.volume = 0.5;
+	playsound_wrong.volume = 0.5;
+	playsound_victory.volume = 0.5;
 
 	var lettre_ok = new Array();
 	var placing = new Array();
@@ -52,8 +60,12 @@
 
 	if (team_turn == "yellow") {
 		displayMessage(team_yellow_name+" commence!", "#FBC800");
-	} else {
+		document.getElementById("score-placeolder-yellow").style.border = "5px solid #ffffffff";
+		document.getElementById("score-placeolder-blue").style.border = "5px solid #ffffff40";
+	} else if (team_turn == "blue") {
 		displayMessage(team_blue_name+" commence!", "#1681C7");
+		document.getElementById("score-placeolder-yellow").style.border = "5px solid #ffffff40";
+		document.getElementById("score-placeolder-blue").style.border = "5px solid #ffffffff";
 	}
 
 
@@ -61,11 +73,15 @@
 		if (team_turn == "yellow") {
 			team_turn = "blue";
 			displayMessage("La main passe à "+team_blue_name, "#1681C7");
+			document.getElementById("score-placeolder-yellow").style.border = "5px solid #ffffff40";
+			document.getElementById("score-placeolder-blue").style.border = "5px solid #ffffffff";
 		} else {
 			team_turn = "yellow";
 			displayMessage("La main passe à "+team_yellow_name, "#FBC800");
+			document.getElementById("score-placeolder-yellow").style.border = "5px solid #ffffffff";
+			document.getElementById("score-placeolder-blue").style.border = "5px solid #ffffff40";
 		}
-		clearInterval(changeTeamTurnInterval);
+		clearInterval(changeTeamTurnInterval);		
 	}
 
 	function ajoutScore(score, team) {
@@ -79,6 +95,7 @@
 		document.getElementById("team-yellow-score").innerHTML = team_yellow_score;
 		document.getElementById("team-blue-score").innerHTML = team_blue_score;
 	}
+
 
 	function initialisationMot() {		// Mise dans le tableau word_to_find le word_to_find
 		placing = [];
@@ -222,8 +239,27 @@
 			if (placing[i] != 1) {
 				document.getElementById(try_count_index + '_' + i).innerHTML = word_to_find_tab[i];
 				placing[i] = 1;
+				playsound_letter_bonus.play();
+
+				j = 0;
+				letter_bonus_placement = i;
+				animationLettreBonusInterval = setInterval(function() {animationLettreBonus()}, 100);
+
 				break;
 			}
+		}
+	}
+
+	function animationLettreBonus() {
+		if ((j%2) == 1) {
+			document.getElementById(try_count_index + '_' + letter_bonus_placement).className = 'not_present';
+		} else {
+			document.getElementById(try_count_index + '_' + letter_bonus_placement).className = 'correct';
+		}
+		j++;
+
+		if (j == 8) {
+			clearInterval(animationLettreBonusInterval);
 		}
 	}
 
@@ -243,7 +279,8 @@
 			console.log("Mot déjà proposé");
 			displayMessage("Mot déjà proposé.", "#b11f0e");
 		}
-		sound_wrong.play();
+		playsound_letter_missing.play();
+		playsound_wrong.play();
 		changeTeamTurnInterval = setInterval(function() {changeTeamTurn()}, 3000);
 	}
 
@@ -326,12 +363,12 @@
 	
 	function animationVerificationProposition() {		//Fonction nécéssitant une boucle en amont ; affiche par le code couleur, les cases
 		if (placing_dup[verification_index] == 0) {
-			sound_missing.play();
+			playsound_letter_missing.play();
 		} else if (placing_dup[verification_index] == 1) {
-			sound_ok.play();
+			playsound_letter_ok.play();
 			document.getElementById(try_count_index + '_' + verification_index).className = 'correct';
 		} else if (placing_dup[verification_index] == 2) {
-			sound_bad.play();
+			playsound_letter_bad.play();
 			document.getElementById(try_count_index + '_' + verification_index).className = 'not_in_place';
 		}
 		verification_index++;
@@ -346,7 +383,8 @@
 			placing_dup = [];
 			
 			if (word_proposed == word_to_find) { // Mot trouvé
-					ajoutScore(50, team_turn)
+					ajoutScore(50, team_turn);
+					playsound_victory.play();
 					setTimeout(function() { reinit() } , 3000); //rafraichissement de la page
 			} else {
 				nouvelleLigne();
@@ -357,7 +395,7 @@
 	function affichageSolution() {		// Affiche la solution à la dérnière ligne
 		document.getElementById(try_number_max-1 + '_' + verification_index).innerHTML = word_to_find_tab[verification_index];
 		document.getElementById(try_number_max-1 + '_' + verification_index).className = 'correct';
-		sound_ok.play();
+		playsound_letter_ok.play();
 		verification_index++;
 
 		if (verification_index == word_length) { // Fin de la vérification

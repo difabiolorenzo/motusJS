@@ -1,7 +1,6 @@
 body {
 	margin-left: 15%;
 	font-family: verdana, "Arial", sans-serif;
-	/* background-color: #C82714; */
 	margin-right: 15%;
 }
 
@@ -26,7 +25,7 @@ body {
     text-decoration: underline;
 }
 
-#letter_count_choise {
+#letter_count {
     width: 100%;
     display: inline-block;
     box-shadow: inset 0 1px 3px #ddd;
