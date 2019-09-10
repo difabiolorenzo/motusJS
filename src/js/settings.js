@@ -1,6 +1,10 @@
 function settings() {
 
-	if (document.getElementById("letter_count_7").checked == true) {
+	if (document.getElementById("letter_count_5").checked == true) {
+		var word_length = 5;
+	} else if (document.getElementById("letter_count_6").checked == true) {
+		var word_length = 6;
+	} else if (document.getElementById("letter_count_7").checked == true) {
 		var word_length = 7;
 	} else if (document.getElementById("letter_count_8").checked == true) {
 		var word_length = 8;

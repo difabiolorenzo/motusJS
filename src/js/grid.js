@@ -12,7 +12,6 @@
 	var countdown_enabled = localStorage.getItem('countdown_enabled');			//Inutilisé
 	var countdown_time = localStorage.getItem('countdown_time');				//Inutilisé
 	
-
 	var team_yellow_name = localStorage.getItem('team_yellow_name');			//	Nom de l'équipe jaune
 	var team_blue_name = localStorage.getItem('team_blue_name');				//	Nom de l'équipe Bleue
 	var team_turn = localStorage.getItem('team_turn');							//	Equipe qui commence la partie
@@ -40,6 +39,20 @@
 	var lettre_ok = new Array();
 	var placing = new Array();
 	var placing_dup = new Array();
+
+	if (word_length == 5) {
+		dictionary = dictionary_5;
+	} else if (word_length == 6) {
+		dictionary = dictionary_6;
+	} else if (word_length == 7) {
+		dictionary = dictionary_7;
+	} else if (word_length == 8) {
+		dictionary = dictionary_8;
+	} else if (word_length == 9) {
+		dictionary = dictionary_9;
+	} else if (word_length == 10) {
+		dictionary = dictionary_10;
+	}
 
 	var word_count = dictionary.length; // Nombre mots contenus dans la table dictionnaire
 	var word_to_find = dictionary[Math.floor(Math.random() * word_count)]; // Stocker le word_to_find tiré
@@ -190,7 +203,7 @@
 		}
 	}
 
-	function verifPresence(word_proposed) {		// Vérification de la présence du word_to_find proposé dans le dictionary
+	function verifPresence(word_proposed) {		// Vérification de la présence du word_to_find proposé dans le dictionnaire
 		in_dictionary = false;
 		for (i = 0; i < dictionary.length; i++) {
 			if (word_proposed == dictionary[i]) {
@@ -201,7 +214,7 @@
 		return in_dictionary;
 	}
 
-	function verifDuplication(word_proposed) {		// Vérification de la présence du word_to_find proposé dans le dictionary
+	function verifDuplication(word_proposed) {		// Vérification de la présence du word_to_find proposé dans le dictionnaire
 		for (i = 0; i < word_proposed_tab_list.length; i++) {
 			if (word_proposed == word_proposed_tab_list[i]) {
 				already_proposed = true;
@@ -273,7 +286,7 @@
 			console.log("La longueur du word_to_find n'est pas la bonne.");
 			displayMessage("La longueur du mot proposé n'est pas la bonne.", "#b11f0e");
 		} else if (errorCode == 2) {
-			console.log("Mot non présent dans le dictionary");
+			console.log("Mot non présent dans le dictionnaire");
 			displayMessage("Mot non présent dans le dictionnaire.", "#b11f0e");
 		} else if (errorCode == 3) {
 			console.log("Mot déjà proposé");
@@ -409,6 +422,11 @@
 		if (typeof solutionInterval == 'undefined') { //arret de l'animation de la solution
 		} else {	
 			clearInterval(solutionInterval);
+		}
+		
+		if (typeof animationLettreBonusInterval == 'undefined') { //arret de l'animation de la solution
+		} else {	
+			clearInterval(animationLettreBonusInterval);
         }
 	
 		try_count_index = -1;
