@@ -22,7 +22,7 @@
 	var try_count_index = -1;
 	var verification_index = 0;
 	var already_proposed = false;
-	var pause = false;
+	var pause = true;
 	var display_number_grid = false;
 	
 	var playsound_letter_ok = new Audio('src/sound/lettre_ok.mp3');
