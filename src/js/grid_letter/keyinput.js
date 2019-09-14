@@ -2,12 +2,7 @@
 		if (event.keyCode == 27) { // echap
 			console.log("Touche Echap");
 			displayMenu();
-		}
-		if (event.keyCode == 54) { // "
-				console.log("Touche - (6)");
-				changeTeamTurn();
-		}
-		
+		}		
 		if (pause == false) {
 			if (word_proposed_tab.length < word_length ) {
 				if (event.keyCode == 65 || event.keyCode == 97) {
@@ -86,24 +81,48 @@
 					}
 				}
 			} else if (event.keyCode == 49) { // &
-				console.log('Touche & (1)');
+				console.log('Touche 1');
 				nouvelleLigne();
 				
 			} else if (event.keyCode == 50) { // é
-				console.log('Touche é (2)');
+				console.log('Touche 2');
 				ajoutLettreBonus();
 	
 			} else if (event.keyCode == 51) { // "
-				console.log('Touche é (3)');
+				console.log('Touche 3');
 				solutionInterval = setInterval(function() {affichageSolution()}, timer);
 	
-			} else if (event.keyCode == 52) { // "
-				console.log("Touche ' (4)");
+			} else if (event.keyCode == 52) { // '
+				console.log("Touche 4");
 				reinit();
 	
-			} else if (event.keyCode == 53) { // "
-				console.log("Touche ( (5)");
+			} else if (event.keyCode == 53) { // (
+				console.log("Touche 5");
 				suppressionLigne();
+
+			} else if (event.keyCode == 54) { // -
+				console.log("Touche 6");
+				changeTeamTurn();
+
+			} else if (event.keyCode == 55) { // è
+				console.log('Touche 7');
+				changeGrid();
+				
+			} else if (event.keyCode == 56) { // _
+				console.log('Touche 8');
+				pickBall();
+
+			} else if (event.keyCode == 57) { // ç
+				console.log('Touche 9');
+
+			} else if (event.keyCode == 48) { // à
+				console.log('Touche 0');
+				displayNumberGrid();
+			}
+			
+			else if (event.keyCode == 186) { // $ ¤ £
+				console.log('Touche $');
+				playsound_temps_ecoule.play();
 			}
 	
 			word_proposed = word_proposed_tab.join(''); // Affichage du word_to_find proposé
@@ -119,5 +138,21 @@
 		} else {
 			pause = true;
 			document.getElementById("score").style.opacity = '1';
+		}
+	}
+
+	function displayNumberGrid() {
+		if (display_number_grid == true) {
+			display_number_grid = false;
+			document.getElementById("grid_number").style.opacity = '0';
+
+		} else {
+			display_number_grid = true;
+			document.getElementById("grid_number").style.opacity = '1';
+			if (team_turn == "yellow") {	//affichage uniquement la grille de l'équipe
+				document.getElementById("grid_number_blue").style.display = "none";
+			} else {
+				document.getElementById("grid_number_yellow").style.display = "none";
+			}
 		}
 	}

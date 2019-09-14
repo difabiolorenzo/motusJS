@@ -30,6 +30,8 @@ body {
     color: white;
     padding: 1%;
     display: inline-grid;
+    text-align: center;
+
 }
 
 .form-section-disabled {

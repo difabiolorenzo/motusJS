@@ -1,0 +1,94 @@
+@font-face {
+  font-family: 'Gotham'; /*a name to be used later*/
+  src: url('../font/Gotham\ Bold.otf'); /*URL to font*/
+}
+
+body {
+  text-align: center;
+  font-family: Arial;
+  line-height: 1.5;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+.menu {
+  display: block;
+  height: 50%;
+  margin-top: 12.5%;
+  background-color: rgba(0, 0, 0, 0.75);
+  position: absolute;
+  width: 100%;
+  top: 0;
+  left: 0;
+  transition: all 1s cubic-bezier(0.68, -0.55, 0.27, 1.55) 0s;
+}
+
+.fullscreen_off .message {
+  display: block;
+  position: absolute;
+  width: 100%;
+  transition: all 1s cubic-bezier(0.68, -0.55, 0.27, 1.55) 0s;
+  height: 10%;
+  top: 90%;
+}
+.fullscreen_on .message {
+  display: none;
+}
+
+.menu h1 {
+  color: white;
+  padding: 20;
+  font-variant-caps: all-small-caps;
+}
+
+.menu-content {
+  display: contents;
+}
+
+
+
+
+
+
+.score-placeolder {
+  display: inline-block;
+  *display: inline;
+  zoom: 1;
+  vertical-align: top;
+  font-size: 12px;
+  margin-left: 10%;
+  margin-right: 10%;
+  height: 50%;
+  width: 25%;
+}
+#score-placeolder-blue {
+  background-color: #1681C7;
+}
+#score-placeolder-yellow {
+  background-color: #FBC800
+}
+.score-placeolder h2 {
+  font-variant-caps: all-small-caps;
+  font-size: x-large;
+  color: white;
+  background-color: #00000033;
+  padding: 3%;
+}
+.score-placeolder a {
+  font-variant-caps: all-small-caps;
+  font-size: x-large;
+  color: white;
+}
+
+#exit-div {
+  margin-top: 2%;
+  text-align: left;
+}
+
+#exit {
+  margin-left: 2%;
+  text-decoration: none;
+  color: white;
+}
+

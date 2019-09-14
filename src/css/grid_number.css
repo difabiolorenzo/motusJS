@@ -1,0 +1,172 @@
+@font-face {
+  font-family: 'Gotham';
+  src: url('../font/Gotham\ Bold.otf');
+}
+body {
+  margin: 0;
+  font-family: "Gotham";
+}
+
+/* . > Classe ; # > Id  */
+.grid {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    background-color: #A52A2E;
+    transition: all 1s cubic-bezier(0.68, -0.55, 0.27, 1.55) 0s;
+}
+
+.grid_number {      /* <table> */
+  width: 45%;
+  height: 60%;
+  display: inline-table;
+  border-spacing: 0;
+  margin: 2%;
+  margin-top: 2%;
+}
+.grid_number tr {     /* ligne */
+  display: table-row;
+  vertical-align: inherit;
+  border-color: inherit;
+}
+
+
+
+.style_2019 .grid_number td {     /* cell blank*/
+  color: #ffffff;
+  text-align: center;
+  font-weight: bold;
+  font-size: 80px;
+}
+.style_2019 .cell_team_yellow{      /* cell_yellow */
+  background-color: #e3e611;
+  text-shadow: 2px 2px 5px #00000066;
+  border: 2px solid #f1f880;
+}
+.style_2019 .cell_team_blue{      /* cell_blue */
+  background-color: #0092f1;
+  text-shadow: 2px 2px 5px #00000066;
+  border: 2px solid #80c9f8;
+}
+
+.style_2010 .grid_number td {     /* cell blank*/
+  color: #ffffff;
+  text-align: center;
+  font-weight: bold;
+  font-size: 80px;
+  text-shadow: 2px 2px 5px #00000066;
+}
+.style_2010 .cell_team_yellow{      /* cell_yellow */
+  border: 1px solid #ffffff;
+  background-image: linear-gradient(to bottom , #fff255, #dbe211);
+}
+.style_2010 .cell_team_blue{      /* cell_blue */
+  background-image: linear-gradient(to bottom , #11A7FF, #0065CF);
+  border: 1px solid #e2e2e2;
+}
+
+.style_1990 .grid_number td {     /* cell blank*/
+  color: #ffffff;
+  text-align: center;
+  font-weight: bold;
+  font-size: 80px;
+  text-shadow: 2px 2px 9px #00000066;
+}
+.style_1990 .cell_team_yellow{      /* cell_yellow */
+  border: 2px solid #9a9c28;
+  background-color: #e6f500;
+}
+.style_1990 .cell_team_blue{      /* cell_blue */
+  border: 2px solid #28299E;
+  background-color: #0080dc;
+}
+
+
+
+.number{        /* number in grid */
+  display: block;
+  position: absolute;
+  width: 5.75%;
+  height: 9%;
+  border-radius: 50%;
+  color: #ffffff;
+  font-size: 55px;
+  margin-top: -2.9%;
+  margin-left: 1.5%;
+  padding-top: 0.8%;
+  text-align: center;
+}
+.style_1990 .yellow_number{        /* number_yellow */
+  background-color: #e3d310;
+}
+.style_2010 .yellow_number{        /* number_yellow */
+  background-image: 
+  -webkit-radial-gradient(75px 25px, circle cover, #f5f500, #bb9c00);
+}
+.style_2019 .yellow_number{        /* number_yellow */
+  background-color: #d9d100;
+}
+.style_1990 .blue_number{          /* number_blue */
+  background-color: #036fc5;
+}
+.style_2010 .blue_number{          /* number_blue */
+  background-image: 
+  -webkit-radial-gradient(75px 15px, circle cover, #019bf2, #0f29b6);
+}
+.style_2019 .blue_number{          /* number_blue */
+  background-color: #0a79d0;
+}
+
+.style_1990 .hided_yellow_number{        /* number_yellow */
+  background-color: #c5b70c;
+}
+.style_2010 .hided_yellow_number{        /* number_yellow */
+  background-image: 
+  -webkit-radial-gradient(75px 25px, circle cover, #eae200, #9e8f0a);
+}
+.style_2019 .hided_yellow_number{        /* number_yellow */background-color: #c3bd14;}
+.style_1990 .hided_blue_number{          /* number_blue */
+  background-color: #0260aa;
+}
+.style_2010 .hided_blue_number{          /* number_blue */
+  background-image: 
+  -webkit-radial-gradient(75px 25px, circle cover, #0086f0, #122179);
+}
+.style_2019 .hided_blue_number{          /* number_blue */
+  background-color: #0665c9;
+}
+
+
+#big_number {
+  top: 71%;
+  display: block;
+  width: 13%;
+  height: 19%;
+  border-radius: 50%;
+  font-size: 900%;
+  position: fixed;
+  left: 43%;
+  padding-bottom: 3%;
+}
+
+.style_1990 .big_yellow_number {        /* number_yellow */
+  background-color: #e3d310;
+}
+.style_2010 .big_yellow_number {        /* number_yellow */
+  background-image: 
+  -webkit-radial-gradient(75px 25px, circle cover, #f5f500, #bb9c00);
+}
+.style_2019 .big_yellow_number {        /* number_yellow */
+  background-color: #d9d100;
+}
+
+.style_1990 .big_blue_number {          /* number_blue */
+  background-color: #036fc5;
+}
+.style_2010 .big_blue_number {          /* number_blue */
+  background-image: 
+  -webkit-radial-gradient(75px 15px, circle cover, #019bf2, #0f29b6);
+}
+.style_2019 .big_blue_number {          /* number_blue */
+  background-color: #0a79d0;
+}

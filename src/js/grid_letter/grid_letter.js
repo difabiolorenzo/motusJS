@@ -1,7 +1,8 @@
-	var timer = 300;
+	var timer = 300;															// Millisecondes de vérification par lettres
 	
 	var grid_style = localStorage.getItem('grid_style');						//Thème de la grille
-	document.getElementById("style").href = 'src/css/grid_'+grid_style+'.css' ;														// Millisecondes de vérification par lettres
+	var fullscreen = localStorage.getItem('fullscreen');						//Fullscreen
+	document.getElementById("body").className = grid_style + " " + fullscreen;						
 	
 	var try_number_max = localStorage.getItem('try_count');						// Nombre de ligne dans la grille
 	var word_length = localStorage.getItem('word_length');						// Nombre de lettres
@@ -22,6 +23,7 @@
 	var verification_index = 0;
 	var already_proposed = false;
 	var pause = false;
+	var display_number_grid = false;
 	
 	var playsound_letter_ok = new Audio('src/sound/lettre_ok.mp3');
 	var playsound_letter_bad = new Audio('src/sound/lettre_mauvaise.mp3');
@@ -29,33 +31,24 @@
 	var playsound_letter_bonus = new Audio('src/sound/lettre_bonus.mp3');
 	var playsound_wrong = new Audio('src/sound/erreur.mp3');
 	var playsound_victory = new Audio('src/sound/victory.mp3');
+	var playsound_temps_ecoule = new Audio('src/sound/temps_ecoule.mp3');
 	playsound_letter_ok.volume = 0.5;
 	playsound_letter_bad.volume = 0.5;
 	playsound_letter_missing.volume = 0.5;
 	playsound_letter_bonus.volume = 0.5;
 	playsound_wrong.volume = 0.5;
 	playsound_victory.volume = 0.5;
+	playsound_temps_ecoule.volume = 0.5;
 
 	var lettre_ok = new Array();
 	var placing = new Array();
 	var placing_dup = new Array();
 
-	if (word_length == 5) {
-		dictionary = dictionary_5;
-	} else if (word_length == 6) {
-		dictionary = dictionary_6;
-	} else if (word_length == 7) {
-		dictionary = dictionary_7;
-	} else if (word_length == 8) {
-		dictionary = dictionary_8;
-	} else if (word_length == 9) {
-		dictionary = dictionary_9;
-	} else if (word_length == 10) {
-		dictionary = dictionary_10;
-	}
+	var dictionary = new Array(dictionary_5, dictionary_6, dictionary_7, dictionary_8, dictionary_9, dictionary_10);
+	dictionary_used = dictionary[word_length-5];
 
-	var word_count = dictionary.length; // Nombre mots contenus dans la table dictionnaire
-	var word_to_find = dictionary[Math.floor(Math.random() * word_count)]; // Stocker le word_to_find tiré
+	var word_count = dictionary_used.length; // Nombre mots contenus dans la table dictionnaire
+	var word_to_find = dictionary_used[Math.floor(Math.random() * word_count)]; // Stocker le word_to_find tiré
 	var word_to_find_tab = new Array();
 
 	var word_proposed_tab_list = new Array();
@@ -88,21 +81,29 @@
 			displayMessage("La main passe à "+team_blue_name, "#1681C7");
 			document.getElementById("score-placeolder-yellow").style.border = "5px solid #ffffff40";
 			document.getElementById("score-placeolder-blue").style.border = "5px solid #ffffffff";
+
+			
+			document.getElementById("grid_number_yellow").style.display = "none";
+			document.getElementById("grid_number_blue").style.display = "inline-table";
 		} else {
 			team_turn = "yellow";
 			displayMessage("La main passe à "+team_yellow_name, "#FBC800");
 			document.getElementById("score-placeolder-yellow").style.border = "5px solid #ffffffff";
 			document.getElementById("score-placeolder-blue").style.border = "5px solid #ffffff40";
+
+			
+			document.getElementById("grid_number_yellow").style.display = "inline-table";
+			document.getElementById("grid_number_blue").style.display = "none";
 		}
 		clearInterval(changeTeamTurnInterval);		
 	}
 
 	function ajoutScore(score, team) {
 		if (team == "yellow") {
-			displayMessage(score+" points ajouté à "+team_yellow_name, "#FBC800");
+			displayMessage(score+" points ajoutés à "+team_yellow_name, "#FBC800");
 			team_yellow_score = (team_yellow_score + score);
 		} else {
-			displayMessage(score+" points ajouté à "+team_blue_name, "#1681C7");
+			displayMessage(score+" points ajoutés à "+team_blue_name, "#1681C7");
 			team_blue_score = (team_blue_score + score);
 		}
 		document.getElementById("team-yellow-score").innerHTML = team_yellow_score;
@@ -175,7 +176,7 @@
 	initialisationMot()
 
 	function CreationTableauHTML() {
-		var table_html = "<table id=\"motus\">";
+		var table_html = "<table id=\"table_letter\">";
 		for (var j = 0; j <= try_number_max-1; j++) {
 			table_html += "<tr>";
 			for (var i = 0; i < word_length; i++) {
@@ -205,8 +206,8 @@
 
 	function verifPresence(word_proposed) {		// Vérification de la présence du word_to_find proposé dans le dictionnaire
 		in_dictionary = false;
-		for (i = 0; i < dictionary.length; i++) {
-			if (word_proposed == dictionary[i]) {
+		for (i = 0; i < dictionary_used.length; i++) {
+			if (word_proposed == dictionary_used[i]) {
 				in_dictionary = true;
 			} else {
 			}
@@ -244,7 +245,7 @@
 	}
 
 	
-	nouvelleLigne();
+	// nouvelleLigne();
 
 	
 	function ajoutLettreBonus() {		// Ajoute une lettre bonnus dans les emplacement non trouvés
@@ -298,14 +299,8 @@
 	}
 
 	function displayMessage(message, colorHex) {	// Affiche une bannière
-		document.getElementById("message").style.opacity = 1;
 		document.getElementById("message").style.backgroundColor = colorHex;
 		document.getElementById("messagePlaceolder").innerHTML = message;
-		displayMessageInterval = setInterval(function() {hideMessage()}, 3000);
-	}
-	function hideMessage() {
-		document.getElementById("message").style.opacity = 0;
-		clearInterval(displayMessageInterval);
 	}
 	
 	function suppressionLigne() {		// Supprime la ligne
@@ -435,13 +430,10 @@
 		word_proposed_tab = [];
 
 
-		word_count = dictionary.length;
+		word_count = dictionary_used.length;
 		word_random_index = Math.floor(Math.random() * word_count);
-		word_to_find = dictionary[word_random_index];
+		word_to_find = dictionary_used[word_random_index];
 						
         initialisationMot()
 		reinitilisationTableau()
-
-
-		nouvelleLigne();
 	}
