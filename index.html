@@ -72,13 +72,13 @@
           </div>
         </div>
 
-        <div class="form-section-disabled">
+        <div class="form-section">
           <div class="from-section-label">
             <h3 for="display_animation">Affichage des animations</h3>
           </div>
           <div class="from-section-inner">
-            <input class="input-radio" type="radio" name="display_animation" id="display_animations_on" value="true"disabled="true">Oui
-            <input class="input-radio" type="radio" name="display_animation" id="display_animations_off" value="false" checked="true" >Non
+            <input class="input-radio" type="radio" name="display_animation" id="display_animations_on" value="true" checked="true">Oui
+            <input class="input-radio" type="radio" name="display_animation" id="display_animations_off" value="false" >Non
           </div>
         </div>
 
@@ -138,6 +138,16 @@
 
         <div class="form-section-disabled">
           <div class="from-section-label">
+            <h3 for="numeroted_grid">Utilisation de la grille numérotée</h3>
+          </div>
+          <div class="from-section-inner">
+            <input class="input-radio" type="radio" name="numeroted_grid" id="numeroted_grid_on" value="true" >Oui
+            <input class="input-radio" type="radio" name="numeroted_grid" id="numeroted_grid_off" value="false" checked="true">Non
+          </div>
+        </div>
+
+        <div class="form-section-disabled">
+          <div class="from-section-label">
             <h3 for="magic_ball">Utilisation de la boule magique</h3>
           </div>
           <div class="from-section-inner">
@@ -151,12 +161,22 @@
             <h3 for="grid_style">Style de la grille</h3>
           </div>
           <div class="from-section-inner">
-            <input class="input-radio" type="radio" name="grid_style" id="grid_style_1990" value="style_1990">Années 1990?
+            <div class="from-section-inner-galery">
+              <input class="input-radio" type="radio" name="grid_style" id="grid_style_1990" value="style_1990">Années 1990?
               <img class="image_grid" src="src/img/style_1990.png"></img>
-            <input class="input-radio" type="radio" name="grid_style" id="grid_style_2010" value="style_2010" checked="true" >Années 2010
+            </div>
+            <div class="from-section-inner-galery">
+              <input class="input-radio" type="radio" name="grid_style" id="grid_style_2000" value="style_2000" checked="true" >Années 2000
+              <img class="image_grid" src="src/img/style_2000.png"></img>
+            </div>
+            <div class="from-section-inner-galery">
+              <input class="input-radio" type="radio" name="grid_style" id="grid_style_2010" value="style_2010" checked="true" >Années 2010
               <img class="image_grid" src="src/img/style_2010.png"></img>
-            <input class="input-radio" type="radio" name="grid_style" id="grid_style_2019" value="style_2019">Année 2019
+            </div>
+            <div class="from-section-inner-galery">
+                <input class="input-radio" type="radio" name="grid_style" id="grid_style_2019" value="style_2019">Année 2019
               <img class="image_grid" src="src/img/style_2019.png"></img>
+            </div>
           </div>
         </div>
 

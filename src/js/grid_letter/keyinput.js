@@ -6,57 +6,57 @@
 		if (pause == false) {
 			if (word_proposed_tab.length < word_length ) {
 				if (event.keyCode == 65 || event.keyCode == 97) {
-					word_proposed_tab.push('A');
+					ajoutLettre("A");
 				} else if (event.keyCode == 66 || event.keyCode == 98) {
-					word_proposed_tab.push('B');
+					ajoutLettre("B");
 				} else if (event.keyCode == 67 || event.keyCode == 99) {
-					word_proposed_tab.push('C');
+					ajoutLettre("C");
 				} else if (event.keyCode == 68 || event.keyCode == 100) {
-					word_proposed_tab.push('D');
+					ajoutLettre("D");
 				} else if (event.keyCode == 69 || event.keyCode == 101) {
-					word_proposed_tab.push('E');
+					ajoutLettre("E");
 				} else if (event.keyCode == 70 || event.keyCode == 102) {
-					word_proposed_tab.push('F');
+					ajoutLettre("F");
 				} else if (event.keyCode == 71 || event.keyCode == 103) {
-					word_proposed_tab.push('G');
+					ajoutLettre("G");
 				} else if (event.keyCode == 72 || event.keyCode == 104) {
-					word_proposed_tab.push('H');
+					ajoutLettre("H");
 				} else if (event.keyCode == 73 || event.keyCode == 105) {
-					word_proposed_tab.push('I');
+					ajoutLettre("I");
 				} else if (event.keyCode == 74 || event.keyCode == 106) {
-					word_proposed_tab.push('J');
+					ajoutLettre("J");
 				} else if (event.keyCode == 75 || event.keyCode == 107) {
-					word_proposed_tab.push('K');
+					ajoutLettre("K");
 				} else if (event.keyCode == 76 || event.keyCode == 108) {
-					word_proposed_tab.push('L');
+					ajoutLettre("L");
 				} else if (event.keyCode == 77 || event.keyCode == 109) {
-					word_proposed_tab.push('M');
+					ajoutLettre("M");
 				} else if (event.keyCode == 78 || event.keyCode == 110) {
-					word_proposed_tab.push('N');
+					ajoutLettre("N");
 				} else if (event.keyCode == 79 || event.keyCode == 111) {
-					word_proposed_tab.push('O');
+					ajoutLettre("O");
 				} else if (event.keyCode == 80 || event.keyCode == 112) {
-					word_proposed_tab.push('P');
+					ajoutLettre("P");
 				} else if (event.keyCode == 81 || event.keyCode == 113) {
-					word_proposed_tab.push('Q');
+					ajoutLettre("Q");
 				} else if (event.keyCode == 82 || event.keyCode == 114) {
-					word_proposed_tab.push('R');
+					ajoutLettre("R");
 				} else if (event.keyCode == 83 || event.keyCode == 115) {
-					word_proposed_tab.push('S');
+					ajoutLettre("S");
 				} else if (event.keyCode == 84 || event.keyCode == 116) {
-					word_proposed_tab.push('T');
+					ajoutLettre("T");
 				} else if (event.keyCode == 85 || event.keyCode == 117) {
-					word_proposed_tab.push('U');
+					ajoutLettre("U");
 				} else if (event.keyCode == 86 || event.keyCode == 118) {
-					word_proposed_tab.push('V');
+					ajoutLettre("V");
 				} else if (event.keyCode == 87 || event.keyCode == 119) {
-					word_proposed_tab.push('W');
+					ajoutLettre("W");
 				} else if (event.keyCode == 88 || event.keyCode == 120) {
-					word_proposed_tab.push('X');
+					ajoutLettre("X");
 				} else if (event.keyCode == 89 || event.keyCode == 121) {
-					word_proposed_tab.push('Y');
+					ajoutLettre("Y");
 				} else if (event.keyCode == 90 || event.keyCode == 122) {
-					word_proposed_tab.push('Z');
+					ajoutLettre("Z");
 				}
 			} 
 			if (event.keyCode == 8) {  // Retour arrière
@@ -90,7 +90,7 @@
 	
 			} else if (event.keyCode == 51) { // "
 				console.log('Touche 3');
-				solutionInterval = setInterval(function() {affichageSolution()}, timer);
+				affichageSolution();
 	
 			} else if (event.keyCode == 52) { // '
 				console.log("Touche 4");
@@ -142,12 +142,12 @@
 	}
 
 	function displayNumberGrid() {
-		if (display_number_grid == true) {
-			display_number_grid = false;
+		if (number_grid_displayed == true) {
+			number_grid_displayed = false;
 			document.getElementById("grid_number").style.opacity = '0';
 
 		} else {
-			display_number_grid = true;
+			number_grid_displayed = true;
 			document.getElementById("grid_number").style.opacity = '1';
 			if (team_turn == "yellow") {	//affichage uniquement la grille de l'équipe
 				document.getElementById("grid_number_blue").style.display = "none";

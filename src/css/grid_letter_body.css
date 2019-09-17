@@ -14,8 +14,7 @@ body {
 
 .menu {
   display: block;
-  height: 50%;
-  margin-top: 12.5%;
+  height: 100%;
   background-color: rgba(0, 0, 0, 0.75);
   position: absolute;
   width: 100%;
@@ -53,13 +52,14 @@ body {
 
 .score-placeolder {
   display: inline-block;
-  *display: inline;
-  zoom: 1;
-  vertical-align: top;
-  font-size: 12px;
-  margin-left: 10%;
-  margin-right: 10%;
-  height: 50%;
+  margin-left: 5%;
+  margin-right: 5%;
+  width: 25%;
+}
+.menu-button {
+  display: inline-block;
+  margin-left: 5%;
+  margin-right: 5%;
   width: 25%;
 }
 #score-placeolder-blue {
@@ -72,8 +72,7 @@ body {
   font-variant-caps: all-small-caps;
   font-size: x-large;
   color: white;
-  background-color: #00000033;
-  padding: 3%;
+  margin: 0;
 }
 .score-placeolder a {
   font-variant-caps: all-small-caps;
@@ -85,9 +84,17 @@ body {
   margin-top: 2%;
   text-align: left;
 }
-
 #exit {
   margin-left: 2%;
+  text-decoration: none;
+  color: white;
+}
+#start-div {
+  margin-top: 2%;
+  text-align: right;
+}
+#start {
+  margin-right: 2%;
   text-decoration: none;
   color: white;
 }

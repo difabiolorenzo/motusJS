@@ -9,11 +9,11 @@ body {
 
 /* . > Classe ; # > Id  */
 .grid {
-    position: fixed;
-    height: 100%;
-    width: 100%;
-    background-color: #A52A2E;
-    transition: all 1s cubic-bezier(0.68, -0.55, 0.27, 1.55) 0s;
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  transition: all 1s cubic-bezier(0.68, -0.55, 0.27, 1.55) 0s;
 }
 
 .grid_number {      /* <table> */
@@ -23,6 +23,7 @@ body {
   border-spacing: 0;
   margin: 2%;
   margin-top: 2%;
+  text-shadow: 2px 2px 1px rgba(0, 0, 0, .6);
 }
 .grid_number tr {     /* ligne */
   display: table-row;
@@ -32,39 +33,6 @@ body {
 
 
 
-.style_2019 .grid_number td {     /* cell blank*/
-  color: #ffffff;
-  text-align: center;
-  font-weight: bold;
-  font-size: 80px;
-}
-.style_2019 .cell_team_yellow{      /* cell_yellow */
-  background-color: #e3e611;
-  text-shadow: 2px 2px 5px #00000066;
-  border: 2px solid #f1f880;
-}
-.style_2019 .cell_team_blue{      /* cell_blue */
-  background-color: #0092f1;
-  text-shadow: 2px 2px 5px #00000066;
-  border: 2px solid #80c9f8;
-}
-
-.style_2010 .grid_number td {     /* cell blank*/
-  color: #ffffff;
-  text-align: center;
-  font-weight: bold;
-  font-size: 80px;
-  text-shadow: 2px 2px 5px #00000066;
-}
-.style_2010 .cell_team_yellow{      /* cell_yellow */
-  border: 1px solid #ffffff;
-  background-image: linear-gradient(to bottom , #fff255, #dbe211);
-}
-.style_2010 .cell_team_blue{      /* cell_blue */
-  background-image: linear-gradient(to bottom , #11A7FF, #0065CF);
-  border: 1px solid #e2e2e2;
-}
-
 .style_1990 .grid_number td {     /* cell blank*/
   color: #ffffff;
   text-align: center;
@@ -72,15 +40,62 @@ body {
   font-size: 80px;
   text-shadow: 2px 2px 9px #00000066;
 }
+.style_2000 .grid_number td {     /* cell blank*/
+  color: #ffffff;
+  text-align: center;
+  font-weight: bold;
+  font-size: 80px;
+  text-shadow: 2px 2px 5px #00000080;
+}
+.style_2010 .grid_number td {     /* cell blank*/
+  color: #ffffff;
+  text-align: center;
+  font-weight: bold;
+  font-size: 80px;
+  text-shadow: 2px 2px 5px #00000080;
+}
+.style_2019 .grid_number td {     /* cell blank*/
+  color: #ffffff;
+  text-align: center;
+  font-weight: bold;
+  font-size: 80px;
+}
+
 .style_1990 .cell_team_yellow{      /* cell_yellow */
   border: 2px solid #9a9c28;
   background-color: #e6f500;
 }
-.style_1990 .cell_team_blue{      /* cell_blue */
-  border: 2px solid #28299E;
-  background-color: #0080dc;
+.style_2000 .cell_team_yellow{      /* cell_yellow */
+  background-color: #eedd11;
+  border: 2px solid #9c840f;
+}
+.style_2010 .cell_team_yellow{      /* cell_yellow */
+  border: 1px solid #ffffff;
+  background-image: linear-gradient(to bottom , #fff255, #dbe211);
+}
+.style_2019 .cell_team_yellow{      /* cell_yellow */
+  background-color: #e3e611;
+  text-shadow: 2px 2px 5px #00000066;
+  border: 2px solid #f1f880;
 }
 
+.style_1990 .cell_team_blue{      /* cell_blue */
+  border: 2px solid #184565;
+  background-color: #0080dc;
+}
+.style_2000 .cell_team_blue{      /* cell_blue */
+  background-color: #117AEE;
+  border: 2px solid #0F359C;
+}
+.style_2010 .cell_team_blue{      /* cell_blue */
+  background-image: linear-gradient(to bottom , #11A7FF, #0065CF);
+  border: 1px solid #e2e2e2;
+}
+.style_2019 .cell_team_blue{      /* cell_blue */
+  background-color: #0092f1;
+  text-shadow: 2px 2px 5px #00000066;
+  border: 2px solid #80c9f8;
+}
 
 
 .number{        /* number in grid */
@@ -90,50 +105,81 @@ body {
   height: 9%;
   border-radius: 50%;
   color: #ffffff;
-  font-size: 55px;
+  font-size: 66px;
   margin-top: -2.9%;
   margin-left: 1.5%;
   padding-top: 0.8%;
   text-align: center;
 }
+
+
 .style_1990 .yellow_number{        /* number_yellow */
   background-color: #e3d310;
 }
+.style_2000 .yellow_number{        /* number_yellow */
+  background-color: #ffffff00
+}
 .style_2010 .yellow_number{        /* number_yellow */
-  background-image: 
-  -webkit-radial-gradient(75px 25px, circle cover, #f5f500, #bb9c00);
+  background-image: -webkit-radial-gradient(75px 25px, circle cover, #f5f500, #bb9c00);
 }
 .style_2019 .yellow_number{        /* number_yellow */
   background-color: #d9d100;
+  box-shadow: 2px 2px 7px -2px hsla(0, 0%, 0%, .5);
 }
+
+
 .style_1990 .blue_number{          /* number_blue */
   background-color: #036fc5;
 }
+.style_2000 .blue_number{          /* number_blue */
+  background-color: #ffffff00
+}
 .style_2010 .blue_number{          /* number_blue */
-  background-image: 
-  -webkit-radial-gradient(75px 15px, circle cover, #019bf2, #0f29b6);
+  background-image: -webkit-radial-gradient(75px 15px, circle cover, #019bf2, #0f29b6);
 }
 .style_2019 .blue_number{          /* number_blue */
   background-color: #0a79d0;
+  box-shadow: 2px 2px 7px -2px hsla(0, 0%, 0%, .5);
 }
 
 .style_1990 .hided_yellow_number{        /* number_yellow */
   background-color: #c5b70c;
 }
+.style_2000 .hided_yellow_number{        /* number_yellow */background-color: #B7AD21;}
 .style_2010 .hided_yellow_number{        /* number_yellow */
-  background-image: 
-  -webkit-radial-gradient(75px 25px, circle cover, #eae200, #9e8f0a);
+  background-image: -webkit-radial-gradient(75px 25px, circle cover, #eae200, #9e8f0a);
 }
-.style_2019 .hided_yellow_number{        /* number_yellow */background-color: #c3bd14;}
+.style_2019 .hided_yellow_number{        /* number_yellow */
+  background-color: #c3bd14;
+  box-shadow: 2px 2px 7px -2px hsla(0, 0%, 0%, .5);
+}
+
+
 .style_1990 .hided_blue_number{          /* number_blue */
   background-color: #0260aa;
 }
+.style_2000 .hided_blue_number{          /* number_blue */background-color: #0c57c7;}
 .style_2010 .hided_blue_number{          /* number_blue */
-  background-image: 
-  -webkit-radial-gradient(75px 25px, circle cover, #0086f0, #122179);
+  background-image: -webkit-radial-gradient(75px 25px, circle cover, #0086f0, #122179);
 }
 .style_2019 .hided_blue_number{          /* number_blue */
   background-color: #0665c9;
+  box-shadow: 2px 2px 7px -2px hsla(0, 0%, 0%, .5);
+}
+
+
+.style_1990 .motus_cell{          /* number_blue */
+  background-color: #aa0202;
+}
+.style_2000 .motus_cell{          /* number_blue */
+  background-image: -webkit-radial-gradient(75px 25px, circle cover, #ff4343, #450b0b);
+}
+.style_2010 .motus_cell{          /* number_blue */
+  background-image: -webkit-radial-gradient(75px 25px, circle cover, #ff4343, #450b0b);
+}
+.style_2019 .motus_cell{          /* number_blue */
+  background-color: #b82727;
+  box-shadow: 2px 2px 7px -2px hsla(0, 0%, 0%, .5);
 }
 
 
@@ -147,14 +193,16 @@ body {
   position: fixed;
   left: 43%;
   padding-bottom: 3%;
+  color: #ffffff;
+  text-shadow: 5px 5px 10px #00000080;
 }
 
 .style_1990 .big_yellow_number {        /* number_yellow */
   background-color: #e3d310;
 }
+.style_2000 .big_yellow_number {        /* number_yellow */background-color: #eedd11;}
 .style_2010 .big_yellow_number {        /* number_yellow */
-  background-image: 
-  -webkit-radial-gradient(75px 25px, circle cover, #f5f500, #bb9c00);
+  background-image: -webkit-radial-gradient(75px 25px, circle cover, #f5f500, #bb9c00);
 }
 .style_2019 .big_yellow_number {        /* number_yellow */
   background-color: #d9d100;
@@ -163,10 +211,45 @@ body {
 .style_1990 .big_blue_number {          /* number_blue */
   background-color: #036fc5;
 }
+.style_2000 .big_blue_number {          /* number_blue */background-color: #117AEE;}
 .style_2010 .big_blue_number {          /* number_blue */
-  background-image: 
-  -webkit-radial-gradient(75px 15px, circle cover, #019bf2, #0f29b6);
+  background-image: -webkit-radial-gradient(75px 15px, circle cover, #019bf2, #0f29b6);
 }
 .style_2019 .big_blue_number {          /* number_blue */
   background-color: #0a79d0;
+}
+
+.style_1990 .big_black_number {          /* number_blue */
+  background-color: #000000;
+}
+.style_2000 .big_black_number {          /* number_blue */
+  background-color: #151515;
+  box-shadow: 0 0 20px 8px rgba(0, 0, 0, 0.33);
+}
+.style_2010 .big_black_number {          /* number_blue */
+  background-image: -webkit-radial-gradient(150px 0px, circle cover, #313131, #000000);
+  box-shadow: 0 0 20px 20px rgba(0, 0, 0, 0.33);
+}
+.style_2019 .big_black_number {          /* number_blue */
+  background-color: #0d0d0d;
+  box-shadow: 0 0 20px 0px black;
+}
+
+
+
+.style_1990 .big_number {          /* number_blue */
+  border: 1px solid rgba(0, 0, 0, .5);
+  background-color: rgba(0, 0, 0, 0.25);
+}
+.style_2000 .big_number {          /* number_blue */
+  border: 1px solid rgba(0, 0, 0, .5);
+  background-color: rgba(0, 0, 0, 0.25);
+ }
+.style_2010 .big_number {          /* number_blue */
+  border: 1px solid rgba(0, 0, 0, .5);
+  background-color: rgba(0, 0, 0, 0.25);
+}
+.style_2019 .big_number {          /* number_blue */
+  border: 1px solid rgba(0, 0, 0, .5);
+  background-color: rgba(0, 0, 0, 0.25);
 }

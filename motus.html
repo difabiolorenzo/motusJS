@@ -109,8 +109,7 @@
           </tr>
         </tbody>
       </table>
-
-      <div class="" id="big_number"></div>
+      <div class="big_number" id="big_number"></div>
     </div>
 
     
@@ -119,21 +118,31 @@
           <h1>PAUSE</h1>
           <div class="menu-content">
             <div class="score-placeolder" id="score-placeolder-yellow">
-              <h2 id="team-yellow-name">yellow</h2>
-              <a id="team-yellow-score">score</a>
+              <h2 id="team-yellow-score">yellow - score</h2>
             </div>
             <div class="score-placeolder" id="score-placeolder-blue">
-                <h2 id="team-blue-name">blue</h2>
-                <a id="team-blue-score">score</a>
+                <h2 id="team-blue-score">blue - score</h2>
             </div>
-            <div id="exit-div">
-              <a id="exit" href="./index.html"> < Quitter </a>
+            <div class="menu-button" id="display-animation-button">
+              <h2></h2>
+            </div>
+            <div class="menu-button" id="change-turn">
+              <h2></h2>
+            </div>
+            <div class="button-div">
+              <div id="exit-div">
+                <a id="exit" href="./index.html"> < Quitter </a>
+              </div>
+              <div id="start-div">
+                <a id="start" onclick="initGame()"> > Jouer </a>
+              </div>
             </div>
           </div>
         </div>
       </div>
     
     <script type="text/javascript" src="./src/js/grid_letter/grid_letter.js"></script>
+    <script type="text/javascript" src="./src/js/game_engine.js"></script>
 
   </body>
 </html>
