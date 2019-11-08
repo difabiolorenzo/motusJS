@@ -22,8 +22,8 @@ function settings() {
 	display_animation = getRadioVal(settingsForm, "display_animation");
 	fullscreen = getRadioVal(settingsForm, "fullscreen");
 	display_debug_info = getRadioVal(settingsForm, "display_debug_info");
-	allow_duplication = getRadioVal(settingsForm, "allow_duplication");
 	countdown = getRadioVal(settingsForm, "countdown");
+	use_number_grid = getRadioVal(settingsForm, "use_number_grid");
 	magic_ball = getRadioVal(settingsForm, "magic_ball");
 	difficulty = getRadioVal(settingsForm, "difficulty");
 	team_yellow_name = document.getElementById("team-yellow-name").value;
@@ -37,8 +37,8 @@ function settings() {
 	localStorage.setItem('display_animation', display_animation);
 	localStorage.setItem('fullscreen', fullscreen);
 	localStorage.setItem('display_debug_info', display_debug_info);
-	localStorage.setItem('allow_duplication', allow_duplication);
 	localStorage.setItem('countdown', countdown);
+	localStorage.setItem('use_number_grid', use_number_grid);
 	localStorage.setItem('magic_ball', magic_ball);
 	localStorage.setItem('difficulty', difficulty);
 	localStorage.setItem('team_yellow_name', team_yellow_name);

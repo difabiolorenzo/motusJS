@@ -112,6 +112,10 @@
 		if (picked_ball == "X") {
 			document.getElementById("big_number").innerHTML = " ";
 			document.getElementById("big_number").className = "big_black_number";
+
+			changeTeamTurn();
+			displayNumberGrid();
+
 		} else {
 			if (team_turn == "yellow") {
 				document.getElementById("big_number").innerHTML = picked_ball;
@@ -322,6 +326,7 @@
 			grid_j_index = 0;
 			
 			motus_engaged = true;
+			ajoutScore(50, team_turn);
 			clearInterval(displayMotusAnimationInterval);
 		}
 	}
@@ -400,13 +405,16 @@
 		} else {
 			clearInterval(hideNumberAnimationInterval);
 			grid_j_index = 0;
-			grid_i_index = 0;			
+			grid_i_index = 0;	
+
+			nouvelleLigne();
+			displayNumberGrid();
+			game_state = "started";		
 		}
 	}
 
 	function hideNumberStart() {
 		for (i=0; i<8; i++) {
-			console.log(hided_number_spot.length)
 			if (hided_number_spot.length > 0) {
 				
 
@@ -426,7 +434,10 @@
 			} else {
 				grid_j_index = 0;
 				grid_i_index = 0;
-				break;	
+
+				nouvelleLigne();
+				displayNumberGrid();
+				game_state = "started";
 			}
 		}
 	}

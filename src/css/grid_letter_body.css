@@ -39,6 +39,7 @@ body {
   color: white;
   padding: 20;
   font-variant-caps: all-small-caps;
+  width: 100%;
 }
 
 .menu-content {
@@ -51,10 +52,8 @@ body {
 
 
 .score-placeolder {
-  display: inline-block;
-  margin-left: 5%;
-  margin-right: 5%;
-  width: 25%;
+  width: 100%;
+  margin: 1%;
 }
 .menu-button {
   display: inline-block;
@@ -69,10 +68,9 @@ body {
   background-color: #FBC800
 }
 .score-placeolder h2 {
-  font-variant-caps: all-small-caps;
-  font-size: x-large;
   color: white;
-  margin: 0;
+  text-transform: uppercase;
+  font-size: 100%;
 }
 .score-placeolder a {
   font-variant-caps: all-small-caps;
@@ -99,3 +97,73 @@ body {
   color: white;
 }
 
+
+.menu-top-div {
+    height: 10%;
+    display: inline-flex;
+    width: 100%;
+}
+
+.menu-content-div {
+    display: flex;
+    height: 75%;
+    width: 100%;
+}
+.menu-content-div-left {
+    width: 50%;
+    display: flow-root;
+    margin-left: 5%;
+}
+
+.menu-content-div-right {width: 50%;margin-right: 5%;display: flow-root;}
+
+div#menu-content-div {
+    background-color: #73191c;
+    color: #4a0000;
+    height: 10%;
+    margin: 3%;
+    border: 3px solid rgba(0, 0, 0, 0.25);
+}
+
+div#menu-exit-div {
+    width: 50%;
+}
+
+div#menu-start-div {
+    width: 50%;
+}
+
+a#menu-exit-button-a {
+    text-decoration: none;
+    color: white;
+    cursor: pointer;
+}
+
+a#menu-start-button-a {
+    text-decoration: none;
+    color: white;
+    cursor: pointer;
+}
+
+h3#menu-content-button-a {
+  text-transform: uppercase;
+}
+
+.menu-bottom-div {
+  display: flex;
+}
+
+img#logo {
+  height: 100%;
+  margin-top: 1%;
+  margin-left: 5%;
+  margin-right: 5%;
+}
+
+div#menu-content-div:hover {
+    background-color: #bf1a1f;
+    height: 10%;
+    color: #580000;
+    margin: 3%;
+    border: 3px solid rgba(0, 0, 0, 0.25);
+}

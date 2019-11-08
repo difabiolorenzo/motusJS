@@ -28,6 +28,7 @@
 	dictionary_used = dictionary[word_length-5];
 
 	var word_count = dictionary_used.length; // Nombre mots contenus dans la table dictionnaire
+
 	var random_index = Math.floor(Math.random() * word_count); // Choix d'un nombre aleatoire <= au nombre de mots.
 	var word_to_find = dictionary_used[random_index]; // Stocker le word_to_find tiré
 	var word_to_find_tab = new Array();
@@ -38,6 +39,9 @@
 	var word_composed_letter_exist = false;
 	var word_composed_letter_amount = new Array();
 	var word_composed_letter_amount_dup = new Array();
+
+
+
 				
 	// // score et nom d'equipes
 		document.getElementById("team-yellow-score").innerHTML = team_yellow_name + " - " + team_yellow_score;
@@ -54,13 +58,13 @@
 	}
 
 
+
 	function changeTeamTurn() {
 		if (team_turn == "yellow") {
 			team_turn = "blue";
 			displayMessage("La main passe à "+team_blue_name, "#1681C7");
 			document.getElementById("score-placeolder-yellow").style.border = "5px solid #ffffff40";
 			document.getElementById("score-placeolder-blue").style.border = "5px solid #ffffffff";
-
 			
 			document.getElementById("grid_number_yellow").style.display = "none";
 			document.getElementById("grid_number_blue").style.display = "inline-table";
@@ -69,12 +73,13 @@
 			displayMessage("La main passe à "+team_yellow_name, "#FBC800");
 			document.getElementById("score-placeolder-yellow").style.border = "5px solid #ffffffff";
 			document.getElementById("score-placeolder-blue").style.border = "5px solid #ffffff40";
-
 			
 			document.getElementById("grid_number_yellow").style.display = "inline-table";
 			document.getElementById("grid_number_blue").style.display = "none";
 		}
 	}
+
+	
 
 	function ajoutScore(score, team) {
 		if (team == "yellow") {
@@ -95,7 +100,6 @@
 		word_composed_letter = [];
 		word_composed_letter_amount = [];
 		word_composed_letter_amount_dup = [];
-
 		
 		for (var i = 0; i < word_length; i++) {
 			word_to_find_tab[i] = word_to_find.substr(i, 1);
@@ -174,12 +178,6 @@
 				document.getElementById(j + '_' + i).innerHTML = "";
 				document.getElementById(j + '_' + i).className = 'not_present';
 			}
-		}
-	}
-
-	function affichageMot() {		// Remplacement de chaque lettre par la proposition
-		if (word_proposed_tab.length != 0) {
-			document.getElementById(try_count_index + '_' + (word_proposed_tab.length - 1)).innerHTML = word_proposed_tab[word_proposed_tab.length-1];
 		}
 	}
 
@@ -267,6 +265,8 @@
 		} else {
 			word_proposed_tab.push(lettre);
 		}
+		
+		document.getElementById(try_count_index + '_' + (word_proposed_tab.length - 1)).innerHTML = word_proposed_tab[word_proposed_tab.length-1];
 	}
 
 	function suppressionLettre() {		// Supprime les lettre de droite à gauche
@@ -408,7 +408,8 @@
 			if (word_proposed == word_to_find) { // Mot trouvé
 					ajoutScore(50, team_turn);
 					playsound_victory.play();
-					setTimeout(function() { reinit() } , 3000); //rafraichissement de la page
+					
+					setTimeout(function() { reinit() } , 3000); //reinitialisation de la grille
 			} else {
 				nouvelleLigne();
 			}			

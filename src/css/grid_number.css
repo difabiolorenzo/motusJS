@@ -23,7 +23,6 @@ body {
   border-spacing: 0;
   margin: 2%;
   margin-top: 2%;
-  text-shadow: 2px 2px 1px rgba(0, 0, 0, .6);
 }
 .grid_number tr {     /* ligne */
   display: table-row;
@@ -38,14 +37,12 @@ body {
   text-align: center;
   font-weight: bold;
   font-size: 80px;
-  text-shadow: 2px 2px 9px #00000066;
 }
 .style_2000 .grid_number td {     /* cell blank*/
   color: #ffffff;
   text-align: center;
   font-weight: bold;
   font-size: 80px;
-  text-shadow: 2px 2px 5px #00000080;
 }
 .style_2010 .grid_number td {     /* cell blank*/
   color: #ffffff;
@@ -98,14 +95,52 @@ body {
 }
 
 
-.number{        /* number in grid */
-  display: block;
+.style_1990 .number{        /* number in grid */
+  position: absolute;
+  width: 5.75%;
+  height: 9%;
+  border-radius: 56%;
+  color: #ffffff;
+  font-size: 55px;
+  margin-top: -2.75%;
+  margin-left: 1.5%;
+  padding-top: 0.8%;
+  text-align: center;
+}
+
+.style_2000 .number{        /* number in grid */
   position: absolute;
   width: 5.75%;
   height: 9%;
   border-radius: 50%;
   color: #ffffff;
-  font-size: 66px;
+  font-size: 55px;
+  margin-top: -2.75%;
+  margin-left: 1.5%;
+  padding-top: 0.8%;
+  text-align: center;
+}
+
+.style_2010 .number{        /* number in grid */
+  position: absolute;
+  width: 5.75%;
+  height: 9.5%;
+  border-radius: 50%;
+  color: #ffffff;
+  font-size: 55px;
+  margin-top: -2.9%;
+  margin-left: 1.5%;
+  padding-top: 0.8%;
+  text-align: center;
+}
+
+.style_2019 .number{        /* number in grid */
+  position: absolute;
+  width: 5.75%;
+  height: 9%;
+  border-radius: 50%;
+  color: #ffffff;
+  font-size: 55px;
   margin-top: -2.9%;
   margin-left: 1.5%;
   padding-top: 0.8%;
@@ -172,7 +207,7 @@ body {
   background-color: #aa0202;
 }
 .style_2000 .motus_cell{          /* number_blue */
-  background-image: -webkit-radial-gradient(75px 25px, circle cover, #ff4343, #450b0b);
+  background-image: -webkit-radial-gradient(50px 30px, circle cover, #ff0000, #580c0c);
 }
 .style_2010 .motus_cell{          /* number_blue */
   background-image: -webkit-radial-gradient(75px 25px, circle cover, #ff4343, #450b0b);
@@ -187,25 +222,26 @@ body {
   top: 71%;
   display: block;
   width: 13%;
-  height: 19%;
+  height: 20%;
   border-radius: 50%;
-  font-size: 900%;
+  font-size: 600%;
   position: fixed;
   left: 43%;
-  padding-bottom: 3%;
   color: #ffffff;
-  text-shadow: 5px 5px 10px #00000080;
+  padding-top: 3%;
 }
 
 .style_1990 .big_yellow_number {        /* number_yellow */
   background-color: #e3d310;
 }
-.style_2000 .big_yellow_number {        /* number_yellow */background-color: #eedd11;}
+.style_2000 .big_yellow_number {        /* number_yellow */background-color: #eedd11;font-family: Helvetica;font-weight: bold;text-shadow: 2px 2px 1px rgba(0, 0, 0, .6);}
 .style_2010 .big_yellow_number {        /* number_yellow */
   background-image: -webkit-radial-gradient(75px 25px, circle cover, #f5f500, #bb9c00);
+  text-shadow: 5px 5px 10px #00000080;
 }
 .style_2019 .big_yellow_number {        /* number_yellow */
   background-color: #d9d100;
+  text-shadow: 5px 5px 10px #00000080;
 }
 
 .style_1990 .big_blue_number {          /* number_blue */
@@ -214,9 +250,11 @@ body {
 .style_2000 .big_blue_number {          /* number_blue */background-color: #117AEE;}
 .style_2010 .big_blue_number {          /* number_blue */
   background-image: -webkit-radial-gradient(75px 15px, circle cover, #019bf2, #0f29b6);
+  text-shadow: 5px 5px 10px #00000080;
 }
 .style_2019 .big_blue_number {          /* number_blue */
   background-color: #0a79d0;
+  text-shadow: 5px 5px 10px #00000080;
 }
 
 .style_1990 .big_black_number {          /* number_blue */

@@ -1,8 +1,7 @@
 	
 	var pause = true;
-	var number_grid_use = true;
-	var game_state = "notstarted";
 
+	var use_number_grid = localStorage.getItem('use_number_grid');						//Utilisation de la grille
 	var grid_style = localStorage.getItem('grid_style');						//Thème de la grille
 	var fullscreen = localStorage.getItem('fullscreen');						//Fullscreen
 	document.getElementById("body").className = grid_style + " " + fullscreen;						
@@ -39,14 +38,33 @@
 
 	function initGame() {
 		displayMenu();
-
-		if (game_state == "notstarted") {
-			if (number_grid_use == true) {
-				displayNumberGrid();
-				changeGrid();
-			}
-		}
-
-		game_state = "started";
 	}
+
+	function displayMenu() {
+		if (pause == true) {
+			pause = false;
+			document.getElementById("score").style.opacity = '0';
+		} else {
+			pause = true;
+			document.getElementById("score").style.opacity = '1';
+		}
+	}
+
+	function displayNumberGrid() {
+		if (use_number_grid == "true") {
+			if (number_grid_displayed == true) {
+				number_grid_displayed = false;
+				document.getElementById("grid_number").style.opacity = '0';
 	
+			} else {
+				number_grid_displayed = true;
+				document.getElementById("grid_number").style.opacity = '1';
+				if (team_turn == "yellow") {	//affichage uniquement la grille de l'équipe
+					document.getElementById("grid_number_blue").style.display = "none";
+				} else {
+					document.getElementById("grid_number_yellow").style.display = "none";
+				}
+			}
+		} else {
+	}
+}

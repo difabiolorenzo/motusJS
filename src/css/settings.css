@@ -29,9 +29,8 @@ body {
     margin: 1%;
     color: white;
     padding: 1%;
-    display: inline-grid;
+    display: flex;
     text-align: center;
-
 }
 
 .form-section-disabled {
@@ -39,7 +38,8 @@ body {
     margin: 1%;
     color: white;
     padding: 1%;
-    display: inline-grid;
+    display: flex;
+    text-align: center;
 }
 
 .input-text {
@@ -50,6 +50,8 @@ body {
     margin-right: 5%;
     width: 90%;
     text-align: center;
+    text-transform: uppercase;
+    font-weight: bold;
 }
 #team-yellow-name { background-color: #FBC800;color: black;}
 #team-blue-name {background-color: #1681C7;color: white;}
@@ -71,4 +73,18 @@ button {
     background-color: #8b0000f5;
     border: 0;
     margin-left: 30%;
+}
+.from-section-inner-galery {
+    display: inline-table;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.from-section-label {
+    width: 25%;
+}
+
+.from-section-inner {
+    width: 50%;
+    margin: 1%;
 }
