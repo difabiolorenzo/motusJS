@@ -1,50 +1,69 @@
+// Tableau des mots à choisir
 
+function WordListAddRow(word_list_selected_word) {
+    var word_list_selected_word = word_list_selected_word.toUpperCase();
+    var word_list_table = document.getElementById("word_list");
+ 
+    var word_list_rowCount = word_list_table.rows.length;
+    var word_list_row = word_list_table.insertRow(word_list_rowCount);
+ 
+    word_list_row.insertCell(0).innerHTML= word_list_selected_word;
+    word_list_row.insertCell(1).innerHTML= '<input type="button" value = "supprimer" onClick="Javacsript:WordListDeleteRow(this)">';
 
-function getRadioVal(settingsForm, formSectionName) {
-	var outputValue;
-	var formSection = settingsForm.elements[formSectionName];
-    for (var i=0; i<formSection.length; i++) {
-        if(formSection[i].checked) {
-			outputValue = formSection[i].value;
-			break;
-		}
-    }
-	return outputValue;
+    document.getElementById('word_list_selected_word').value = "";
+
+    // Ajout du mot dans la liste de mot à trouver
+    word_to_find_list.push(word_list_selected_word);
 }
 
-function settings() {
+function WordListAddRowRandom(letter_count) {
+    var word_list_random_word_index = Math.floor(Math.random() * dictionary_list[letter_count-5].length);
 
-	var settingsForm = document.getElementById("settings");
-	
-	word_length = getRadioVal(settingsForm, "letter_count");
-	try_count = getRadioVal(settingsForm, "try_count");
-	display_definition = getRadioVal(settingsForm, "display_definition");
-	display_animation = getRadioVal(settingsForm, "display_animation");
-	fullscreen = getRadioVal(settingsForm, "fullscreen");
-	display_debug_info = getRadioVal(settingsForm, "display_debug_info");
-	countdown = getRadioVal(settingsForm, "countdown");
-	use_number_grid = getRadioVal(settingsForm, "use_number_grid");
-	magic_ball = getRadioVal(settingsForm, "magic_ball");
-	difficulty = getRadioVal(settingsForm, "difficulty");
-	team_yellow_name = document.getElementById("team-yellow-name").value;
-	team_blue_name = document.getElementById("team-blue-name").value;
-	team_turn = getRadioVal(settingsForm, "team_turn");
-	grid_style = getRadioVal(settingsForm, "grid_style");
+    var word_list_random_word = dictionary_list[letter_count-5][word_list_random_word_index];
 
-	localStorage.setItem('word_length', word_length);
-	localStorage.setItem('try_count', try_count);
-	localStorage.setItem('display_definition', display_definition);
-	localStorage.setItem('display_animation', display_animation);
-	localStorage.setItem('fullscreen', fullscreen);
-	localStorage.setItem('display_debug_info', display_debug_info);
-	localStorage.setItem('countdown', countdown);
-	localStorage.setItem('use_number_grid', use_number_grid);
-	localStorage.setItem('magic_ball', magic_ball);
-	localStorage.setItem('difficulty', difficulty);
-	localStorage.setItem('team_yellow_name', team_yellow_name);
-	localStorage.setItem('team_blue_name', team_blue_name);
-	localStorage.setItem('team_turn', team_turn);
-	localStorage.setItem('grid_style', grid_style);
+    WordListAddRow(word_list_random_word);
+}
+ 
+function WordListDeleteRow(obj) {
+    var word_list_index = obj.parentNode.parentNode.rowIndex;
+    var word_list_table = document.getElementById("word_list");
+    word_list_table.deleteRow(word_list_index);
+    
+    // Suppresion du mot de la liste de mot à trouver
+    word_to_find_list.splice(word_list_index-1, 1);
+}
 
-	window.location = "./motus.html";
+function WordListUpdateDropdown(value) {
+    //si aucun choix du nombre de lettre, disparition des autres options sinon ...
+    if (value == "" ) {
+        
+        document.getElementById("word_list_dropdown_first_letter").style = "display:none;";
+        document.getElementById("word_list_button_random").style = "display:none;";
+        document.getElementById("word_list_dropdown_word_selection").style = "display:none;";
+    } else {
+        document.getElementById("word_list_dropdown_first_letter").style = "display:inline-block;";
+        document.getElementById("word_list_button_random").style = "display:inline-block;";
+        var word_list_selected_dictionary = dictionary_list[value-5];
+
+        document.getElementById("word_list_dropdown_word_selection").innerHTML = "<option value=\"\">choisir un mot</option>";
+
+        for (i=0; i < word_list_selected_dictionary.length; i++) {  //affichage des mots qui commencent par la lettre choisie
+            if (word_list_selected_dictionary[i].charAt(0) == word_list_dropdown_first_letter.value) {
+                document.getElementById("word_list_dropdown_word_selection").innerHTML += "<option value=\"" + word_list_selected_dictionary[i] + "\">" + word_list_selected_dictionary[i] + "</option>";
+            }
+        }
+    }
+
+    // si aucune première lettre choisie, disparition du chois des mots
+    if (word_list_dropdown_first_letter.value == "" ) {
+        document.getElementById("word_list_dropdown_word_selection").style = "display:none;"
+        document.getElementById("word_list_button_list").style = "display:none;"
+    } else {
+        document.getElementById("word_list_dropdown_word_selection").style = "display:inline-block;"
+        document.getElementById("word_list_button_list").style = "display:inline-block;"
+    }
+}
+
+function UpdateStyle(value) {
+    document.getElementById("letter_grid_page").className = "page style_" + value;
 }

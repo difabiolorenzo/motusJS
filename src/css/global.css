@@ -1,0 +1,128 @@
+@font-face {
+    font-family: 'Gotham';
+    src: url('../font/Gotham\ Medium.ttf');
+    
+}
+
+body#body {
+    font-family: 'Gotham';
+    margin: 0;
+    transition: all 2s;
+}
+
+
+
+
+
+
+
+/*     */
+/* tag */
+/*     */
+
+h1 {
+    margin-block-start: 0;
+    margin-block-end: 0.67em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    padding-block-start: 0.67em;
+    font-size: 1.9vw;
+}
+
+h3 {
+    font-size: 1.12vw;
+}
+
+p,
+label {
+    font-size: 0.95vw;
+}
+
+button,
+input,
+select {
+    background-color: #8a1216;
+    transition: all 0.25s;
+    border: none;
+    color: white;
+    padding: 10px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 1.0vw;
+    margin-top: 0.5vw;
+    margin-right: 0.25vw;
+    margin-bottom: 0.5vw;
+    margin-left: 0.25vw;
+}
+
+button:hover,
+input:hover,
+select:hover {
+    background-color: #691517;
+}
+
+
+
+
+
+
+
+/*         */
+/* section */
+/*         */
+
+.page {
+    background-color: #fffbeb;
+    height: 100%;
+    width: 100%;
+}
+
+div#main_menu {
+    background-color: #A52A2E;
+}
+
+div#settings_page {
+    background-color: #A52A2E;
+}
+
+div#letter_grid_page {
+    background-color: #e0b40d;
+    padding: 0;
+}
+
+div#number_grid_page {
+    background-color: #1d733b;
+}
+
+div#debug_page {
+    background-color: #3e2792;
+}
+
+table#word_list {
+    border-left: 4px solid #4CAF50;
+    background-color: white;
+    height: 35vw;
+    display: flex;
+    overflow-y: scroll;
+    margin-right: 5vw;
+    padding: 2vw;
+}
+
+div#settings-section {
+    display: flex;
+}
+
+div#settings-right {
+    width: 75%;
+}
+
+div#settings-left {
+    width: 25%;
+}
+
+button.big_button {
+    padding: 20px 50px;
+    font-size: 1.2vw;
+    /* border: 3px solid rgba(0, 0, 0, 0.25); */
+}
