@@ -14,15 +14,19 @@ document.addEventListener("keydown", function (event) {
 			if (word_proposed_tab.length != word_length) {  //vérification de la longueur du word_to_find
 				errorHandler(1); //La longueur du word_to_find n'est pas la bonne.
 			} else {
-				verifPresence(word_proposed);
-				if (in_dictionary == false) {
-					errorHandler(2); //Mot non présent dans le dictionary
+				if (word_proposed == word_to_find) {
+					verificationProposition();
 				} else {
-					verifDuplication(word_proposed);
-					if (already_proposed == true) {
-						errorHandler(3); //Mot déjà proposé
+					verifPresence(word_proposed);
+					if (in_dictionary == false) {
+						errorHandler(2); //Mot non présent dans le dictionary
 					} else {
-						verificationProposition()
+						verifDuplication(word_proposed);
+						if (already_proposed == true) {
+							errorHandler(3); //Mot déjà proposé
+						} else {
+							verificationProposition()
+						}
 					}
 				}
 			}
@@ -37,6 +41,7 @@ document.addEventListener("keydown", function (event) {
 			ajoutLettreBonus();
 		} else if (event.keyCode == 51) { // "
 			console.log('Key 3');
+			reinitWord();
 		} else if (event.keyCode == 52) { // '
 			console.log("Key 4");
 			affichageSolution();

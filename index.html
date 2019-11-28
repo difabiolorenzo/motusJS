@@ -23,8 +23,7 @@
   <div class="page" id="main_menu" style="display:block;">
     <!-- Contenu du menu principal -->
     <div id="main_menu_topbar">
-      <h1>Menu Principal</h1>
-      <h3>logo</h3>
+      <img src="./src/img/motus_logo_2014.png" id="logo"></img>
     </div>
 
     <div id="main_menu_content">
@@ -48,41 +47,6 @@
     <div class="section" id="settings">
       <div class="section" id="settings-section">
         <div class="section" id="settings-right">
-          <div>
-            <div class="settings_input">
-              <label name="display_definition" for="display_definition">Affichage des définitions</label>
-              <input class="input-checkbox" type="checkbox" name="display_definition" id="display_definition_checkbox"
-                disabled="true">
-            </div>
-            <div class="settings_input">
-              <label name="fullscreen" for="fullscreen">Afficher en plein écran (affiche seulement la grille)</label>
-              <input class="input-checkbox" type="checkbox" name="fullscreen" id="display_definition_checkbox"
-                disabled="true" checked="checked">
-            </div>
-            <div class="settings_input">
-              <label name="display_animation" for="display_animation">Afficher les animations</label>
-              <input class="input-checkbox" type="checkbox" name="display_animation" id="display_definition_checkbox"
-                disabled="true" checked="checked">
-            </div>
-            <div class="settings_input">
-              <label name="use_number_grid" for="use_number_grid">Utiliser la grille numérotée</label>
-              <input class="input-checkbox" type="checkbox" name="use_number_grid" id="display_definition_checkbox"
-                disabled="true">
-              <label name="use_number_grid" for="use_number_grid">Utiliser la boule magique</label>
-              <input class="input-checkbox" type="checkbox" name="use_number_grid" id="display_definition_checkbox"
-                disabled="true">
-            </div>
-            <div class="settings_input">
-              <label name="grid_style" for="grid_style">Style de la grille</label>
-              <select onchange="UpdateStyle(this.value);">
-                <option value="2019">2019</option>
-                <option value="2010">2010</option>
-                <option value="2000">2000</option>
-                <option value="1990">1990</option>
-              </select>
-            </div>
-          </div>
-
           <div class="word_list_section" id="word_list_section_dropdown">
             <select id="word_list_dropdown_lenght_selection" onchange="WordListUpdateDropdown(this.value)">
               <option value="">choisir un nombre de lettre</option>
@@ -141,6 +105,45 @@
                 onclick="Javascript:WordListAddRow(document.getElementById('word_list_selected_word').value)">
             </div>
           </div>
+
+          
+          <div>
+            <div class="settings_input">
+              <label name="display_definition" for="display_definition">Affichage des définitions</label>
+              <input class="input-checkbox" type="checkbox" name="display_definition" id="display_definition_checkbox"
+                disabled="true">
+            </div>
+            <div class="settings_input">
+              <label name="display_animation" for="display_animation">Afficher les animations</label>
+              <input class="input-checkbox" type="checkbox" name="display_animation" id="display_definition_checkbox"
+                disabled="true" checked="checked">
+            </div>
+            <div class="settings_input">
+              <label name="use_number_grid" for="use_number_grid">Utiliser la grille numérotée</label>
+              <input class="input-checkbox" type="checkbox" name="use_number_grid" id="display_definition_checkbox"
+                disabled="true">
+              <label name="use_number_grid" for="use_number_grid">Utiliser la boule magique</label>
+              <input class="input-checkbox" type="checkbox" name="use_number_grid" id="display_definition_checkbox"
+                disabled="true" onchange="UpdateSettingsCheckbox(this.value)">
+            </div>
+            <div class="settings_input">
+              <label name="check_word" for="check_word">Verifications des mots proposées (Correspondance avec le dictionnaire)</label>
+              <input class="input-checkbox" type="checkbox" name="check_word" id="check_word_checkbox"
+                checked="checked" onchange="console.log(this.value + ' ' + this.name)">
+            </div>
+            <div class="settings_input">
+              <label name="grid_style" for="grid_style">Style de la grille</label>
+              <select onchange="UpdateStyle(this.value);">
+                <option value="2019">2019</option>
+                <option value="2010">2010</option>
+                <option value="2000">2000</option>
+                <option value="1990">1990</option>
+                <option value="high_contrast">High Contrast</option>
+                <option value="high_contrast_2">High Contrast 2</option>
+              </select>
+            </div>
+          </div>
+
         </div>
 
         <div class="section" id="settings-left">
@@ -165,14 +168,9 @@
     </div>
 
     <div id="score-placeolder">
-      <a class="score" id="score_0" style="background-color: #FBC800;display: block;">100</a>
-      <a class="active_score" id="score_1" style="background-color: #1681C7;display: block;">100</a>
-      <a class="score" id="score_2" style="background-color: #31ad36;display: block;">100</a>
-      <a class="score" id="score_3" style="background-color: #a90910;display: block;">100</a>
-      <a class="score" id="score_4" style="background-color: #003be0;display: block;">100</a>
-      <a class="score" id="score_5" style="background-color: #FF9800;display: block;">100</a>
-      <a class="score" id="score_6" style="background-color: #5f5f5f;display: block;">100</a>
-      <a class="score" id="score_7" style="background-color: #9C27B0;display: block;">100</a>
+      <a class="score" id="score_0" style="background-color: #FBC800;display: block;">0</a>
+      <a class="active_score" id="score_1" style="background-color: #1681C7;display: block;">0</a>
+      <a class="score" id="score_3" style="background-color: #a90910;display: block;">0</a>
     </div>
   </div>
 

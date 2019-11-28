@@ -5,6 +5,7 @@
 
         // SETTINGS
         display_animation = true;
+        check_word = true;
 
         //GAME
         try_number_max = 6;
