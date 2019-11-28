@@ -1,5 +1,5 @@
     function initVariables() {
-        timer = 300;
+        timer = 250;
         game_started = false;
         game_paused = false;
 
@@ -14,35 +14,46 @@
         word_to_find_list = [];
 
         //SOUND
-        playsound_letter_ok = new Audio('src/sound/lettre_ok.mp3');
-        playsound_letter_bad = new Audio('src/sound/lettre_mauvaise.mp3');
-        playsound_letter_missing = new Audio('src/sound/lettre_absente.mp3');
-        playsound_letter_bonus = new Audio('src/sound/lettre_bonus.mp3');
-        playsound_wrong = new Audio('src/sound/erreur.mp3');
-        playsound_victory = new Audio('src/sound/victory.mp3');
-        playsound_temps_ecoule = new Audio('src/sound/temps_ecoule.mp3');
-        
-        playsound_grille_creation = new Audio('src/sound/grille_creation.mp3');
-        playsound_grille_numero = new Audio('src/sound/grille_numero.mp3');
-        playsound_grille_boule_noire = new Audio('src/sound/grille_boule_noire.mp3');
-        playsound_grille_numero_tire = new Audio('src/sound/grille_numero_tire.mp3');
-        playsound_motus = new Audio('src/sound/motus.mp3');
+        playsound_grille_creation = 'src/sounds/grille_creation.mp3';
+        playsound_grille_numero = 'src/sounds/grille_numero.mp3';
+        playsound_grille_boule_noire = 'src/sounds/grille_boule_noire.mp3';
+        playsound_grille_numero_tire = 'src/sounds/grille_numero_tire.mp3';
+        playsound_motus = 'src/sounds/motus.mp3';
     
         sound_volume = 1;
-    
-        playsound_letter_ok.volume = sound_volume;
-        playsound_letter_bad.volume = sound_volume;
-        playsound_letter_missing.volume = sound_volume;
-        playsound_letter_bonus.volume = sound_volume;
-        playsound_wrong.volume = sound_volume;
-        playsound_victory.volume = sound_volume;
-        playsound_temps_ecoule.volume = sound_volume;
         
         playsound_grille_creation.volume = sound_volume;
         playsound_grille_numero.volume = sound_volume;
         playsound_grille_boule_noire.volume = sound_volume;
         playsound_grille_numero_tire.volume = sound_volume;
         playsound_motus.volume = sound_volume;
+    }
+
+
+
+    //SOUND
+    function playsound(sound) {
+        if (sound == "letter_ok") {
+            $.playSound("src/sounds/lettre_ok.mp3")
+        }
+        if (sound == "letter_bad") {
+            $.playSound("src/sounds/lettre_mauvaise.mp3")
+        }
+        if (sound == "letter_missing") {
+            $.playSound("src/sounds/lettre_absente.mp3")
+        }
+        if (sound == "letter_bonus") {
+            $.playSound("src/sounds/lettre_bonus.mp3")
+        }
+        if (sound == "wrong") {
+            $.playSound("src/sounds/erreur.mp3")
+        }
+        if (sound == "victory") {
+            $.playSound("src/sounds/victory.mp3")
+        }
+        if (sound == "temps_ecoule") {
+            $.playSound("src/sounds/temps_ecoule.mp3")
+        }
     }
 
     function initGame() {

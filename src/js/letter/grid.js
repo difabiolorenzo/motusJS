@@ -104,7 +104,7 @@
             if (letter == word_to_find_tab[0]) {
                 word_proposed_tab.push(letter);
             } else {
-                playsound_letter_missing.play();
+                playsound("letter_missing");
                 displayMessage("La première lettre doit être un "+word_to_find_tab[0]+".", "#b11f0e")
             }
         } else {
@@ -147,7 +147,7 @@
 			if (lettre == word_to_find_tab[0]) {
 				word_proposed_tab.push(lettre);
 			} else {
-				playsound_letter_missing.play();
+				playsound("letter_missing");
 				displayMessage("La première lettre doit être un "+word_to_find_tab[0]+".", "#b11f0e")
 			}
 		} else {
@@ -169,7 +169,7 @@
 			for (i=0; i<word_length; i++) {
 				document.getElementById(try_number_max-1 + '_' + i).innerHTML = word_to_find_tab[i];
 				document.getElementById(try_number_max-1 + '_' + i).className = 'correct';
-				playsound_letter_ok.play();
+				playsound("letter_ok");
 			}
 			word_proposed_tab = [];
 			verification_index = 0;
@@ -179,7 +179,7 @@
     function animationAfficheSolution() {
 		document.getElementById(try_number_max-1 + '_' + verification_index).innerHTML = word_to_find_tab[verification_index];
 		document.getElementById(try_number_max-1 + '_' + verification_index).className = 'correct';
-		playsound_letter_ok.play();
+		playsound("letter_ok");
 		verification_index++;
 
 		if (verification_index == word_length) { // Fin de la vérification
@@ -194,7 +194,7 @@
 			if (placing[i] != 1) {
 				document.getElementById(try_count_index + '_' + i).innerHTML = word_to_find_tab[i];
 				placing[i] = 1;
-				playsound_letter_bonus.play();
+				playsound("letter_bonus");
 
 				j = 0;
 				letter_bonus_placement = i;
@@ -228,8 +228,8 @@
 		} else if (errorCode == 3) {
 			console.log("Mot déjà proposé");
 		}
-		playsound_letter_missing.play();
-		playsound_wrong.play();
+		playsound("letter_missing");
+		playsound("wrong");
     }
     
     function verifPresence(word_proposed) {		// Vérification de la présence du word_to_find proposé dans le dictionnaire
@@ -311,12 +311,12 @@
 			} else {
 				for (i=0 ; i<word_length ; i++) {
 					if (placing_dup[initialisationMot] == 0) {
-						playsound_letter_missing.play();
+						playsound("letter_missing");
 					} else if (placing_dup[i] == 1) {
-						playsound_letter_ok.play();
+						playsound("letter_ok");
 						document.getElementById(try_count_index + '_' + i).className = 'correct';
 					} else if (placing_dup[i] == 2) {
-						playsound_letter_bad.play();
+						playsound("letter_bad");
 						document.getElementById(try_count_index + '_' + i).className = 'not_in_place';
 					}
 				}
@@ -324,7 +324,7 @@
 				placing_dup = [];
 		
 				if (word_proposed == word_to_find) { // Mot trouvé
-					playsound_victory.play();
+					playsound("victory");
 				} else {
 					nouvelleLigne();
 				}
@@ -334,12 +334,12 @@
     
     function animationVerificationProposition() {		//Fonction nécéssitant une boucle en amont ; affiche par le code couleur, les cases
 		if (placing_dup[verification_index] == 0) {
-			playsound_letter_missing.play();
+			playsound("letter_missing");
 		} else if (placing_dup[verification_index] == 1) {
-			playsound_letter_ok.play();
+			playsound("letter_ok");
 			document.getElementById(try_count_index + '_' + verification_index).className = 'correct';
 		} else if (placing_dup[verification_index] == 2) {
-			playsound_letter_bad.play();
+			playsound("letter_bad");
 			document.getElementById(try_count_index + '_' + verification_index).className = 'not_in_place';
 		}
 		verification_index++;
@@ -354,7 +354,7 @@
 			placing_dup = [];
 			
 			if (word_proposed == word_to_find) { // Mot trouvé
-					playsound_victory.play();
+					playsound("victory");
 					setTimeout(function() { reinitWord() } , 3000); //reinitialisation de la grille
 			} else {
 				nouvelleLigne();

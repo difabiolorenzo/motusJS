@@ -58,7 +58,7 @@ document.addEventListener("keydown", function (event) {
 			console.log('Key 9');
 		} else if (event.keyCode == 186) { // $ ¤ £
 			console.log('Key $');
-			playsound_temps_ecoule.play();
+			playsound("temps_ecoule");
 		} else if (word_proposed_tab.length < word_length) {
 			if (event.keyCode >= 65 && event.keyCode <= 90 || event.keyCode >= 97 && event.keyCode <= 122) { //if between a & z OR A & Z
 				for (i = 0; i < 26; i++) {
