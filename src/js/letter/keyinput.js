@@ -52,6 +52,6 @@ document.addEventListener("keydown", function (event) {
 			}
 		}
 		
-		word_proposed = word_proposed_tab.join(''); // Affichage du word_to_find proposé
+		word_proposed = word_proposed_tab.join('');
 	}
 })

@@ -7,13 +7,13 @@
     input#word_proposition_input {
     text-transform: uppercase;
     letter-spacing: 1.5vw;
-    height: 7vw;
-    width: 118%;
+    height: 100%;
+    width: 75%;
     text-align-last: center;
     background-image: linear-gradient(to bottom , #11A7FF, #0057b3);
     border: 2px solid white;
     font-weight: bold;
-    font-size: 4vw;
+    font-size: 5vw;
     margin: 0;
     display: block;
     /* opacity: 0; */
@@ -24,12 +24,15 @@
 
 button#validate_button {
     width: 25%;
+    height: 100%;
     margin: 0;
     border: 2px solid white;
     text-transform: uppercase;
     text-align-last: center;
     background-image: linear-gradient(to bottom , #11A7FF, #0057b3);
     font-weight: bold;
+    padding: 0;
+    font-size: 4vw;
 }
 
 .style_1990 td {
@@ -182,32 +185,141 @@ a.score, a.active_score {
     margin-right: -5vw;
     padding-top: 0.6vw; }
 
+    div.input_section {
+    display: flex;
+    height: 7.5%;
+    }
+    div.flex_section {
+    background-color: #A52A2E;
+    }
+    button.flex_button {
+        width: 100%;
+        font-size: 5vw;
+    }
+
 
 /* Mobile Portrait: */
-@media only screen and (max-width: 850px) and (orientation: portrait) {
+@media only screen
+and (max-width: 425px)
+and (orientation: portrait) {
+
     #table_letter {
-    height: 75%;
-    width: 100%;
-    border-spacing: 0px;
+    height: 50%;
+    }
+
+    a.score, a.active_score {
+    height: 8vw;
+    font-size: 4vw;
+    padding-top: 4vw
+    }    
+    div#score-placeolder {
+    height: 12.5vw;
     }
 }
 
+
+
 /* Mobile Landscape: */
-@media only screen and (max-width: 850px) and (orientation: landscape) {
+@media only screen
+and (max-height: 425px)
+and (orientation: landscape) {
+    #table_letter {
+    height: 85%;
+    }
+    div.input_section {
+    display: flex;
+    height: 15%;
+    }    
+    div.flex_section {
+        display:flex;
+    }
+    button.flex_button {
+    width: 100%;
+    font-size: 2vw;
+    }
 }
+
+
 
 /* Tablet Portrait: */
-@media only screen and (min-width: 1536px) and (orientation: portrait) {
+@media only screen
+and (min-width: 768px)
+and (max-width: 1024px)
+and (orientation: portrait) {
+
+    
+    #table_letter {
+    height: 92.5%;
+    }
+    div.input_section {
+    display: flex;
+    height: 7.5%;
+    }    
+    div.flex_section {
+        display:flex;
+    }
+    button.flex_button {
+    width: 100%;
+    font-size: 3vw;
+    }
+    
+
 }
+
+
 
 /* Tablet Landscape: */
-@media only screen and (min-width: 1536px) and (orientation: landscape) {
+@media only screen
+and (min-height: 768px)
+and (max-height: 1024px)
+and (orientation: landscape) {
+
+    
+    #table_letter {
+    height: 90%;
+    }
+    div.input_section {
+    display: flex;
+    height: 10%;
+    }    
+    div.flex_section {
+        display:flex;
+    }
+    button.flex_button {
+    width: 100%;
+    font-size: 1.75vw;
+    }
 }
 
-/* Desktop Portrait: */
-@media only screen and (min-width: 2048px) and (orientation: portrait) {
-}
 
-/* Desktop Landscape: */
-@media only screen and (min-width: 2048px) and (orientation: landscape) {
+
+/* Desktop: */
+@media only screen
+and (min-width: 1024px) {
+    #table_letter {
+        height: 100%;
+    }
+    div.input_section, input#word_proposition_input, button#validate_button {
+        font-size:0;
+        height:0;
+        border:0
+    }  
+    div.flex_section {
+        display:flex;
+    }
+    button.flex_button {
+        width: 100%;
+        font-size: 1.5vw;
+    }
+
+
+
+    a.score, a.active_score {
+    height: 4vw;
+    font-size: 2vw;
+    padding-top: 2vw
+    }    
+    div#score-placeolder {
+    height: 6.5vw;
+    }
 }

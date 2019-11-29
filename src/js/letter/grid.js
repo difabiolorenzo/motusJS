@@ -116,6 +116,17 @@
 	}
 	
 	function submitWord() {
+
+		if (word_proposed == 0) {
+			word_proposed = keyboardInput.value.toUpperCase();
+
+			for (var i = 0; i < word_length; i++) { //Décomposition du mot proposé dans input vers word_proposed_tab
+				word_proposed_tab[i] = word_proposed.substr(i, 1);
+				document.getElementById(try_count_index + '_' + i).innerHTML = word_proposed_tab[word_proposed_tab.length-1];
+			}
+
+		}
+
 		if (word_proposed_tab.length != word_length) {  //vérification de la longueur du word_to_find
 			errorHandler(1); //La longueur du word_to_find n'est pas la bonne.
 		} else {

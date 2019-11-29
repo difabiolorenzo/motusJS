@@ -166,7 +166,7 @@
 
   <!-- Page: Grille de mot -->
   <div class="page style_2019" id="letter_grid_page" style="display:none;">
-    <div class="flex_section" id="input_section">
+    <div class="input_section">
       <input type="text" id="word_proposition_input" size="30" value="" maxlength="8">
       <button class="flex_button" id="validate_button" onclick="submitWord()">Valider</button>
     </div>
@@ -188,10 +188,11 @@
     </div>
 
     <div class="flex_section">
-      <button class="flex_button" id="new_line_button" onclick="nouvelleLigne();">Nouvelle Ligne</button>
-      <button class="flex_button" id="delete_line_button" onclick="suppressionLigne();">Supprimer la ligne</button>
-      <button class="flex_button" id="new_word_button" onclick="reinitWord();">Nouveau Mot</button>
-      <button class="flex_button" id="display_word_button" onclick="affichageSolution();">Afficher le mot</button>
+      <button class="flex_button" id="new_line_button" onclick="nouvelleLigne(); keyboardFocus()">Nouvelle Ligne</button>
+      <button class="flex_button" id="bonus_letter_button" onclick="ajoutLettreBonus(); keyboardFocus()">Lettre bonus</button>
+      <button class="flex_button" id="delete_line_button" onclick="suppressionLigne(); keyboardFocus()">Supprimer la ligne</button>
+      <button class="flex_button" id="new_word_button" onclick="reinitWord(); keyboardFocus()">Nouveau Mot</button>
+      <button class="flex_button" id="display_word_button" onclick="affichageSolution(); keyboardFocus()">Afficher le mot</button>
     </div>
 
   </div>
