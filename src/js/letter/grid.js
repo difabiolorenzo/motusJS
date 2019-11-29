@@ -361,3 +361,8 @@
 			}			
 		}
 	}
+
+	function keyboardFocus() {
+		keyboardInput = document.getElementById("word_proposition_input");
+		keyboardInput.focus();
+	}

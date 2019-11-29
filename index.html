@@ -24,6 +24,7 @@
   <!-- Les pages devront être affichées une à la fois -->
   <div class="page" id="main_menu" style="display:block;">
     <!-- Contenu du menu principal -->
+      <a>Une nouvelle fois en alpha!</a>
     <div id="main_menu_topbar">
       <img src="./src/img/motus_logo_2014.png" id="logo"></img>
     </div>
@@ -165,7 +166,8 @@
 
   <!-- Page: Grille de mot -->
   <div class="page style_2019" id="letter_grid_page" style="display:none;">
-    <div id="letter_grid_placeolder" style="height:100%; width: 100%; background-color: #fff700;">
+    <input type="text" id="word_proposition_input" size="30" value="" maxlength="8">
+    <div id="letter_grid_placeolder" onclick="Javascript:keyboardFocus()">
       <!-- emplacement pour la grille de mot -->
     </div>
 
@@ -174,6 +176,19 @@
       <a class="active_score" id="score_1" style="background-color: #1681C7;display: block;">0</a>
       <a class="score" id="score_3" style="background-color: #a90910;display: block;">0</a>
     </div>
+
+    <div class="flex_section" style="background-color: #A52A2E;">
+      <button class="flex_button" onclick="displayPage('main_menu')">Retour</button>
+      <button class="flex_button" onclick="displayPage('settings_page')">Paramètres</button>
+    </div>
+
+    <div class="flex_section">
+      <button class="flex_button" id="new_line_button" onclick="nouvelleLigne();">Nouvelle Ligne</button>
+      <button class="flex_button" id="delete_line_button" onclick="suppressionLigne();">Supprimer la ligne</button>
+      <button class="flex_button" id="new_word_button" onclick="reinitWord();">Nouveau Mot</button>
+      <button class="flex_button" id="display_word_button" onclick="affichageSolution();">Afficher le mot</button>
+    </div>
+
   </div>
 
   <!-- Page: Grille des numéros -->

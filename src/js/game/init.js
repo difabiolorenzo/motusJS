@@ -10,6 +10,7 @@
         //GAME
         try_number_max = 6;
         lettre_plus_amount = 1;
+        player_count = 1;
 
         word_to_find_list = [];
 
