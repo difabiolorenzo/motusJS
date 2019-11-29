@@ -162,9 +162,6 @@ button.big_button {
         margin-bottom: 1vw;
         margin-left: 0.25vw;
     }
-    button.flex_button {
-    width: 100%;
-}
 
     td {
         font-size: 2vw;
@@ -281,4 +278,8 @@ button.big_button {
         margin-left: 36.6%;
         margin-top: 3%;
     }
+}
+
+button.flex_button {
+    width: 100%;
 }

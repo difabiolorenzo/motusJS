@@ -66,6 +66,8 @@
                     WordListAddRowRandom(8);
                 }
             }
+        
+            keyboardInput = document.getElementById("word_proposition_input");
 
             createLetterGrid();
             initialisationMot();
@@ -75,6 +77,7 @@
         displayPage("letter_grid_page");
         game_started = true;
         game_paused = false;
+
     }
 
     function reinitWord() {

@@ -166,10 +166,15 @@
 
   <!-- Page: Grille de mot -->
   <div class="page style_2019" id="letter_grid_page" style="display:none;">
-    <input type="text" id="word_proposition_input" size="30" value="" maxlength="8">
+    <div class="flex_section" id="input_section">
+      <input type="text" id="word_proposition_input" size="30" value="" maxlength="8">
+      <button class="flex_button" id="validate_button" onclick="submitWord()">Valider</button>
+    </div>
+
     <div id="letter_grid_placeolder" onclick="Javascript:keyboardFocus()">
       <!-- emplacement pour la grille de mot -->
     </div>
+
 
     <div id="score-placeolder">
       <a class="score" id="score_0" style="background-color: #FBC800;display: block;">0</a>
@@ -177,7 +182,7 @@
       <a class="score" id="score_3" style="background-color: #a90910;display: block;">0</a>
     </div>
 
-    <div class="flex_section" style="background-color: #A52A2E;">
+    <div class="flex_section">
       <button class="flex_button" onclick="displayPage('main_menu')">Retour</button>
       <button class="flex_button" onclick="displayPage('settings_page')">Paramètres</button>
     </div>

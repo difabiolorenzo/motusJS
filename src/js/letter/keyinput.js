@@ -10,27 +10,7 @@ document.addEventListener("keydown", function (event) {
 			suppressionLettre();
 		} else if (event.keyCode == 13) { // enter
 			console.log('Enter');
-
-			if (word_proposed_tab.length != word_length) {  //vérification de la longueur du word_to_find
-				errorHandler(1); //La longueur du word_to_find n'est pas la bonne.
-			} else {
-				if (word_proposed == word_to_find) {
-					verificationProposition();
-				} else {
-					verifPresence(word_proposed);
-					if (in_dictionary == false) {
-						errorHandler(2); //Mot non présent dans le dictionary
-					} else {
-						verifDuplication(word_proposed);
-						if (already_proposed == true) {
-							errorHandler(3); //Mot déjà proposé
-						} else {
-							verificationProposition()
-						}
-					}
-				}
-			}
-
+			submitWord();
 		} else if (event.keyCode == 48) { // à
 			console.log('Key 0');
 		} else if (event.keyCode == 49) { // &
