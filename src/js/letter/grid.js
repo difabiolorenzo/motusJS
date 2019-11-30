@@ -107,7 +107,6 @@
                 word_proposed_tab.push(letter);
             } else {
                 playsound("letter_missing");
-                displayMessage("La première lettre doit être un "+word_to_find_tab[0]+".", "#b11f0e")
             }
         } else {
             word_proposed_tab.push(letter);
@@ -116,15 +115,13 @@
 	}
 	
 	function submitWord() {
-
-		if (word_proposed == 0) {
+		if (word_proposed == 0 && keyboardInput.value != "") {
 			word_proposed = keyboardInput.value.toUpperCase();
 
 			for (var i = 0; i < word_length; i++) { //Décomposition du mot proposé dans input vers word_proposed_tab
 				word_proposed_tab[i] = word_proposed.substr(i, 1);
 				document.getElementById(try_count_index + '_' + i).innerHTML = word_proposed_tab[word_proposed_tab.length-1];
 			}
-
 		}
 
 		if (word_proposed_tab.length != word_length) {  //vérification de la longueur du word_to_find
@@ -164,6 +161,8 @@
 
 		} else {
 			affichageSolution();
+
+			word_found = false;
 		}
     }
 
@@ -185,7 +184,6 @@
 				word_proposed_tab.push(lettre);
 			} else {
 				playsound("letter_missing");
-				displayMessage("La première lettre doit être un "+word_to_find_tab[0]+".", "#b11f0e")
 			}
 		} else {
 			word_proposed_tab.push(lettre);
@@ -223,6 +221,12 @@
 			word_proposed_tab = [];
 			verification_index = 0;
 			clearInterval(animationIntervalID_1);
+
+			if (word_found == false) {
+				playsound("loose");
+				word_found = undefined;
+			}
+			
 		}
     }
     

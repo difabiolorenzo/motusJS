@@ -1,5 +1,5 @@
     function initVariables() {
-        timer = 250;
+        timer = 225;
         game_started = false;
         game_paused = false;
 
@@ -11,6 +11,7 @@
         try_number_max = 6;
         lettre_plus_amount = 1;
         player_count = 1;
+        word_found = undefined;
 
         word_to_find_list = [];
 
@@ -54,6 +55,9 @@
         }
         if (sound == "temps_ecoule") {
             $.playSound("src/sounds/temps_ecoule.mp3")
+        }
+        if (sound == "loose") {
+            $.playSound("src/sounds/loose.mp3")
         }
     }
 

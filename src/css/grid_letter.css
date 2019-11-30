@@ -75,18 +75,19 @@ button#validate_button {
     font-weight: normal;
     font-size: 5.75vw;
     color: white;
-    text-shadow: 2px 2px 1px rgba(0, 0, 0, .6);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, .6);
     width: 10%;
     height: 15%;
     font-family: Helvetica;
-    font-weight: bold; }
+    font-weight: bold;
+    }
 .style_2010 td {
     border: 1px solid #e2e2e2;
     text-align: center;
     font-weight: normal;
     font-size: 5.75vw;
     color: white;
-    text-shadow: 5px 5px 10px rgba(0, 0, 0, .6);
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, .6);
     width: 10%;
     height: 15%;
     font-family: Helvetica;
@@ -232,6 +233,7 @@ and (orientation: landscape) {
     }    
     div.flex_section {
         display:flex;
+        overflow-y: auto;
     }
     button.flex_button {
     width: 100%;
@@ -243,7 +245,7 @@ and (orientation: landscape) {
 
 /* Tablet Portrait: */
 @media only screen
-and (min-width: 768px)
+and (min-width: 425px)
 and (max-width: 1024px)
 and (orientation: portrait) {
 
@@ -257,6 +259,7 @@ and (orientation: portrait) {
     }    
     div.flex_section {
         display:flex;
+        overflow-x: auto;
     }
     button.flex_button {
     width: 100%;
@@ -270,7 +273,7 @@ and (orientation: portrait) {
 
 /* Tablet Landscape: */
 @media only screen
-and (min-height: 768px)
+and (min-height: 425px)
 and (max-height: 1024px)
 and (orientation: landscape) {
 

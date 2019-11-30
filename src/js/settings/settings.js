@@ -33,37 +33,6 @@ function WordListDeleteRow(obj) {
     word_to_find_list.splice(word_list_index-1, 1);
 }
 
-function WordListUpdateDropdown(value) {
-    //si aucun choix du nombre de lettre, disparition des autres options sinon ...
-    if (value == "" ) {
-        
-        document.getElementById("word_list_dropdown_first_letter").style = "display:none;";
-        document.getElementById("word_list_button_random").style = "display:none;";
-        document.getElementById("word_list_dropdown_word_selection").style = "display:none;";
-    } else {
-        document.getElementById("word_list_dropdown_first_letter").style = "display:inline-block;";
-        document.getElementById("word_list_button_random").style = "display:inline-block;";
-        var word_list_selected_dictionary = dictionary_list[value-5];
-
-        document.getElementById("word_list_dropdown_word_selection").innerHTML = "<option value=\"\">choisir un mot</option>";
-
-        for (i=0; i < word_list_selected_dictionary.length; i++) {  //affichage des mots qui commencent par la lettre choisie
-            if (word_list_selected_dictionary[i].charAt(0) == word_list_dropdown_first_letter.value) {
-                document.getElementById("word_list_dropdown_word_selection").innerHTML += "<option value=\"" + word_list_selected_dictionary[i] + "\">" + word_list_selected_dictionary[i] + "</option>";
-            }
-        }
-    }
-
-    // si aucune première lettre choisie, disparition du chois des mots
-    if (word_list_dropdown_first_letter.value == "" ) {
-        document.getElementById("word_list_dropdown_word_selection").style = "display:none;"
-        document.getElementById("word_list_button_list").style = "display:none;"
-    } else {
-        document.getElementById("word_list_dropdown_word_selection").style = "display:inline-block;"
-        document.getElementById("word_list_button_list").style = "display:inline-block;"
-    }
-}
-
 function UpdateStyle(value) {
     document.getElementById("letter_grid_page").className = "page style_" + value;
 }
