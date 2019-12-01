@@ -38,5 +38,5 @@ Pour les règles complètes, voir ce lien: [https://fr.wikipedia.org/wiki/Motus_
 * [http://www.anagrammeur.com/jeux/motus/motus.php]
 
 ## Licences
-Tous les sons et le principe du jeu sont sous les droits de France Télévisions
-jQuery est sous la license (MIT)[https://tldrlegal.com/license/mit-license]
+* Tous les sons et le principe du jeu sont sous les droits de France Télévisions
+* jQuery est sous la license (MIT)[https://tldrlegal.com/license/mit-license]
