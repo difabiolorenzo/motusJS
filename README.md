@@ -35,7 +35,7 @@ Pour les règles complètes, voir ce lien: [https://fr.wikipedia.org/wiki/Motus_
 
 ## Inspiration
 * [https://www.france.tv/france-2/motus/]
-* [https://motus.absolu-puzzle.com/]
+* [http://www.anagrammeur.com/jeux/motus/motus.php]
 
 ## Licences
 Tous les sons et le principe du jeu sont sous les droits de France Télévisions
