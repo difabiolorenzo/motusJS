@@ -116,7 +116,7 @@
 	
 	function submitWord() {
 		if (word_proposed == 0 && keyboardInput.value != "") {
-			word_proposed = keyboardInput.value.toUpperCase();
+			word_proposed = keyboardInput.value.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toUpperCase();
 
 			for (var i = 0; i < word_length; i++) { //Décomposition du mot proposé dans input vers word_proposed_tab
 				word_proposed_tab[i] = word_proposed.substr(i, 1);
@@ -137,7 +137,7 @@
 					verifDuplication(word_proposed);
 					if (already_proposed == true) {
 						errorHandler(3); //Mot déjà proposé
-					} else {
+						} else {
 						verificationProposition()
 					}
 				}
@@ -226,6 +226,8 @@
 				playsound("loose");
 				word_found = undefined;
 			}
+
+			word_displayed = true;
 			
 		}
     }
@@ -271,6 +273,8 @@
 		}
 		playsound("letter_missing");
 		playsound("wrong");
+
+		nouvelleLigne();
     }
     
     function verifPresence(word_proposed) {		// Vérification de la présence du word_to_find proposé dans le dictionnaire
@@ -405,4 +409,15 @@
 
 	function keyboardFocus() {
 		keyboardInput.focus();
+	}
+
+	function wordInformation() {
+		if (word_displayed == true) {
+			if (confirm("Voulez-vous ouvrir une page wiktionary.org sur le mot " + word_to_find.toLowerCase() + "?")) {
+				window.open("https://fr.wiktionary.org/w/index.php?search=" + word_to_find.toLowerCase(), "_blank");
+			}
+		} else {
+			alert("Vous devez trouver le mot ou l'afficher pour pouvoir avoir des informations dessus.");
+		}
+		
 	}

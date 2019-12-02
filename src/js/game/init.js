@@ -12,6 +12,8 @@
         lettre_plus_amount = 1;
         player_count = 1;
         word_found = undefined;
+        word_displayed = false;
+        dictionary_list = [dictionary_5, dictionary_6, dictionary_7, dictionary_8, dictionary_9, dictionary_10];
 
         word_to_find_list = [];
 
@@ -82,23 +84,4 @@
         game_started = true;
         game_paused = false;
 
-    }
-
-    function reinitWord() {
-        word_to_find_list.splice(0, 1);
-        if (word_to_find_list.length >= 1) {
-            createLetterGrid();
-            initialisationMot();
-            nouvelleLigne();
-        } else {
-            console.log("plus de mot dans la liste, fin du jeu");
-            if (confirm("Il n'y a plus de mot dans la liste de mot à deviner. Voulez-vous continuer? (Vous allez rejouer avec 1 mot de 8 lettres)")) {
-                WordListAddRowRandom(8);
-                createLetterGrid();
-                initialisationMot();
-                nouvelleLigne();
-            } else {
-                displayPage("main_menu");
-            }
-        }
     }

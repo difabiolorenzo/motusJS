@@ -10,10 +10,15 @@
 </head>
 
 <body id="body" onLoad="initVariables()">
-  <script type="text/javascript" src="./src/js/dictionary/dictionary.js"></script>
+  <script type="text/javascript" src="./src/js/dictionary/dictionary_5.js"></script>
+  <script type="text/javascript" src="./src/js/dictionary/dictionary_6.js"></script>
+  <script type="text/javascript" src="./src/js/dictionary/dictionary_7.js"></script>
+  <script type="text/javascript" src="./src/js/dictionary/dictionary_8.js"></script>
+  <script type="text/javascript" src="./src/js/dictionary/dictionary_9.js"></script>
+  <script type="text/javascript" src="./src/js/dictionary/dictionary_10.js"></script>
   <script type="text/javascript" src="./src/js/letter/grid.js"></script>
   <script type="text/javascript" src="./src/js/letter/keyinput.js"></script>
-  <script type="text/javascript" src="./src/js/debug/debug.js"></script>
+  <script type="text/javascript" src="./src/js/game/game.js"></script>
   <script type="text/javascript" src="./src/js/game/init.js"></script>
   <script type="text/javascript" src="./src/js/settings/settings.js"></script>
 
@@ -34,8 +39,8 @@
       </div>
       <div>
         <button class="big_button" onclick="displayPage('settings_page')">Paramètres</button>
-        <button class="big_button"
-          onclick="window.location.href = 'https://github.com/difabiolorenzo/motusJS'">GitHub</button>
+        <button class="big_button" onclick="window.location.href = 'https://github.com/difabiolorenzo/motusJS'">GitHub</button>
+        <button class="big_button" onclick="displayPage('credit_page')">Credits</button>
       </div>
     </div>
 
@@ -44,15 +49,16 @@
   <!-- Page: Paramètres -->
   <div class="page" id="settings_page" style="display:none;">
 
-    <div class="section" id="settings">
-      <div class="section" id="settings-up">
+    <div id="settings">
+      <div id="settings-up">
         <div class="section-flex" id="settings-top">
           <h1>Paramètres</h1>
           <button onclick="displayPage('main_menu')">Retour</button>
+          <button onclick="window.location.href = 'https://github.com/difabiolorenzo/motusJS/issues/new?'">Signaler un bug</button>
           <button onclick="initGame()">Jouer</button>
         </div>
       </div>
-      <div class="section" id="settings-right">
+      <div id="settings-right">
 
         <div class="settings_input">
           <p>Ajouter au hasard un mot de:</p>
@@ -127,7 +133,7 @@
 
       </div>
 
-      <div class="section" id="settings-left">
+      <div id="settings-left">
         <div>
           <table id="word_list" cellpadding="2">
             <tr>
@@ -144,37 +150,44 @@
 
   <!-- Page: Grille de mot -->
   <div class="page style_2010" id="letter_grid_page" style="display:none;">
-    <div class="input_section">
-      <input type="text" id="word_proposition_input" size="30" value="" maxlength="8">
-      <button class="flex_button" id="validate_button" onclick="submitWord()">Valider</button>
+
+    
+
+    <div id="top_section">
+        <div id="letter_grid_placeolder" onclick="Javascript:keyboardFocus()">
+            <!-- emplacement pour la grille de mot -->
+          </div>
+      
+          <div class="input_section">
+            <input type="text" id="word_proposition_input" size="30" value="" maxlength="8">
+            <button class="flex_button" id="validate_button" onclick="submitWord()">Valider</button>
+          </div>
+      
+          <div id="score-placeolder" style="display:none;">
+            <a class="score" id="score_0" style="background-color: #FBC800;display: block;">0</a>
+            <a class="active_score" id="score_1" style="background-color: #1681C7;display: block;">0</a>
+            <a class="score" id="score_3" style="background-color: #a90910;display: block;">0</a>
+          </div>
     </div>
 
-    <div id="letter_grid_placeolder" onclick="Javascript:keyboardFocus()">
-      <!-- emplacement pour la grille de mot -->
-    </div>
-
-
-    <div id="score-placeolder" style="display:none;">
-      <a class="score" id="score_0" style="background-color: #FBC800;display: block;">0</a>
-      <a class="active_score" id="score_1" style="background-color: #1681C7;display: block;">0</a>
-      <a class="score" id="score_3" style="background-color: #a90910;display: block;">0</a>
-    </div>
-
-    <div class="flex_section">
-      <button class="flex_button" onclick="displayPage('main_menu')">Retour</button>
-      <button class="flex_button" onclick="displayPage('settings_page')">Paramètres</button>
-    </div>
-
-    <div class="flex_section">
-      <button class="flex_button" id="new_line_button" onclick="nouvelleLigne(); keyboardFocus()">Nouvelle
-        Ligne</button>
-      <button class="flex_button" id="bonus_letter_button" onclick="ajoutLettreBonus(); keyboardFocus()">Lettre
-        bonus</button>
-      <button class="flex_button" id="delete_line_button" onclick="suppressionLigne(); keyboardFocus()">Supprimer la
-        ligne</button>
-      <button class="flex_button" id="new_word_button" onclick="reinitWord(); keyboardFocus()">Nouveau Mot</button>
-      <button class="flex_button" id="display_word_button" onclick="affichageSolution(); keyboardFocus()">Afficher le
-        mot</button>
+    <div id="bottom_section">
+      <div class="flex_section">
+          <button class="flex_button" onclick="displayPage('main_menu')">Retour</button>
+          <button class="flex_button" onclick="displayPage('settings_page')">Paramètres</button>
+        </div>
+    
+        <div class="flex_section">
+          <button class="flex_button" id="new_line_button" onclick="nouvelleLigne(); keyboardFocus()">Nouvelle
+            Ligne</button>
+          <button class="flex_button" id="bonus_letter_button" onclick="ajoutLettreBonus(); keyboardFocus()">Lettre
+            bonus</button>
+          <button class="flex_button" id="delete_line_button" onclick="suppressionLigne(); keyboardFocus()">Supprimer la
+            ligne</button>
+          <button class="flex_button" id="new_word_button" onclick="reinitWord(); keyboardFocus()">Nouveau Mot</button>
+          <button class="flex_button" id="display_word_button" onclick="affichageSolution(); keyboardFocus()">Afficher le
+            mot</button>
+          <button class="flex_button" id="word_information_button" onclick="wordInformation()">Informations sur le mot</button>
+        </div>
     </div>
 
   </div>
@@ -193,6 +206,32 @@
 
     <button onclick="createLetterGrid()">create letter grid</button>
 
+  </div>
+
+  <!-- Page: Credits / Licences -->
+  <div class="page" id="credit_page" style="display:none;">
+    <div id="credit-up">
+      <div class="section-flex" id="credit-top">
+        <h1>Credits</h1>
+        <button onclick="displayPage('main_menu')">Retour</button>
+      </div>
+      <div class="section">
+        <h2>Motus</h2>
+        <p>Motus est une marque déposé par FranceTélévision.</p>
+        <p>L’ensemble des éléments (logos, marques et autres éléments reproduits) sont réservés et protégés par le droit de la propriété intellectuelle, notamment les droits d’auteur, droits voisins, droits des marques, tous reviennent à <a href="https://www.francetelevisions.fr/cgu">francetelevisions</a></p>
+        <p></p>
+      </div>
+      <div class="section">
+        <h2>jQuery</h2>
+        <p>l'utilisation de jQuery dans motusJS est limité à l'audio</p>
+        <p>Le code de jQuery est sous licence <a href="https://tldrlegal.com/license/creative-commons-cc0-1.0-universal">CC0</a></p>
+      </div>
+      <div class="section">
+        <h2>Code</h2>
+        <p>motusJS est construit sur les base du code de <b>sogroo</b> avec son site <a href="http://www.anagrammeur.com/jeux/motus/motus.php">anagrammeur.com</a></p>
+        <p>le code ayant été remanié du tout au tout, et ne ressamblant plus du tout au sien, je tiens tout de même à féliciter <b>sogroo</b> pour son travail.</p>
+      </div>
+    </div>
   </div>
 </body>
 

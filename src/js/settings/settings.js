@@ -1,7 +1,8 @@
 // Tableau des mots à choisir
 
 function WordListAddRow(word_list_selected_word) {
-    var word_list_selected_word = word_list_selected_word.toUpperCase();
+
+    var word_list_selected_word = word_list_selected_word.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toUpperCase();
     var word_list_table = document.getElementById("word_list");
  
     var word_list_rowCount = word_list_table.rows.length;

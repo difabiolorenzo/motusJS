@@ -41,6 +41,8 @@ document.addEventListener("keydown", function (event) {
 			playsound("temps_ecoule");
 		} else if (event.keyCode == 220) { // * µ
 			console.log('Key *')
+			wordInformation();
+			
 		} else if (word_proposed_tab.length < word_length) {
 			if (event.keyCode >= 65 && event.keyCode <= 90 || event.keyCode >= 97 && event.keyCode <= 122) { //if between a & z OR A & Z
 				for (i = 0; i < 26; i++) {

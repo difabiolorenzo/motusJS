@@ -135,8 +135,6 @@ button.big_button {
 @media only screen
 and (max-width: 425px)
 and (orientation: portrait) {
-    img#logo {
-    }
     div#main_menu_content {
     padding-left: 17.5%;
     }
@@ -178,12 +176,8 @@ and (orientation: landscape) {
 and (min-width: 426px)
 and (max-width: 1024px)
 and (orientation: portrait) {
-    img#logo {
-    }
     div#main_menu_content {
     padding-left: 10%;
-    }
-    button.big_button {
     }
 }
 
@@ -198,8 +192,6 @@ and (orientation: landscape) {
     width: 33.3%;
     margin-left: 33.3%;
     margin-top: 5%;
-    }
-    div#main_menu_content {
     }
     button.big_button {
     width: 66%;
@@ -248,12 +240,12 @@ div#word_list_section_dropdown {
     width:100%
 }
 
-div#settings-top {
-    margin-top: 1vw;
+div#settings-top, div#credit-top{
+    padding-top: 1vw;
 }
 
-div#settings-up {
-    margin-left: 1vw;
+div#settings-up, div#credit-up {
+    padding-left: 1vw;
 }
 
 .settings_input {
