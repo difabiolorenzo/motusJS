@@ -5,7 +5,10 @@
 
         // SETTINGS
         display_animation = true;
-        check_word = true;
+        check_word_length = true;
+        check_word_presence = true;
+        check_word_duplication = true;
+        check_word_first_letter = true;
 
         //GAME
         try_number_max = 6;
@@ -16,21 +19,8 @@
         dictionary_list = [dictionary_5, dictionary_6, dictionary_7, dictionary_8, dictionary_9, dictionary_10];
 
         word_to_find_list = [];
-
-        //SOUND
-        playsound_grille_creation = 'src/sounds/grille_creation.mp3';
-        playsound_grille_numero = 'src/sounds/grille_numero.mp3';
-        playsound_grille_boule_noire = 'src/sounds/grille_boule_noire.mp3';
-        playsound_grille_numero_tire = 'src/sounds/grille_numero_tire.mp3';
-        playsound_motus = 'src/sounds/motus.mp3';
-    
-        sound_volume = 1;
-        
-        playsound_grille_creation.volume = sound_volume;
-        playsound_grille_numero.volume = sound_volume;
-        playsound_grille_boule_noire.volume = sound_volume;
-        playsound_grille_numero_tire.volume = sound_volume;
-        playsound_motus.volume = sound_volume;
+                
+        keyboardInput = document.getElementById("word_proposition_input");
     }
 
 
@@ -61,19 +51,37 @@
         if (sound == "loose") {
             $.playSound("src/sounds/loose.mp3")
         }
+        if (sound == "grille_creation") {
+            $.playSound("src/sounds/grille_creation.mp3")
+        }
+        if (sound == "grille_numero") {
+            $.playSound("src/sounds/grille_numero.mp3")
+        }
+        if (sound == "grille_boule_noire") {
+            $.playSound("src/sounds/grille_boule_noire.mp3")
+        }
+        if (sound == "grille_numero_tire") {
+            $.playSound("src/sounds/grille_numero_tire.mp3")
+        }
+        if (sound == "motus") {
+            $.playSound("src/sounds/motus.mp3")
+        }
     }
 
     function initGame() {
         if (game_started == false && game_paused == false) { // si le jeu commence mais n'est pas en pause > creation de la grille  
 
             if (word_to_find_list.length == 0) {
-                console.log("aucun mot dans la liste");
-                if (confirm("Vous n'avez pas selectionnez de mot dans les paramètres! Vous allez jouer avec 1 mot de 8 lettres")) {
-                    WordListAddRowRandom(8);
+
+                var prompt_new_word;
+
+                while (prompt_new_word < 5 || prompt_new_word > 10 || prompt_new_word == undefined) {
+                    prompt_new_word = Number(window.prompt("Aucun mot n'est prédéfini dans les paramètres, veuillez entrez le nombre de lettres (compris entre 5 et 10) du prochain mot tiré au hasard:", "8"));
+                    if (prompt_new_word >= 5 || prompt_new_word <= 10) {
+                        WordListAddRowRandom(prompt_new_word);
+                    }
                 }
-            }
-        
-            keyboardInput = document.getElementById("word_proposition_input");
+            }        
 
             createLetterGrid();
             initialisationMot();

@@ -37,7 +37,3 @@ function WordListDeleteRow(obj) {
 function UpdateStyle(value) {
     document.getElementById("letter_grid_page").className = "page style_" + value;
 }
-
-function UpdateSettingsCheckbox(id, value) {
-    
-}

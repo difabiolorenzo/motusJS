@@ -5,7 +5,7 @@
   <link rel="stylesheet" type="text/css" title="css" href="src/css/grid_letter.css">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Motus</title>
+  <title>MotusJS</title>
   <link rel="shortcut icon" type="image/x-icon" href="src/img/favicon.png">
 </head>
 
@@ -50,6 +50,7 @@
   <div class="page" id="settings_page" style="display:none;">
 
     <div id="settings">
+
       <div id="settings-up">
         <div class="section-flex" id="settings-top">
           <h1>Paramètres</h1>
@@ -58,8 +59,78 @@
           <button onclick="initGame()">Jouer</button>
         </div>
       </div>
+
       <div id="settings-right">
 
+        <div class="settings_input">
+          <label name="grid_style" for="grid_style">Style de la grille</label>
+          <select onchange="UpdateStyle(this.value);">
+            <option value="2010">2010</option>
+            <option value="2019">2019</option>
+            <option value="2000">2000</option>
+            <option value="1990">1990</option>
+          </select>
+        </div>
+
+        <div class="settings_input settings_disabled">
+          <p>Affichage:</p>
+          <table>
+            <tr>
+              <th> <label name="display_definition" for="display_definition">Définitions</label> </th>
+              <th> <input class="input-checkbox" type="checkbox" name="display_definition" id="display_definition_checkbox" > </th>
+            </tr>
+            <tr>
+              <th> <label name="display_animation" for="display_animation">Animations</label> </th>
+              <th> <input class="input-checkbox" type="checkbox" name="display_animation" id="display_definition_checkbox" checked="checked"> </th>
+            </tr>
+          </table>
+        </div>
+
+        <div class="settings_input settings_disabled">
+          <table>
+            <tr>
+              <th> <label name="use_number_grid" for="use_number_grid">Utiliser la grille numérotée</label> </th>
+              <th> <input class="input-checkbox" type="checkbox" name="use_number_grid" id="display_definition_checkbox"> </th>
+            </tr>
+            <tr>
+              <th> <label name="use_number_grid" for="use_number_grid">Utiliser la boule magique</label> </th>
+              <th> <input class="input-checkbox" type="checkbox" name="use_number_grid" id="display_definition_checkbox"> </th>
+            </tr>
+          </table>
+        </div>
+
+        <div class="settings_input settings_disabled">
+          <p>Boule Noire!:</p>
+          <table>
+            <tr>
+              <th> <label name="use_number_grid" for="use_number_grid">Utiliser la grille numérotée</label> </th>
+              <th> <input class="input-checkbox" type="checkbox" name="use_number_grid" id="display_definition_checkbox"> </th>
+            </tr>
+            <tr>
+              <th> <label name="use_number_grid" for="use_number_grid">Utiliser la boule magique</label> </th>
+              <th> <input class="input-checkbox" type="checkbox" name="use_number_grid" id="display_definition_checkbox"> </th>
+            </tr>
+          </table>
+        </div>
+
+        <div class="settings_input">
+          <p>Verifications des mots proposés:</p>
+          <table>
+            <tr>
+              <th> <label name="check_word" for="check_word_presence_checkbox">Existe dans le dictionnaire</label> </th>
+              <th> <input class="input-checkbox" type="checkbox" name="check_word_presence_checkbox" checked="checked" onchange="check_word_presence = this.checked"> </th>
+            </tr>
+            <tr>
+              <th> <label name="check_word" for="check_word_duplication_checkbox">Déja proposé</label> </th>
+              <th> <input class="input-checkbox" type="checkbox" name="check_word_duplication_checkbox" checked="checked" onchange="check_word_duplication = this.checked"> </th>
+            </tr>
+            <tr>
+              <th> <label name="check_word" for="check_word_length_checkbox">Longueur du mot</label> </th>
+              <th> <input class="input-checkbox" type="checkbox" name="check_word_length_checkbox" checked="checked" onchange="check_word_length = this.checked"> </th>
+            </tr>
+          </table>
+        </div>
+  
         <div class="settings_input">
           <p>Ajouter au hasard un mot de:</p>
           <div class="section-flex">
@@ -78,9 +149,8 @@
           </div>
         </div>
 
-        <div class="word_list_section" id="word_list_section_dropdown">
-          
-          <p>Ajouter un mot:</p>
+        <div class="word_list_section settings_input" id="word_list_section_dropdown">
+          <p>Ajouter un mot manuellement:</p>
           <input type="button" id="word_list_button_list" style="display: none;" value="ajouter depuis la liste"
             onclick="Javascript:WordListAddRow(document.getElementById('word_list_dropdown_word_selection').value)">
 
@@ -88,46 +158,6 @@
             <input type="text" id="word_list_selected_word" style="text-transform:uppercase">
             <input type="button" id="add" value="Ajouter"
               onclick="Javascript:WordListAddRow(document.getElementById('word_list_selected_word').value)">
-          </div>
-        </div>
-
-        <div class="settings_input">
-          <label name="grid_style" for="grid_style">Style de la grille</label>
-          <select onchange="UpdateStyle(this.value);">
-            <option value="2019">2019</option>
-            <option value="2010">2010</option>
-            <option value="2000">2000</option>
-            <option value="1990">1990</option>
-            <option value="high_contrast">High Contrast</option>
-            <option value="high_contrast_2">High Contrast 2</option>
-          </select>
-        </div>
-
-
-        <div>
-          <div class="settings_input">
-            <label name="display_definition" for="display_definition">Affichage des définitions</label>
-            <input class="input-checkbox" type="checkbox" name="display_definition" id="display_definition_checkbox"
-              disabled="true">
-          </div>
-          <div class="settings_input">
-            <label name="display_animation" for="display_animation">Afficher les animations</label>
-            <input class="input-checkbox" type="checkbox" name="display_animation" id="display_definition_checkbox"
-              disabled="true" checked="checked">
-          </div>
-          <div class="settings_input">
-            <label name="use_number_grid" for="use_number_grid">Utiliser la grille numérotée</label>
-            <input class="input-checkbox" type="checkbox" name="use_number_grid" id="display_definition_checkbox"
-              disabled="true">
-            <label name="use_number_grid" for="use_number_grid">Utiliser la boule magique</label>
-            <input class="input-checkbox" type="checkbox" name="use_number_grid" id="display_definition_checkbox"
-              disabled="true" onchange="UpdateSettingsCheckbox(this.value)">
-          </div>
-          <div class="settings_input">
-            <label name="check_word" for="check_word">Verifications des mots proposées (Correspondance avec le
-              dictionnaire)</label>
-            <input class="input-checkbox" type="checkbox" name="check_word" id="check_word_checkbox" checked="checked"
-              onchange="console.log(this.value + ' ' + this.name)">
           </div>
         </div>
 
