@@ -76,7 +76,7 @@
                 var prompt_new_word;
 
                 while (prompt_new_word < 5 || prompt_new_word > 10 || prompt_new_word == undefined) {
-                    prompt_new_word = Number(window.prompt("Aucun mot n'est prédéfini dans les paramètres, veuillez entrez le nombre de lettres (compris entre 5 et 10) du prochain mot tiré au hasard:", "8"));
+                    prompt_new_word = Number(window.prompt("Aucun mot n'est prédéfini dans les paramètres, veuillez entrer le nombre de lettres (compris entre 5 et 10) du prochain mot tiré au hasard:", "8"));
                     if (prompt_new_word >= 5 || prompt_new_word <= 10) {
                         WordListAddRowRandom(prompt_new_word);
                     }
