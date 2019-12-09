@@ -31,3 +31,11 @@
             }
         }
     }
+
+    function debugMode() {
+        debug_index++;
+
+        if (debug_index > 3) {
+            document.getElementById("debug_menu_button").style = "display: block";
+        }
+    }

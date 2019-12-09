@@ -1,7 +1,4 @@
     function initVariables() {
-        timer = 225;
-        game_started = false;
-        game_paused = false;
 
         // SETTINGS
         display_animation = true;
@@ -21,6 +18,15 @@
         word_to_find_list = [];
                 
         keyboardInput = document.getElementById("word_proposition_input");
+
+        timer = 225;
+        game_started = false;
+        game_paused = false;
+
+        // DEBUG
+        debug_index = 0;
+        version_name = "2.0.3 - Pre-release 5";
+        document.getElementById("version").innerHTML = version_name;
     }
 
 

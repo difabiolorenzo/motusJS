@@ -3,6 +3,7 @@
 <head>
   <link rel="stylesheet" type="text/css" title="css" href="src/css/global.css">
   <link rel="stylesheet" type="text/css" title="css" href="src/css/grid_letter.css">
+  <link rel="stylesheet" type="text/css" title="css" href="src/css/grid_number.css">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MotusJS</title>
@@ -18,6 +19,7 @@
   <script type="text/javascript" src="./src/js/dictionary/dictionary_10.js"></script>
   <script type="text/javascript" src="./src/js/letter/grid.js"></script>
   <script type="text/javascript" src="./src/js/letter/keyinput.js"></script>
+  <script type="text/javascript" src="./src/js/number/number_grid.js"></script>
   <script type="text/javascript" src="./src/js/game/game.js"></script>
   <script type="text/javascript" src="./src/js/game/init.js"></script>
   <script type="text/javascript" src="./src/js/settings/settings.js"></script>
@@ -30,7 +32,7 @@
   <div class="page" id="main_menu" style="display:block;">
     <!-- Contenu du menu principal -->
     <div id="main_menu_topbar">
-      <img src="./src/img/motus_logo_2014.png" id="logo"></img>
+      <img src="./src/img/motus_logo_2014.png" onclick="debugMode()" id="logo"></img>
     </div>
 
     <div id="main_menu_content">
@@ -41,7 +43,11 @@
         <button class="big_button" onclick="displayPage('settings_page')">Paramètres</button>
         <button class="big_button" onclick="window.location.href = 'https://github.com/difabiolorenzo/motusJS'">GitHub</button>
         <button class="big_button" onclick="displayPage('credit_page')">Credits</button>
+        <button class="big_button" id="debug_menu_button" onclick="displayPage('number_grid_page')" style="display: none;">WIP</button>
       </div>
+    </div>
+    <div id="version_placeolder">
+      <a id="version">JavaScript Not Enambled :'(</a>
     </div>
 
   </div>
@@ -63,7 +69,7 @@
       <div id="settings-right">
 
         <div class="settings_input">
-          <label name="grid_style" for="grid_style">Style de la grille</label>
+          <p name="grid_style" for="grid_style">Style de la grille</p>
           <select onchange="UpdateStyle(this.value);">
             <option value="2010">2010</option>
             <option value="2019">2019</option>
@@ -150,11 +156,9 @@
         </div>
 
         <div class="word_list_section settings_input" id="word_list_section_dropdown">
-          <p>Ajouter un mot manuellement:</p>
-          <input type="button" id="word_list_button_list" style="display: none;" value="ajouter depuis la liste"
-            onclick="Javascript:WordListAddRow(document.getElementById('word_list_dropdown_word_selection').value)">
 
           <div class="word_list_section" id="word_list_section_text">
+            <p>Ajouter un mot manuellement:</p>
             <input type="text" id="word_list_selected_word" style="text-transform:uppercase">
             <input type="button" id="add" value="Ajouter"
               onclick="Javascript:WordListAddRow(document.getElementById('word_list_selected_word').value)">
@@ -185,19 +189,19 @@
 
     <div id="top_section">
         <div id="letter_grid_placeolder" onclick="Javascript:keyboardFocus()">
-            <!-- emplacement pour la grille de mot -->
-          </div>
+          <!-- emplacement pour la grille de mot -->
+        </div>
       
-          <div class="input_section">
-            <input type="text" id="word_proposition_input" size="30" value="" maxlength="8">
-            <button class="flex_button" id="validate_button" onclick="submitWord()">Valider</button>
-          </div>
-      
-          <div id="score-placeolder" style="display:none;">
-            <a class="score" id="score_0" style="background-color: #FBC800;display: block;">0</a>
-            <a class="active_score" id="score_1" style="background-color: #1681C7;display: block;">0</a>
-            <a class="score" id="score_3" style="background-color: #a90910;display: block;">0</a>
-          </div>
+        <div class="input_section">
+          <input type="text" id="word_proposition_input" size="30" value="" maxlength="8">
+          <button class="flex_button" id="validate_button" onclick="submitWord()">Valider</button>
+        </div>
+    
+        <div id="score-placeolder" style="display:none;">
+          <a class="score" id="score_0" style="background-color: #FBC800;display: block;">0</a>
+          <a class="active_score" id="score_1" style="background-color: #1681C7;display: block;">0</a>
+          <a class="score" id="score_3" style="background-color: #a90910;display: block;">0</a>
+        </div>
     </div>
 
     <div id="bottom_section">
@@ -223,11 +227,23 @@
   </div>
 
   <!-- Page: Grille des numéros -->
-  <div class="page" id="number_grid_page" style="display:none;">
+  <div class="page style_2010" id="number_grid_page" style="display:none;">
     <h1>Grille des numéros</h1>
 
-    <button>display grid</button>
-    <button>remove grid</button>
+    <div id="number_grid_placeolder">
+      <div id="number_grid_placeolder_yellow">
+        
+      </div>
+      <div id="number_grid_placeolder_blue">
+        
+      </div>
+      
+      <button onclick="createNumberGrid('yellow')">create letter grid yellow</button>
+      <button onclick="createNumberGrid('blue')">create letter grid blue</button>
+      <button onclick="displayPage('main_menu')">Retour</button>
+
+    </div>
+
   </div>
 
   <!-- Page: Debug -->
