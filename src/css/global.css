@@ -81,8 +81,8 @@ select:hover {
 }
 
 input[type="checkbox"i] {
-    width: 1.5vw;
-    height: 1.5vw;
+    width: 5vw;
+    height: 5vw;
 }
 
 table#word_list>td {
@@ -230,6 +230,10 @@ div#credit-up {
     }
     p, label {
         font-size:1.5em;
+    }
+    input[type="checkbox"i] {
+        height:2vw;
+        width:2vw;
     }
     table#word_list {
         padding:2vw;

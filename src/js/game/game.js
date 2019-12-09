@@ -10,6 +10,9 @@
     }
 
     function reinitWord() {
+        word_displayed = false;
+        word_found = false;
+
         word_to_find_list.splice(0, 1);
         if (word_to_find_list.length > 0) {
             createLetterGrid();

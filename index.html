@@ -93,19 +93,6 @@
         </div>
 
         <div class="settings_input settings_disabled">
-          <table>
-            <tr>
-              <th> <label name="use_number_grid" for="use_number_grid">Utiliser la grille numérotée</label> </th>
-              <th> <input class="input-checkbox" type="checkbox" name="use_number_grid" id="display_definition_checkbox"> </th>
-            </tr>
-            <tr>
-              <th> <label name="use_number_grid" for="use_number_grid">Utiliser la boule magique</label> </th>
-              <th> <input class="input-checkbox" type="checkbox" name="use_number_grid" id="display_definition_checkbox"> </th>
-            </tr>
-          </table>
-        </div>
-
-        <div class="settings_input settings_disabled">
           <p>Boule Noire!:</p>
           <table>
             <tr>
@@ -133,6 +120,10 @@
             <tr>
               <th> <label name="check_word" for="check_word_length_checkbox">Longueur du mot</label> </th>
               <th> <input class="input-checkbox" type="checkbox" name="check_word_length_checkbox" checked="checked" onchange="check_word_length = this.checked"> </th>
+            </tr>
+            <tr>
+              <th> <label name="check_word" for="check_first_letter_checkbox">Première lettre correspondante</label> </th>
+              <th> <input class="input-checkbox" type="checkbox" name="check_first_letter_checkbox" checked="checked" disabled="true" onchange="check_first_letter = this.checked"> </th>
             </tr>
           </table>
         </div>
@@ -206,21 +197,19 @@
 
     <div id="bottom_section">
       <div class="flex_section">
-          <button class="flex_button" onclick="displayPage('main_menu')">Retour</button>
-          <button class="flex_button" onclick="displayPage('settings_page')">Paramètres</button>
+          <button class="flex_button" id="new_line_button" onclick="nouvelleLigne(); keyboardFocus()">Nouvelle Ligne</button>
+          <button class="flex_button" id="word_information_button" onclick="wordInformation()">Informations sur le mot</button>
         </div>
     
         <div class="flex_section">
-          <button class="flex_button" id="new_line_button" onclick="nouvelleLigne(); keyboardFocus()">Nouvelle
-            Ligne</button>
           <button class="flex_button" id="bonus_letter_button" onclick="ajoutLettreBonus(); keyboardFocus()">Lettre
             bonus</button>
           <button class="flex_button" id="delete_line_button" onclick="suppressionLigne(); keyboardFocus()">Supprimer la
             ligne</button>
           <button class="flex_button" id="new_word_button" onclick="reinitWord(); keyboardFocus()">Nouveau Mot</button>
-          <button class="flex_button" id="display_word_button" onclick="affichageSolution(); keyboardFocus()">Afficher le
-            mot</button>
-          <button class="flex_button" id="word_information_button" onclick="wordInformation()">Informations sur le mot</button>
+          <button class="flex_button" id="display_word_button" onclick="affichageSolution(); keyboardFocus()">Afficher la réponse</button>
+            <button class="flex_button" onclick="displayPage('main_menu')">Retour</button>
+          <button class="flex_button" onclick="displayPage('settings_page')">Paramètres</button>
         </div>
     </div>
 
@@ -238,9 +227,28 @@
         
       </div>
       
-      <button onclick="createNumberGrid('yellow')">create letter grid yellow</button>
-      <button onclick="createNumberGrid('blue')">create letter grid blue</button>
-      <button onclick="displayPage('main_menu')">Retour</button>
+      <div>
+        <button onclick="createNumberGrid('yellow')">create letter grid yellow</button>
+        <button onclick="createNumberGrid('blue')">create letter grid blue</button>
+        <button onclick="displayPage('main_menu')">Retour</button>
+      </div>
+      <div>
+        <button onclick="playsound('grille_creation')">grille_creation</button>
+        <button onclick="playsound('grille_numero')">grille_numero</button>
+        <button onclick="playsound('grille_boule_noire')">grille_boule_noire</button>
+        <button onclick="playsound('grille_numero_tire')">grille_numero_tire</button>
+        <button onclick="playsound('motus')">motus</button>
+      </div>
+      <div>
+        <button onclick="playsound('letter_ok')">letter_ok</button>
+        <button onclick="playsound('letter_bad')">letter_bad</button>
+        <button onclick="playsound('letter_missing')">letter_missing</button>
+        <button onclick="playsound('letter_bonus')">letter_bonus</button>
+        <button onclick="playsound('wrong')">wrong</button>
+        <button onclick="playsound('victory')">victory</button>
+        <button onclick="playsound('temps_ecoule')">temps_ecoule</button>
+        <button onclick="playsound('loose')">loose</button>
+      </div>
 
     </div>
 

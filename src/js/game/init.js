@@ -25,7 +25,7 @@
 
         // DEBUG
         debug_index = 0;
-        version_name = "2.0.3 - Pre-release 5";
+        version_name = "2.0.3 - Pre-release 6";
         document.getElementById("version").innerHTML = version_name;
     }
 
@@ -92,6 +92,8 @@
             createLetterGrid();
             initialisationMot();
             nouvelleLigne();
+
+           
         }
 
         displayPage("letter_grid_page");
