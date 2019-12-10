@@ -37,6 +37,9 @@ function initialisationMot() {   // Mise dans le tableau word_to_find le word_to
 	word_composed_letter_amount = [];
 	word_composed_letter_amount_dup = [];
 	
+	word_displayed = false;
+	word_found = false;
+	
 	for (var i = 0; i < word_length; i++) {		//Décomposition du mot vers word_to_find_tab
 		word_to_find_tab[i] = word_to_find.substr(i, 1);
 	}
@@ -379,10 +382,9 @@ function animationVerificationProposition() {		//Fonction nécéssitant une bouc
 		placing_dup = [];
 		
 		if (word_proposed == word_to_find) { // Mot trouvé
-				playsound("victory");
 				word_found = true;
-
-				console.log(try_count_index);
+				word_displayed = true;
+				playsound("victory");
 
 				document.getElementById("line_" + try_count_index).className = 'victory_line';
 
@@ -390,7 +392,7 @@ function animationVerificationProposition() {		//Fonction nécéssitant une bouc
 					document.getElementById(try_count_index + '_' + i).className += ' victory_line';
 				}
 
-				setTimeout(function() { reinitWord() } , 3000); //reinitialisation de la grille
+				setTimeout(function() { reinitWord() } , 4000); //reinitialisation de la grille
 		} else {
 			nouvelleLigne();
 		}			
@@ -402,7 +404,7 @@ function keyboardFocus() {
 }
 
 function wordInformation() {
-	if (word_displayed == true) {
+	if (word_displayed == true || word_found == true) {
 		if (confirm("Voulez-vous ouvrir une page wiktionary.org sur le mot " + word_to_find.toLowerCase() + "?")) {
 			window.open("https://fr.wiktionary.org/w/index.php?search=" + word_to_find.toLowerCase(), "_blank");
 		}

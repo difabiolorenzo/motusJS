@@ -9,7 +9,7 @@ function WordListAddRow(word_list_selected_word) {
     var word_list_row = word_list_table.insertRow(word_list_rowCount);
  
     word_list_row.insertCell(0).innerHTML= word_list_selected_word;
-    word_list_row.insertCell(1).innerHTML= '<input type="button" value = "supprimer" onClick="Javacsript:WordListDeleteRow(this)">';
+    word_list_row.insertCell(1).innerHTML= '<input type="button" value = "Supprimer" onClick="Javacsript:WordListDeleteRow(this)">';
 
     document.getElementById('word_list_selected_word').value = "";
 
@@ -36,4 +36,5 @@ function WordListDeleteRow(obj) {
 
 function UpdateStyle(value) {
     document.getElementById("letter_grid_page").className = "page style_" + value;
+    document.getElementById("number_grid_page").className = "page style_" + value;
 }

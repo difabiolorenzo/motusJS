@@ -7,6 +7,8 @@
         check_word_duplication = true;
         check_word_first_letter = true;
 
+        playsound_enabled = true;
+
         //GAME
         try_number_max = 6;
         lettre_plus_amount = 1;
@@ -25,7 +27,7 @@
 
         // DEBUG
         debug_index = 0;
-        version_name = "2.0.3 - Pre-release 6";
+        version_name = "2.0.3 - Pre-release 7";
         document.getElementById("version").innerHTML = version_name;
     }
 
@@ -33,44 +35,50 @@
 
     //SOUND
     function playsound(sound) {
-        if (sound == "letter_ok") {
-            $.playSound("src/sounds/lettre_ok.mp3")
-        }
-        if (sound == "letter_bad") {
-            $.playSound("src/sounds/lettre_mauvaise.mp3")
-        }
-        if (sound == "letter_missing") {
-            $.playSound("src/sounds/lettre_absente.mp3")
-        }
-        if (sound == "letter_bonus") {
-            $.playSound("src/sounds/lettre_bonus.mp3")
-        }
-        if (sound == "wrong") {
-            $.playSound("src/sounds/erreur.mp3")
-        }
-        if (sound == "victory") {
-            $.playSound("src/sounds/victory.mp3")
-        }
-        if (sound == "temps_ecoule") {
-            $.playSound("src/sounds/temps_ecoule.mp3")
-        }
-        if (sound == "loose") {
-            $.playSound("src/sounds/loose.mp3")
-        }
-        if (sound == "grille_creation") {
-            $.playSound("src/sounds/grille_creation.mp3")
-        }
-        if (sound == "grille_numero") {
-            $.playSound("src/sounds/grille_numero.mp3")
-        }
-        if (sound == "grille_boule_noire") {
-            $.playSound("src/sounds/grille_boule_noire.mp3")
-        }
-        if (sound == "grille_numero_tire") {
-            $.playSound("src/sounds/grille_numero_tire.mp3")
-        }
-        if (sound == "motus") {
-            $.playSound("src/sounds/motus.mp3")
+        if (playsound_enabled == true) {
+            switch (sound) {
+                case "letter_ok":
+                    $.playSound("src/sounds/lettre_ok.mp3");
+                    break;
+                case "letter_bad":
+                    $.playSound("src/sounds/lettre_mauvaise.mp3");
+                    break;
+                case "letter_missing":
+                    $.playSound("src/sounds/lettre_absente.mp3");
+                    break;
+                case "letter_bonus":
+                    $.playSound("src/sounds/lettre_bonus.mp3");
+                    break;
+                case "wrong":
+                    $.playSound("src/sounds/erreur.mp3");
+                    break;
+                case "victory":
+                    $.playSound("src/sounds/victory.mp3");
+                    break;
+                case "temps_ecoule":
+                    $.playSound("src/sounds/temps_ecoule.mp3");
+                    break;
+                case "loose":
+                    $.playSound("src/sounds/loose.mp3");
+                    break;
+                case "grille_creation":
+                    $.playSound("src/sounds/grille_creation.mp3");
+                    break;
+                case "grille_numero":
+                    $.playSound("src/sounds/grille_numero.mp3");
+                    break;
+                case "grille_boule_noire":
+                    $.playSound("src/sounds/grille_boule_noire.mp3");
+                    break;
+                case "grille_numero_tire":
+                    $.playSound("src/sounds/grille_numero_tire.mp3");
+                    break;
+                case "motus":
+                    $.playSound("src/sounds/motus.mp3");
+                    break;
+                default:
+                    break;
+            }
         }
     }
 

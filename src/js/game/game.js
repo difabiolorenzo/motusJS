@@ -1,3 +1,8 @@
+// animation 	animationIntervalID_1 animationAfficheSolution
+// 			    animationIntervalID_2 animationLettreBonus
+// 			    animationIntervalID_3 animationVerificationProposition
+// 			    animationIntervalID_4 animation
+    
     function displayPage(page_name) {        
         document.getElementById("main_menu").style = "display:none;"
         document.getElementById("settings_page").style = "display:none;"
@@ -10,8 +15,6 @@
     }
 
     function reinitWord() {
-        word_displayed = false;
-        word_found = false;
 
         word_to_find_list.splice(0, 1);
         if (word_to_find_list.length > 0) {
@@ -26,6 +29,7 @@
             while (prompt_new_word < 5 || prompt_new_word > 10 || prompt_new_word == undefined) {
                 prompt_new_word = Number(window.prompt("Plus aucun mot n'est prédéfini dans les paramètres, veuillez entrer le nombre de lettres (compris entre 5 et 10) du prochain mot tiré au hasard:", "8"));
                 if (prompt_new_word >= 5 || prompt_new_word <= 10) {
+
                     WordListAddRowRandom(prompt_new_word);
                     createLetterGrid();
                     initialisationMot();
@@ -38,7 +42,9 @@
     function debugMode() {
         debug_index++;
 
-        if (debug_index > 3) {
+        if (debug_index == 3) {
+            document.getElementById("grid_page_menu_button").style = "display: block";
+        } else if (debug_index == 4) {
             document.getElementById("debug_menu_button").style = "display: block";
         }
     }

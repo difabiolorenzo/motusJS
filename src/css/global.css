@@ -4,12 +4,14 @@
 }
 
 :root {
-    --motus_red: coral;
-    --red_button: #8a1216;
-    --red_button_hover: coral;
+    --motus_red: #A52A2E;
+    --motus_blue: #A6D5FF;
+    --motus_yellow: #ffe84e;
+    --button_red: #8a1216;
+    --button_red_hover: #691517;
+    --button_blue: #3c65a2;
+    --button_blue_hover: #233e67;
   }
-
-
 
 
 h1 {
@@ -49,7 +51,7 @@ button#nav_button {
 button,
 input,
 select {
-    background-color: var(--red_button);
+    background-color: rgba(0, 0, 0, 0.20);
     transition: all 0.25s;
     border: none;
     color: white;
@@ -64,20 +66,20 @@ select {
 button:hover,
 input:hover,
 select:hover {
-    background-color: #691517;
+    background-color: #0005;
 }
 
 
 .settings_page>button,
 input,
 select {
-    background-color: #3c65a2;
+    background-color: #00000040;
 }
 
 .settings_page>button:hover,
 input:hover,
 select:hover {
-    background-color: #233e67;
+    background-color: #00000080;
 }
 
 input[type="checkbox"i] {
@@ -98,7 +100,7 @@ body {
 }
 
 ::-webkit-scrollbar {
-  width: 0;
+  width: 1;
 }
 
 ::-webkit-scrollbar-track {
@@ -118,7 +120,7 @@ body {
 }
 
 div#main_menu {
-    background-color: #A52A2E;
+    background-color: var(--motus_red);
 }
 
 div#main_menu_content {
@@ -126,11 +128,11 @@ div#main_menu_content {
 }
 
 div#settings_page {
-    background-color: white;
+    background-color: #ffffff;
 }
 
 div#letter_grid_page {
-    background-color: #A6D5FF;
+    background-color: var(--motus_blue);
 }
 
 div#number_grid_page {
@@ -197,7 +199,7 @@ div#credit-up {
 }
 
 .settings_input {
-    background-color: #f2f2f2;
+    background-color: #0000001a;
     padding: 0.5vw;
     margin-top: 1vw;
 }
@@ -238,9 +240,6 @@ div#credit-up {
     table#word_list {
         padding:2vw;
     }
-}
-
-div#main_menu_topbar {
 }
 
 a#version {position: absolute;right: 0;bottom: 0;padding: 3%;}

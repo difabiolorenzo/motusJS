@@ -1,12 +1,12 @@
 <html>
 
 <head>
+  <title>MotusJS</title>
+  <meta charset="utf-8">
   <link rel="stylesheet" type="text/css" title="css" href="src/css/global.css">
   <link rel="stylesheet" type="text/css" title="css" href="src/css/grid_letter.css">
   <link rel="stylesheet" type="text/css" title="css" href="src/css/grid_number.css">
-  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MotusJS</title>
   <link rel="shortcut icon" type="image/x-icon" href="src/img/favicon.png">
 </head>
 
@@ -17,9 +17,12 @@
   <script type="text/javascript" src="./src/js/dictionary/dictionary_8.js"></script>
   <script type="text/javascript" src="./src/js/dictionary/dictionary_9.js"></script>
   <script type="text/javascript" src="./src/js/dictionary/dictionary_10.js"></script>
-  <script type="text/javascript" src="./src/js/letter/grid.js"></script>
+  <script type="text/javascript" src="./src/js/letter/letter_grid.js"></script>
   <script type="text/javascript" src="./src/js/letter/keyinput.js"></script>
   <script type="text/javascript" src="./src/js/number/number_grid.js"></script>
+  <script type="text/javascript" src="./src/js/number/grid_yellow_team.js"></script>
+  <script type="text/javascript" src="./src/js/number/grid_blue_team.js"></script>
+  <script type="text/javascript" src="./src/js/number/grid_placement.js"></script>
   <script type="text/javascript" src="./src/js/game/game.js"></script>
   <script type="text/javascript" src="./src/js/game/init.js"></script>
   <script type="text/javascript" src="./src/js/settings/settings.js"></script>
@@ -43,7 +46,8 @@
         <button class="big_button" onclick="displayPage('settings_page')">Paramètres</button>
         <button class="big_button" onclick="window.location.href = 'https://github.com/difabiolorenzo/motusJS'">GitHub</button>
         <button class="big_button" onclick="displayPage('credit_page')">Credits</button>
-        <button class="big_button" id="debug_menu_button" onclick="displayPage('number_grid_page')" style="display: none;">WIP</button>
+        <button class="big_button" id="grid_page_menu_button" onclick="displayPage('number_grid_page'); createNumberGrid('yellow'); createNumberGrid('blue'); initNumberDisplay('blue');" style="display: none;">Grilles numérotés</button>
+        <button class="big_button" id="debug_menu_button" onclick="displayPage('debug_page')" style="display: none;">Debug</button>
       </div>
     </div>
     <div id="version_placeolder">
@@ -124,6 +128,16 @@
             <tr>
               <th> <label name="check_word" for="check_first_letter_checkbox">Première lettre correspondante</label> </th>
               <th> <input class="input-checkbox" type="checkbox" name="check_first_letter_checkbox" checked="checked" disabled="true" onchange="check_first_letter = this.checked"> </th>
+            </tr>
+          </table>
+        </div>
+
+        <div class="settings_input">
+          <p>Son</p>
+          <table>
+            <tr>
+              <th> <label name="check_word" for="playsound_enabled_checkbox">Activer les bruitages</label> </th>
+              <th> <input class="input-checkbox" type="checkbox" name="playsound_enabled_checkbox" checked="checked" onchange="playsound_enabled = this.checked"> </th>
             </tr>
           </table>
         </div>
@@ -217,48 +231,43 @@
 
   <!-- Page: Grille des numéros -->
   <div class="page style_2010" id="number_grid_page" style="display:none;">
-    <h1>Grille des numéros</h1>
 
-    <div id="number_grid_placeolder">
-      <div id="number_grid_placeolder_yellow">
-        
-      </div>
-      <div id="number_grid_placeolder_blue">
-        
-      </div>
-      
-      <div>
-        <button onclick="createNumberGrid('yellow')">create letter grid yellow</button>
-        <button onclick="createNumberGrid('blue')">create letter grid blue</button>
-        <button onclick="displayPage('main_menu')">Retour</button>
-      </div>
-      <div>
-        <button onclick="playsound('grille_creation')">grille_creation</button>
-        <button onclick="playsound('grille_numero')">grille_numero</button>
-        <button onclick="playsound('grille_boule_noire')">grille_boule_noire</button>
-        <button onclick="playsound('grille_numero_tire')">grille_numero_tire</button>
-        <button onclick="playsound('motus')">motus</button>
-      </div>
-      <div>
-        <button onclick="playsound('letter_ok')">letter_ok</button>
-        <button onclick="playsound('letter_bad')">letter_bad</button>
-        <button onclick="playsound('letter_missing')">letter_missing</button>
-        <button onclick="playsound('letter_bonus')">letter_bonus</button>
-        <button onclick="playsound('wrong')">wrong</button>
-        <button onclick="playsound('victory')">victory</button>
-        <button onclick="playsound('temps_ecoule')">temps_ecoule</button>
-        <button onclick="playsound('loose')">loose</button>
-      </div>
+    <div class="number_grid_placeolder" id="number_grid_placeolder_yellow">
+    </div>
 
+    <div id="number_grid_placeolder_blue">
+    </div>
+
+    <div>
+      <button onclick="displayPage('main_menu')">Retour</button>
     </div>
 
   </div>
 
   <!-- Page: Debug -->
   <div class="page" id="debug_page" style="display:none; color:white;">
-    <h1>Debug</h1>
+    <div>
+      <h1>Debug</h1>
+      <button onclick="displayPage('main_menu')">Retour</button>
+    </div>
 
-    <button onclick="createLetterGrid()">create letter grid</button>
+    <p>
+      <button onclick="playsound('grille_creation')">grille_creation</button>
+      <button onclick="playsound('grille_numero')">grille_numero</button>
+      <button onclick="playsound('grille_boule_noire')">grille_boule_noire</button>
+      <button onclick="playsound('grille_numero_tire')">grille_numero_tire</button>
+      <button onclick="playsound('motus')">motus</button>
+    </p>
+    <p>
+      <button onclick="playsound('letter_ok')">letter_ok</button>
+      <button onclick="playsound('letter_bad')">letter_bad</button>
+      <button onclick="playsound('letter_missing')">letter_missing</button>
+      <button onclick="playsound('letter_bonus')">letter_bonus</button>
+      <button onclick="playsound('wrong')">wrong</button>
+      <button onclick="playsound('victory')">victory</button>
+      <button onclick="playsound('temps_ecoule')">temps_ecoule</button>
+      <button onclick="playsound('loose')">loose</button>
+    </p>
 
   </div>
 
@@ -284,6 +293,10 @@
         <h2>Code</h2>
         <p>motusJS est construit sur les base du code de <b>sogroo</b> avec son site <a href="http://www.anagrammeur.com/jeux/motus/motus.php">anagrammeur.com</a></p>
         <p>le code ayant été remanié du tout au tout, et ne ressamblant plus du tout au sien, je tiens tout de même à féliciter <b>sogroo</b> pour son travail.</p>
+      </div>
+      <div class="section">
+        <h2>Dictionnaires</h2>
+        <p>Les dictionnaires des mots de 5, 6, 7, 8, 9 et 10 lettres proviennent du jeu <a href="ftp://ftp.ac-grenoble.fr/ge/educational_games">XScrabble.</a></p>
       </div>
     </div>
   </div>
