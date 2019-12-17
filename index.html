@@ -35,7 +35,7 @@
   <div class="page" id="main_menu" style="display:block;">
     <!-- Contenu du menu principal -->
     <div id="main_menu_topbar">
-      <img src="./src/img/motus_logo_2014.png" onclick="debugMode()" id="logo"></img>
+      <img src="./src/img/motus_logo_2014.png" onclick="previewMode()" id="logo"></img>
     </div>
 
     <div id="main_menu_content">
@@ -44,10 +44,14 @@
       </div>
       <div>
         <button class="big_button" onclick="displayPage('settings_page')">Paramètres</button>
-        <button class="big_button" onclick="window.location.href = 'https://github.com/difabiolorenzo/motusJS'">GitHub</button>
+        <button class="big_button"
+          onclick="window.location.href = 'https://github.com/difabiolorenzo/motusJS'">GitHub</button>
         <button class="big_button" onclick="displayPage('credit_page')">Credits</button>
-        <button class="big_button" id="grid_page_menu_button" onclick="displayPage('number_grid_page'); createNumberGrid('yellow'); createNumberGrid('blue'); initNumberDisplay('blue');" style="display: none;">Grilles numérotés</button>
-        <button class="big_button" id="debug_menu_button" onclick="displayPage('debug_page')" style="display: none;">Debug</button>
+        <button class="big_button" id="grid_page_menu_button"
+          onclick="displayPage('number_grid_page'); createNumberGrid('yellow'); createNumberGrid('blue'); initNumberDisplay('blue');"
+          style="display: none;">Grilles numérotés</button>
+        <button class="big_button" id="debug_menu_button" onclick="displayPage('debug_page')"
+          style="display: none;">Debug</button>
       </div>
     </div>
     <div id="version_placeolder">
@@ -65,83 +69,121 @@
         <div class="section-flex" id="settings-top">
           <h1>Paramètres</h1>
           <button onclick="displayPage('main_menu')">Retour</button>
-          <button onclick="window.location.href = 'https://github.com/difabiolorenzo/motusJS/issues/new?'">Signaler un bug</button>
+          <button onclick="window.location.href = 'https://github.com/difabiolorenzo/motusJS/issues/new?'">Signaler un
+            bug</button>
           <button onclick="initGame()">Jouer</button>
         </div>
       </div>
 
       <div id="settings-right">
 
-        <div class="settings_input">
-          <p name="grid_style" for="grid_style">Style de la grille</p>
-          <select onchange="UpdateStyle(this.value);">
-            <option value="2010">2010</option>
-            <option value="2019">2019</option>
-            <option value="2000">2000</option>
-            <option value="1990">1990</option>
-          </select>
-        </div>
+        <div class="section-flex">
 
-        <div class="settings_input settings_disabled">
-          <p>Affichage:</p>
-          <table>
-            <tr>
-              <th> <label name="display_definition" for="display_definition">Définitions</label> </th>
-              <th> <input class="input-checkbox" type="checkbox" name="display_definition" id="display_definition_checkbox" > </th>
-            </tr>
-            <tr>
-              <th> <label name="display_animation" for="display_animation">Animations</label> </th>
-              <th> <input class="input-checkbox" type="checkbox" name="display_animation" id="display_definition_checkbox" checked="checked"> </th>
-            </tr>
-          </table>
-        </div>
+          <div class="settings_input">
+            <p name="grid_style" for="grid_style">Style de la grille</p>
+            <select onchange="UpdateStyle(this.value);">
+              <option value="2010">Années 2010</option>
+              <option value="2019">Années 2019</option>
+              <option value="2000">Années 2000</option>
+              <option value="1990">Années 1990</option>
+            </select>
+          </div>
 
-        <div class="settings_input settings_disabled">
-          <p>Boule Noire!:</p>
-          <table>
-            <tr>
-              <th> <label name="use_number_grid" for="use_number_grid">Utiliser la grille numérotée</label> </th>
-              <th> <input class="input-checkbox" type="checkbox" name="use_number_grid" id="display_definition_checkbox"> </th>
-            </tr>
-            <tr>
-              <th> <label name="use_number_grid" for="use_number_grid">Utiliser la boule magique</label> </th>
-              <th> <input class="input-checkbox" type="checkbox" name="use_number_grid" id="display_definition_checkbox"> </th>
-            </tr>
-          </table>
+          <div class="settings_input">
+              <p name="grid_style" for="grid_style">Temps de vérification</p>
+              <select onchange="timer = this.value;">
+                <option value=225>Normal</option>
+                <option value=500>Très très lent</option>
+                <option value=400>Très lent</option>
+                <option value=300>Lent</option>
+                <option value=200>Rapide</option>
+                <option value=100>Très rapide</option>
+                <option value=1>Instantané</option>
+              </select>
+            </div>
+
+          <div class="settings_input">
+            <p>Son</p>
+            <table>
+              <tbody>
+                <tr>
+                  <th> <label name="check_word" for="playsound_enabled_checkbox">Activer les bruitages</label> </th>
+                  <th> <input class="input-checkbox" type="checkbox" name="playsound_enabled_checkbox" checked="checked"
+                      onchange="playsound_enabled = this.checked"> </th>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="settings_input settings_disabled">
+            <p>Affichage:</p>
+            <table>
+              <tbody>
+                <tr>
+                  <th> <label name="display_definition" for="display_definition">Définitions</label> </th>
+                  <th> <input class="input-checkbox" type="checkbox" name="display_definition"
+                      id="display_definition_checkbox"> </th>
+                </tr>
+                <tr>
+                  <th> <label name="display_animation" for="display_animation">Animations</label> </th>
+                  <th> <input class="input-checkbox" type="checkbox" name="display_animation"
+                      id="display_definition_checkbox" checked="checked"> </th>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="settings_input settings_disabled">
+            <p>Boule Noire!:</p>
+            <table>
+              <tbody>
+                <tr>
+                  <th> <label name="use_number_grid" for="use_number_grid">Utiliser la grille numérotée</label> </th>
+                  <th> <input class="input-checkbox" type="checkbox" name="use_number_grid"
+                      id="display_definition_checkbox"> </th>
+                </tr>
+                <tr>
+                  <th> <label name="use_number_grid" for="use_number_grid">Utiliser la boule magique</label> </th>
+                  <th> <input class="input-checkbox" type="checkbox" name="use_number_grid"
+                      id="display_definition_checkbox"> </th>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <div class="settings_input">
           <p>Verifications des mots proposés:</p>
           <table>
-            <tr>
-              <th> <label name="check_word" for="check_word_presence_checkbox">Existe dans le dictionnaire</label> </th>
-              <th> <input class="input-checkbox" type="checkbox" name="check_word_presence_checkbox" checked="checked" onchange="check_word_presence = this.checked"> </th>
-            </tr>
-            <tr>
-              <th> <label name="check_word" for="check_word_duplication_checkbox">Déja proposé</label> </th>
-              <th> <input class="input-checkbox" type="checkbox" name="check_word_duplication_checkbox" checked="checked" onchange="check_word_duplication = this.checked"> </th>
-            </tr>
-            <tr>
-              <th> <label name="check_word" for="check_word_length_checkbox">Longueur du mot</label> </th>
-              <th> <input class="input-checkbox" type="checkbox" name="check_word_length_checkbox" checked="checked" onchange="check_word_length = this.checked"> </th>
-            </tr>
-            <tr>
-              <th> <label name="check_word" for="check_first_letter_checkbox">Première lettre correspondante</label> </th>
-              <th> <input class="input-checkbox" type="checkbox" name="check_first_letter_checkbox" checked="checked" disabled="true" onchange="check_first_letter = this.checked"> </th>
-            </tr>
+            <tbody>
+              <tr>
+                <th> <label name="check_word" for="check_word_presence_checkbox">Existe dans le dictionnaire</label>
+                </th>
+                <th> <input class="input-checkbox" type="checkbox" name="check_word_presence_checkbox" checked="checked"
+                    onchange="check_word_presence = this.checked"> </th>
+              </tr>
+              <tr>
+                <th> <label name="check_word" for="check_word_duplication_checkbox">Déja proposé</label> </th>
+                <th> <input class="input-checkbox" type="checkbox" name="check_word_duplication_checkbox"
+                    checked="checked" onchange="check_word_duplication = this.checked"> </th>
+              </tr>
+              <tr>
+                <th> <label name="check_word" for="check_word_length_checkbox">Longueur du mot</label> </th>
+                <th> <input class="input-checkbox" type="checkbox" name="check_word_length_checkbox" checked="checked"
+                    onchange="check_word_length = this.checked"> </th>
+              </tr>
+              <tr>
+                <th> <label name="check_word" for="check_first_letter_checkbox">Première lettre correspondante</label>
+                </th>
+                <th> <input class="input-checkbox" type="checkbox" name="check_first_letter_checkbox" checked="checked"
+                    onchange="check_word_first_letter = this.checked"> </th>
+              </tr>
+            </tbody>
           </table>
         </div>
 
-        <div class="settings_input">
-          <p>Son</p>
-          <table>
-            <tr>
-              <th> <label name="check_word" for="playsound_enabled_checkbox">Activer les bruitages</label> </th>
-              <th> <input class="input-checkbox" type="checkbox" name="playsound_enabled_checkbox" checked="checked" onchange="playsound_enabled = this.checked"> </th>
-            </tr>
-          </table>
-        </div>
-  
+
+
         <div class="settings_input">
           <p>Ajouter au hasard un mot de:</p>
           <div class="section-flex">
@@ -160,7 +202,7 @@
           </div>
         </div>
 
-        <div class="word_list_section settings_input" id="word_list_section_dropdown">
+        <div class="word_list_section settings_input">
 
           <div class="word_list_section" id="word_list_section_text">
             <p>Ajouter un mot manuellement:</p>
@@ -190,41 +232,44 @@
   <!-- Page: Grille de mot -->
   <div class="page style_2010" id="letter_grid_page" style="display:none;">
 
-    
+
 
     <div id="top_section">
-        <div id="letter_grid_placeolder" onclick="Javascript:keyboardFocus()">
-          <!-- emplacement pour la grille de mot -->
-        </div>
-      
-        <div class="input_section">
-          <input type="text" id="word_proposition_input" size="30" value="" maxlength="8">
-          <button class="flex_button" id="validate_button" onclick="submitWord()">Valider</button>
-        </div>
-    
-        <div id="score-placeolder" style="display:none;">
-          <a class="score" id="score_0" style="background-color: #FBC800;display: block;">0</a>
-          <a class="active_score" id="score_1" style="background-color: #1681C7;display: block;">0</a>
-          <a class="score" id="score_3" style="background-color: #a90910;display: block;">0</a>
-        </div>
+      <div id="letter_grid_placeolder">
+        <!-- emplacement pour la grille de mot -->
+      </div>
+
+      <div class="input_section">
+        <input type="text" id="word_proposition_input" size="30" value="" maxlength="8">
+        <button class="flex_button" id="validate_button" onclick="submitWord()">Valider</button>
+      </div>
+
+      <div id="score-placeolder" style="display:none;">
+        <a class="score" id="score_0" style="background-color: #FBC800;display: block;">0</a>
+        <a class="active_score" id="score_1" style="background-color: #1681C7;display: block;">0</a>
+        <a class="score" id="score_3" style="background-color: #a90910;display: block;">0</a>
+      </div>
     </div>
 
     <div id="bottom_section">
       <div class="flex_section">
-          <button class="flex_button" id="new_line_button" onclick="nouvelleLigne(); keyboardFocus()">Nouvelle Ligne</button>
-          <button class="flex_button" id="word_information_button" onclick="wordInformation()">Informations sur le mot</button>
-        </div>
-    
-        <div class="flex_section">
-          <button class="flex_button" id="bonus_letter_button" onclick="ajoutLettreBonus(); keyboardFocus()">Lettre
-            bonus</button>
-          <button class="flex_button" id="delete_line_button" onclick="suppressionLigne(); keyboardFocus()">Supprimer la
-            ligne</button>
-          <button class="flex_button" id="new_word_button" onclick="reinitWord(); keyboardFocus()">Nouveau Mot</button>
-          <button class="flex_button" id="display_word_button" onclick="affichageSolution(); keyboardFocus()">Afficher la réponse</button>
-            <button class="flex_button" onclick="displayPage('main_menu')">Retour</button>
-          <button class="flex_button" onclick="displayPage('settings_page')">Paramètres</button>
-        </div>
+        <button class="flex_button" id="new_line_button" onclick="nouvelleLigne(); keyboardFocus()">Nouvelle
+          Ligne</button>
+        <button class="flex_button" id="word_information_button" onclick="wordInformation()">Informations sur le
+          mot</button>
+      </div>
+
+      <div class="flex_section">
+        <button class="flex_button" id="bonus_letter_button" onclick="ajoutLettreBonus(); keyboardFocus()">Lettre
+          bonus</button>
+        <button class="flex_button" id="delete_line_button" onclick="suppressionLigne(); keyboardFocus()">Supprimer la
+          ligne</button>
+        <button class="flex_button" id="new_word_button" onclick="reinitWord(); keyboardFocus()">Nouveau Mot</button>
+        <button class="flex_button" id="display_word_button" onclick="affichageSolution(); keyboardFocus()">Afficher la
+          réponse</button>
+        <button class="flex_button" onclick="displayPage('main_menu')">Retour</button>
+        <button class="flex_button" onclick="displayPage('settings_page')">Paramètres</button>
+      </div>
     </div>
 
   </div>
@@ -281,22 +326,28 @@
       <div class="section">
         <h2>Motus</h2>
         <p>Motus est une marque déposé par FranceTélévision.</p>
-        <p>L’ensemble des éléments (logos, marques et autres éléments reproduits) sont réservés et protégés par le droit de la propriété intellectuelle, notamment les droits d’auteur, droits voisins, droits des marques, tous reviennent à <a href="https://www.francetelevisions.fr/cgu">francetelevisions</a></p>
+        <p>L’ensemble des éléments (logos, marques et autres éléments reproduits) sont réservés et protégés par le droit
+          de la propriété intellectuelle, notamment les droits d’auteur, droits voisins, droits des marques, tous
+          reviennent à <a href="https://www.francetelevisions.fr/cgu">francetelevisions</a></p>
         <p></p>
       </div>
       <div class="section">
         <h2>jQuery</h2>
         <p>l'utilisation de jQuery dans motusJS est limité à l'audio</p>
-        <p>Le code de jQuery est sous licence <a href="https://tldrlegal.com/license/creative-commons-cc0-1.0-universal">CC0</a></p>
+        <p>Le code de jQuery est sous licence <a
+            href="https://tldrlegal.com/license/creative-commons-cc0-1.0-universal">CC0</a></p>
       </div>
       <div class="section">
         <h2>Code</h2>
-        <p>motusJS est construit sur les base du code de <b>sogroo</b> avec son site <a href="http://www.anagrammeur.com/jeux/motus/motus.php">anagrammeur.com</a></p>
-        <p>le code ayant été remanié du tout au tout, et ne ressamblant plus du tout au sien, je tiens tout de même à féliciter <b>sogroo</b> pour son travail.</p>
+        <p>motusJS est construit sur les base du code de <b>sogroo</b> avec son site <a
+            href="http://www.anagrammeur.com/jeux/motus/motus.php">anagrammeur.com</a></p>
+        <p>le code ayant été remanié du tout au tout, et ne ressamblant plus du tout au sien, je tiens tout de même à
+          féliciter <b>sogroo</b> pour son travail.</p>
       </div>
       <div class="section">
         <h2>Dictionnaires</h2>
-        <p>Les dictionnaires des mots de 5, 6, 7, 8, 9 et 10 lettres proviennent du jeu <a href="ftp://ftp.ac-grenoble.fr/ge/educational_games">XScrabble.</a></p>
+        <p>Les dictionnaires des mots de 5, 6, 7, 8, 9 et 10 lettres proviennent du jeu <a
+            href="ftp://ftp.ac-grenoble.fr/ge/educational_games">XScrabble.</a></p>
       </div>
     </div>
   </div>

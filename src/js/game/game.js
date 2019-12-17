@@ -39,7 +39,7 @@
         }
     }
 
-    function debugMode() {
+    function previewMode() {
         debug_index++;
 
         if (debug_index == 3) {

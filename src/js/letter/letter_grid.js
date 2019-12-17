@@ -102,22 +102,9 @@ function breakDownWord() {
 	}
 }
 
-function letterAddFromKeyboard(letter) {
-	if (word_proposed_tab.length == 0) {
-		if (letter == word_to_find_tab[0]) {
-			word_proposed_tab.push(letter);
-		} else {
-			playsound("letter_missing");
-		}
-	} else {
-		word_proposed_tab.push(letter);
-	}
-	document.getElementById(try_count_index + '_' + (word_proposed_tab.length - 1)).innerHTML = word_proposed_tab[word_proposed_tab.length-1];
-}
-
 function submitWord() {
 	if (try_count_index < try_number_max) {
-		if (word_proposed == 0 && keyboardInput.value != "") {
+		if (word_proposed.length == 0 && keyboardInput.value.length == word_length) {
 			word_proposed = keyboardInput.value.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toUpperCase();
 	
 			for (var i = 0; i < word_length; i++) { //Décomposition du mot proposé dans input vers word_proposed_tab
@@ -170,18 +157,18 @@ function suppressionLigne() {		// Supprime la ligne
 	try_count_index--;
 }
 
-function ajoutLettre(lettre) {
-	if (word_proposed_tab.length == 0) {
-		if (lettre == word_to_find_tab[0]) {
-			word_proposed_tab.push(lettre);
+function letterAddFromKeyboard(letter) {
+	if (check_word_first_letter == true) {
+		if (word_proposed_tab.length <= 1 && letter == word_to_find_tab[0]) {
+			word_proposed_tab.push(letter);
+			document.getElementById(try_count_index + '_' + (word_proposed_tab.length - 1)).innerHTML = word_proposed_tab[word_proposed_tab.length-1];
 		} else {
 			playsound("letter_missing");
-		}
+		}	
 	} else {
-		word_proposed_tab.push(lettre);
+		word_proposed_tab.push(letter);
+		document.getElementById(try_count_index + '_' + (word_proposed_tab.length - 1)).innerHTML = word_proposed_tab[word_proposed_tab.length-1];
 	}
-	
-	document.getElementById(try_count_index + '_' + (word_proposed_tab.length - 1)).innerHTML = word_proposed_tab[word_proposed_tab.length-1];
 }
 
 function suppressionLettre() {		// Supprime les lettre de droite à gauche
@@ -397,10 +384,6 @@ function animationVerificationProposition() {		//Fonction nécéssitant une bouc
 			nouvelleLigne();
 		}			
 	}
-}
-
-function keyboardFocus() {
-	keyboardInput.focus();
 }
 
 function wordInformation() {

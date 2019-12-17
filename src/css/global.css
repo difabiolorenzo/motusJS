@@ -174,13 +174,8 @@ div#settings {
     margin-right: 1vw;
 }
 
-div#word_list_section_dropdown {
-    display: flex;
-    width: 100%;
-}
-
 .section-flex {
-    display: flex;
+    display: block;
     overflow-y: scroll;
 }
 
@@ -239,6 +234,10 @@ div#credit-up {
     }
     table#word_list {
         padding:2vw;
+    }
+    
+    .section-flex {
+        display: flex;
     }
 }
 
