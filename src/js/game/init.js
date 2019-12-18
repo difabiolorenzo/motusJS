@@ -27,7 +27,7 @@
 
         // DEBUG
         debug_index = 0;
-        version_name = "Release 2.0.3";
+        version_name = "Release 2.0.4";
         document.getElementById("version").innerHTML = version_name;
     }
 
