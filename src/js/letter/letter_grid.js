@@ -158,8 +158,8 @@ function suppressionLigne() {		// Supprime la ligne
 }
 
 function letterAddFromKeyboard(letter) {
-	if (check_word_first_letter == true) {
-		if (word_proposed_tab.length <= 1 && letter == word_to_find_tab[0]) {
+	if (check_word_first_letter == true && word_proposed_tab.length == 0 ) {
+		if (letter == word_to_find_tab[0]) {
 			word_proposed_tab.push(letter);
 			document.getElementById(try_count_index + '_' + (word_proposed_tab.length - 1)).innerHTML = word_proposed_tab[word_proposed_tab.length-1];
 		} else {
