@@ -24,6 +24,7 @@ Pour les règles complètes, voir ce lien: [https://fr.wikipedia.org/wiki/Motus_
 ** Nouveau mot avec la touche **"** ou **3**
 ** Affichage du mot avec la touche **'** ou **4**
 ** Suppression de la ligne avec la touche **(** ou **5**
+** Changement d'équipe ayant la main **(** ou **5**
 ** Son du temps écoulé avec la touche **$** (**¤**)
 
 * Boutons permettant les fonctions ci-dessus disponible en bas de la grille de mot.

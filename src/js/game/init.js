@@ -25,9 +25,20 @@
         game_started = false;
         game_paused = false;
 
+        //SCORE
+        score_addition = 50;
+        
+        score_yellow = 0;
+        score_blue = 0;
+
+        //TEAM
+        team_enabled = false;
+        change_turn_by_error = "by_error"; // Change de main à chaque erreur ("by_error" || "by_proposition")
+        team_focus = "yellow"; // L'équipe jaune à la main ("yellow" || "blue")
+
         // DEBUG
         debug_index = 0;
-        version_name = "Release 2.0.4";
+        version_name = "2.1 - Pre-release 1";
         document.getElementById("version").innerHTML = version_name;
     }
 

@@ -48,7 +48,7 @@
           onclick="window.location.href = 'https://github.com/difabiolorenzo/motusJS'">GitHub</button>
         <button class="big_button" onclick="displayPage('credit_page')">Credits</button>
         <button class="big_button" id="grid_page_menu_button"
-          onclick="displayPage('number_grid_page'); createNumberGrid('yellow'); createNumberGrid('blue'); initNumberDisplay('blue');"
+          onclick="displayPage('number_grid_page'); createNumberGrid('yellow'); createNumberGrid('blue');"
           style="display: none;">Grilles numérotés</button>
         <button class="big_button" id="debug_menu_button" onclick="displayPage('debug_page')"
           style="display: none;">Debug</button>
@@ -80,7 +80,7 @@
         <div class="section-flex">
 
           <div class="settings_input">
-            <p name="grid_style" for="grid_style">Style de la grille</p>
+            <p name="grid_style" >Style de la grille</p>
             <select onchange="UpdateStyle(this.value);">
               <option value="2010">Années 2010</option>
               <option value="2019">Années 2019</option>
@@ -90,44 +90,114 @@
           </div>
 
           <div class="settings_input">
-              <p name="grid_style" for="grid_style">Temps de vérification</p>
-              <select onchange="timer = this.value;">
-                <option value=225>Normal</option>
-                <option value=500>Très très lent</option>
-                <option value=400>Très lent</option>
-                <option value=300>Lent</option>
-                <option value=200>Rapide</option>
-                <option value=100>Très rapide</option>
-                <option value=1>Instantané</option>
-              </select>
-            </div>
+            <p name="grid_style" >Temps de vérification</p>
+            <select onchange="timer = this.value;">
+              <option value=225>Normal</option>
+              <option value=500>Très très lent</option>
+              <option value=400>Très lent</option>
+              <option value=300>Lent</option>
+              <option value=200>Rapide</option>
+              <option value=100>Très rapide</option>
+              <option value=1>Instantané</option>
+            </select>
+          </div>
 
           <div class="settings_input">
             <p>Son</p>
             <table>
               <tbody>
                 <tr>
-                  <th> <label name="check_word" for="playsound_enabled_checkbox">Activer les bruitages</label> </th>
-                  <th> <input class="input-checkbox" type="checkbox" name="playsound_enabled_checkbox" checked="checked"
+                  <th> <label name="check_word" >Activer les bruitages</label> </th>
+                  <th> <input class="input-checkbox" type="checkbox" name="playsound_enabled_checkbox" checked
                       onchange="playsound_enabled = this.checked"> </th>
                 </tr>
               </tbody>
             </table>
           </div>
 
+          <div class="settings_input">
+            <p>Équipes</p>
+            <table>
+              <tbody>
+                <tr>
+                  <th> <label name="check_word" >Activer les équipes</label> </th>
+                  <th> <input class="input-checkbox" type="checkbox" name="team_enabled_checkbox"
+                      onchange="UpdateTeamSettings(this.checked)"> </th>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="settings_input">
+            <p>Scores</p>
+
+            <div id="settings_section_score_addiction">
+              <p name="score_addition" >Nombre de points ajoutés</p>
+              <select onchange="score_addition = Math.floor(this.value);">
+                <option value=50>50 Points</option>
+                <option value=1>1 Point</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings_input" id="settings_section_team" style="display: none">
+          <p>Paramètre d'équipes:</p>
+
+          <div>
+
+            <table>
+              <tbody>
+                <tr>
+                  <th><label >Nom de l'équipe Jaune:</label></th>
+                  <th><input type="text" class="input-text" id="settings_input_yellow_team_name" name="" placeholder="Équipe Jaune" value="Équipe Jaune"></th>
+                </tr>
+                <tr>
+                  <th><label >Nom de l'équipe Bleue</label></th>
+                  <th> <input type="text" class="input-text" id="settings_input_blue_team_name" name="" placeholder="Équipe Bleue" value="Équipe Bleue"></th>
+                </tr>
+                <tr>
+                  <th><p name="score_addition" >Passer la main:</p></th>
+                  <th>
+                    <select onchange="change_turn_mode = this.value;">
+                      <option value=by_error>À chaque erreur</option>
+                      <option value=by_proposition>À chaque proposition</option>
+                    </select>
+                  </th>
+                </tr>
+              </tbody>
+            </table>
+            <div>
+            </div>
+            <div>
+              
+            </div>
+
+            
+            
+          </div>
+          
+        </div>
+
+
+
+
+        
+        <div class="section-flex">
+
           <div class="settings_input settings_disabled">
             <p>Affichage:</p>
             <table>
               <tbody>
                 <tr>
-                  <th> <label name="display_definition" for="display_definition">Définitions</label> </th>
+                  <th> <label name="display_definition" >Définitions</label> </th>
                   <th> <input class="input-checkbox" type="checkbox" name="display_definition"
-                      id="display_definition_checkbox"> </th>
+                      id="display_definition_checkbox" disabled> </th>
                 </tr>
                 <tr>
-                  <th> <label name="display_animation" for="display_animation">Animations</label> </th>
+                  <th> <label name="display_animation" >Animations</label> </th>
                   <th> <input class="input-checkbox" type="checkbox" name="display_animation"
-                      id="display_definition_checkbox" checked="checked"> </th>
+                      id="display_definition_checkbox" checked> </th>
                 </tr>
               </tbody>
             </table>
@@ -138,12 +208,12 @@
             <table>
               <tbody>
                 <tr>
-                  <th> <label name="use_number_grid" for="use_number_grid">Utiliser la grille numérotée</label> </th>
+                  <th> <label name="use_number_grid" >Utiliser la grille numérotée</label> </th>
                   <th> <input class="input-checkbox" type="checkbox" name="use_number_grid"
                       id="display_definition_checkbox"> </th>
                 </tr>
                 <tr>
-                  <th> <label name="use_number_grid" for="use_number_grid">Utiliser la boule magique</label> </th>
+                  <th> <label name="use_number_grid" >Utiliser la boule magique</label> </th>
                   <th> <input class="input-checkbox" type="checkbox" name="use_number_grid"
                       id="display_definition_checkbox"> </th>
                 </tr>
@@ -157,25 +227,25 @@
           <table>
             <tbody>
               <tr>
-                <th> <label name="check_word" for="check_word_presence_checkbox">Existe dans le dictionnaire</label>
+                <th> <label name="check_word" >Existe dans le dictionnaire</label>
                 </th>
-                <th> <input class="input-checkbox" type="checkbox" name="check_word_presence_checkbox" checked="checked"
+                <th> <input class="input-checkbox" type="checkbox" name="check_word_presence_checkbox" checked
                     onchange="check_word_presence = this.checked"> </th>
               </tr>
               <tr>
-                <th> <label name="check_word" for="check_word_duplication_checkbox">Déja proposé</label> </th>
+                <th> <label name="check_word" >Déja proposé</label> </th>
                 <th> <input class="input-checkbox" type="checkbox" name="check_word_duplication_checkbox"
-                    checked="checked" onchange="check_word_duplication = this.checked"> </th>
+                    checked onchange="check_word_duplication = this.checked"> </th>
               </tr>
               <tr>
-                <th> <label name="check_word" for="check_word_length_checkbox">Longueur du mot</label> </th>
-                <th> <input class="input-checkbox" type="checkbox" name="check_word_length_checkbox" checked="checked"
+                <th> <label name="check_word" >Longueur du mot</label> </th>
+                <th> <input class="input-checkbox" type="checkbox" name="check_word_length_checkbox" checked
                     onchange="check_word_length = this.checked"> </th>
               </tr>
               <tr>
-                <th> <label name="check_word" for="check_first_letter_checkbox">Première lettre correspondante</label>
+                <th> <label name="check_word" >Première lettre correspondante</label>
                 </th>
-                <th> <input class="input-checkbox" type="checkbox" name="check_first_letter_checkbox" checked="checked"
+                <th> <input class="input-checkbox" type="checkbox" name="check_first_letter_checkbox" checked
                     onchange="check_word_first_letter = this.checked"> </th>
               </tr>
             </tbody>
@@ -244,33 +314,37 @@
         <button class="flex_button" id="validate_button" onclick="submitWord()">Valider</button>
       </div>
 
-      <div id="score-placeolder" style="display:none;">
-        <a class="score" id="score_0" style="background-color: #FBC800;display: block;">0</a>
-        <a class="active_score" id="score_1" style="background-color: #1681C7;display: block;">0</a>
-        <a class="score" id="score_3" style="background-color: #a90910;display: block;">0</a>
+      <div id="score_placeolder">
+        <a class="active_score" id="score_0_panel" style="display: block;">0</a>
+        <a class="score" id="score_1_panel" style="display: none;">0</a>
       </div>
     </div>
 
     <div id="bottom_section">
       <div class="flex_section">
-        <button class="flex_button" id="new_line_button" onclick="nouvelleLigne(); keyboardFocus()">Nouvelle
+        <button class="flex_button" id="new_line_button" onclick="nouvelleLigne();">Nouvelle
           Ligne</button>
         <button class="flex_button" id="word_information_button" onclick="wordInformation()">Informations sur le
           mot</button>
       </div>
 
       <div class="flex_section">
-        <button class="flex_button" id="bonus_letter_button" onclick="ajoutLettreBonus(); keyboardFocus()">Lettre
+        <button class="flex_button" id="bonus_letter_button" onclick="ajoutLettreBonus();">Lettre
           bonus</button>
-        <button class="flex_button" id="delete_line_button" onclick="suppressionLigne(); keyboardFocus()">Supprimer la
-          ligne</button>
-        <button class="flex_button" id="new_word_button" onclick="reinitWord(); keyboardFocus()">Nouveau Mot</button>
-        <button class="flex_button" id="display_word_button" onclick="affichageSolution(); keyboardFocus()">Afficher la
+          <button class="flex_button" id="delete_line_button" onclick="suppressionLigne();">Supprimer la
+              ligne</button>
+        <button class="flex_button" id="change_team_button" onclick="switchTeamFocus()" style="display:none;">Changer d'équipe</button>
+      </div>
+
+      <div class="flex_section">
+        <button class="flex_button" id="display_word_button" onclick="affichageSolution();">Afficher la
           réponse</button>
-        <button class="flex_button" onclick="displayPage('main_menu')">Retour</button>
+        <button class="flex_button" id="new_word_button" onclick="reinitWord()">Nouveau Mot</button>
         <button class="flex_button" onclick="displayPage('settings_page')">Paramètres</button>
+        <button class="flex_button" onclick="displayPage('main_menu')">Retour</button>
       </div>
     </div>
+  </div>
 
   </div>
 
@@ -285,6 +359,8 @@
 
     <div>
       <button onclick="displayPage('main_menu')">Retour</button>
+      <button onclick=" initNumberDisplay('blue');">init blue</button>
+      <button onclick=" initNumberDisplay('yellow');">init yellow</button>
     </div>
 
   </div>

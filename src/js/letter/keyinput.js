@@ -30,6 +30,7 @@ document.addEventListener("keydown", function (event) {
 			suppressionLigne();
 		} else if (event.keyCode == 54) { // -
 			console.log("Key 6");
+			switchTeamFocus();
 		} else if (event.keyCode == 55) { // è
 			console.log('Key 7');
 		} else if (event.keyCode == 56) { // _
@@ -48,7 +49,7 @@ document.addEventListener("keydown", function (event) {
 				for (i = 0; i < 26; i++) {
 					if (i == (event.keyCode - 65) || i == (event.keyCode - 97)) {
 						letterAddFromKeyboard(String.fromCharCode(i + 65));
-						console.log(event.keyCode + " " + String.fromCharCode(i + 65));
+						// console.log(event.keyCode + " " + String.fromCharCode(i + 65));
 					}
 				}
 			}

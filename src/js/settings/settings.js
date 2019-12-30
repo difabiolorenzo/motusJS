@@ -10,6 +10,7 @@ function WordListAddRow(word_list_selected_word) {
  
     word_list_row.insertCell(0).innerHTML= word_list_selected_word;
     word_list_row.insertCell(1).innerHTML= '<input type="button" value = "Supprimer" onClick="Javacsript:WordListDeleteRow(this)">';
+    word_list_row.insertCell(2).innerHTML= '<input type="button" value = "Information sur ce mot" onClick="Javacsript:SearchInformationOnWord(this)">';
 
     document.getElementById('word_list_selected_word').value = "";
 
@@ -34,7 +35,44 @@ function WordListDeleteRow(obj) {
     word_to_find_list.splice(word_list_index-1, 1);
 }
 
+function SearchInformationOnWord(obj) {
+    word_list_index = obj.parentNode.parentNode.rowIndex;
+    console.log(word_to_find_list[word_list_index - 1])
+
+    if (confirm("Voulez-vous ouvrir une page wiktionary.org sur le mot " + word_to_find_list[word_list_index - 1].toLowerCase() + "?")) {
+			window.open("https://fr.wiktionary.org/w/index.php?search=" + word_to_find_list[word_list_index - 1].toLowerCase(), "_blank");
+	}
+}
+
 function UpdateStyle(value) {
     document.getElementById("letter_grid_page").className = "page style_" + value;
     document.getElementById("number_grid_page").className = "page style_" + value;
+}
+
+function UpdateScoreSettings(value) {
+    score_enabled = value;
+    if (value == true) {
+        document.getElementById("").style = "display:block"
+        document.getElementById("score_placeolder").style = "display:flex"
+    }
+}
+
+function UpdateTeamSettings(value) {
+    team_enabled = value;
+    if (value == true) {
+        // document.getElementById("settings_section_team").style = "display:block"
+
+        document.getElementById("score_1_panel").style = "display:block" // Le score de la seconde équipe s'affiche
+        document.getElementById("change_team_button").style = "display:block" // Le bouton de changement d'équipe s'affiche
+    } else {
+        // document.getElementById("settings_section_team").style = "display:none"
+        
+        document.getElementById("score_1_panel").style = "display:none" // Le score de la seconde équipe ne s'affiche pas
+        document.getElementById("change_team_button").style = "display:none" // Le bouton de changement d'équipe ne s'affiche pas
+
+        
+        document.getElementById("score_0_panel").className = "active_score" // Reinitialisation de l'ordre
+        document.getElementById("score_1_panel").className = "score"
+        team_focus = "yellow";
+    }
 }

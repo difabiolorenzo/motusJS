@@ -193,6 +193,12 @@ function animationAfficheSolution() {
 
 		if (word_found == false) {
 			playsound("loose");
+
+			switchTeamFocus(); // Change l'équipe de main
+		}
+
+		if (team_enabled == true) {
+			switchTeamFocus();
 		}
 
 		word_displayed = true;
@@ -239,6 +245,8 @@ function errorHandler(errorCode) {		// Affiche dans la console le terme de l'err
 	}
 	playsound("letter_missing");
 	playsound("wrong");
+
+	switchTeamFocus();
 
 	nouvelleLigne();
 }
@@ -330,8 +338,6 @@ function verificationProposition() {		// Vérifie par rapport à word_to_find le
 
 	if (i >= word_length) { // Fin de la vérification
 		console.log(placing);
-		console.log(placing_dup);
-		console.log(word_proposed_tab);
 		console.log(word_composed_letter);
 
 		for (i=0; i < placing.length; i++) { //duplication de word_composed_letter_amount
@@ -373,6 +379,8 @@ function animationVerificationProposition() {		//Fonction nécéssitant une bouc
 				word_displayed = true;
 				playsound("victory");
 
+				addScoreTeamFocus(); // Ajoute -score_addtion- à -team_focus-
+
 				document.getElementById("line_" + try_count_index).className = 'victory_line';
 
 				for (i=0 ; i<word_length ; i++) {
@@ -382,6 +390,10 @@ function animationVerificationProposition() {		//Fonction nécéssitant une bouc
 				setTimeout(function() { reinitWord() } , 4000); //reinitialisation de la grille
 		} else {
 			nouvelleLigne();
+
+			if (team_enabled == true && change_turn_by_error == "by_proposition") {
+				switchTeamFocus()
+			}
 		}			
 	}
 }

@@ -48,3 +48,33 @@
             document.getElementById("debug_menu_button").style = "display: block";
         }
     }
+
+    function addScoreTeamFocus() {
+        if (team_focus == "yellow") {
+            score_yellow += score_addition;
+        } else {
+            score_blue += score_addition;
+        }
+
+        document.getElementById("score_0_panel").innerHTML = score_yellow;
+        document.getElementById("score_1_panel").innerHTML = score_blue;
+
+    }
+
+    function switchTeamFocus() {
+        if (team_enabled == true) {
+            if (team_focus == "yellow") {
+                team_focus = "blue"
+    
+                document.getElementById("score_0_panel").className = "score"
+                document.getElementById("score_1_panel").className = "active_score"
+            } else {
+                team_focus = "yellow"
+    
+                document.getElementById("score_0_panel").className = "active_score"
+                document.getElementById("score_1_panel").className = "score"
+            }
+        }
+
+        console.log("L'équipe " + team_focus + " a maintenant la main.");
+    }
