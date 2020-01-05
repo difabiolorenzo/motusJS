@@ -8,7 +8,7 @@ function createLetterGrid() {
 	for (var j = 0; j <= try_number_max-1; j++) {
 		letter_html_table += "<tr id=\"line_" + j + "\"" +" >";
 		for (var i = 0; i < word_length; i++) {
-			letter_html_table += "<td id=" + j + "_" + i + " class=\"not_present\"></td>";
+			letter_html_table += "<td id=" + j + "_" + i + " class=\"background\"></td>";
 		}
 		letter_html_table += "</tr>";
 	}
@@ -361,7 +361,7 @@ function animationVerificationProposition() {		//Fonction nécéssitant une bouc
 		document.getElementById(try_count_index + '_' + verification_index).className = 'correct';
 	} else if (placing_dup[verification_index] == 2) {
 		playsound("letter_bad");
-		document.getElementById(try_count_index + '_' + verification_index).className = 'not_in_place';
+		document.getElementById(try_count_index + '_' + verification_index).innerHTML = "<div class=\"not_in_place\">" + document.getElementById(try_count_index + '_' + verification_index).innerHTML + "</div>" //ajout d'un div dans la cellule
 	}
 	verification_index++;
 

@@ -40,4 +40,6 @@ Pour les règles complètes, voir ce lien: [https://fr.wikipedia.org/wiki/Motus_
 
 ## Licences
 * Tous les sons et le principe du jeu sont sous les droits de France Télévisions
+* Sur les base du code de **Sogroo** avec son site [http://www.anagrammeur.com/jeux/motus/motus.php]
+* Les dictionnaires de mots sont tirés du Motus de **Sogroo** et de l'ODS4 présent dans **XScrabble** [ftp://ftp.ac-grenoble.fr/ge/educational_games]
 * jQuery est sous la license (MIT)[https://tldrlegal.com/license/mit-license]
