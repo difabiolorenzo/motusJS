@@ -38,7 +38,8 @@
 
         // DEBUG
         debug_index = 0;
-        version_name = "2.1 - Pre-release 3";
+        version_name = "2.1 - Pre-release 4";
+        version_id = "2.1-pre4"
         document.getElementById("version").innerHTML = version_name;
     }
 

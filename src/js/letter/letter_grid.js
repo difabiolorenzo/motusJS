@@ -148,7 +148,7 @@ function suppressionLigne() {		// Supprime la ligne
 
 	for (var i = 0; i < word_length; i++) {
 		document.getElementById(try_count_index + '_' + i).innerHTML = "";
-		document.getElementById(try_count_index + '_' + i).className = 'not_present';
+		document.getElementById(try_count_index + '_' + i).className = 'background';
 	}
 	for (var i = 0; i < word_length; i++) { 
 		lettre_ok.push('');
@@ -224,7 +224,7 @@ function ajoutLettreBonus() {		// Ajoute une lettre bonnus dans les emplacement 
 
 function animationLettreBonus() {
 	if ((j%2) == 1) {
-		document.getElementById(try_count_index + '_' + letter_bonus_placement).className = 'not_present';
+		document.getElementById(try_count_index + '_' + letter_bonus_placement).className = 'background';
 	} else {
 		document.getElementById(try_count_index + '_' + letter_bonus_placement).className = 'correct';
 	}
