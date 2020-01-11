@@ -181,7 +181,7 @@
   
   .style_1990 .correct {background-color: #d60063;}
   .style_2000 .correct {    background-color: #de562e;}
-  .style_2010 .correct {background-image: linear-gradient(#f3927e, #9c341b);box-shadow: 5px 5px 5px #ffac9e inset, -5px -5px 5px #883733 inset;}
+  .style_2010 .correct {background-image: linear-gradient(#f3927e, #9c341b);box-shadow: 3px 3px 5px #ffac9e inset, -3px -3px 5px #883733 inset;}
   .style_2019 .correct {    background-color: #e6030b;}
   
   .style_1990 tr.victory_line {    background-color: #ec00ad;}
