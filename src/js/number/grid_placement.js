@@ -40,3 +40,6 @@ var grid_placement_6 = new Array(
     "1", "0", "0", "1", "1",
     "1", "1", "1", "0", "1"
 );
+
+
+grid_placement = [grid_placement_1, grid_placement_2, grid_placement_3, grid_placement_4, grid_placement_5, grid_placement_6];

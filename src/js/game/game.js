@@ -68,6 +68,8 @@
     
                 document.getElementById("score_0_panel").className = "score"
                 document.getElementById("score_1_panel").className = "active_score"
+
+
             } else {
                 team_focus = "yellow"
     
@@ -77,4 +79,31 @@
         }
 
         console.log("L'équipe " + team_focus + " a maintenant la main.");
+    }
+
+    function wordInformation() {
+        if (word_displayed == true || word_found == true) {
+            if (confirm("Voulez-vous ouvrir une page wiktionary.org sur le mot " + word_to_find.toLowerCase() + "?")) {
+                window.open("https://fr.wiktionary.org/w/index.php?search=" + word_to_find.toLowerCase(), "_blank");
+            }
+        } else {
+            alert("Vous devez trouver le mot ou l'afficher pour pouvoir avoir des informations dessus.");
+        }
+        
+    }
+
+    function errorHandler(errorCode) {		// Affiche dans la console le terme de l'erreur
+        if (errorCode == 1) {
+            console.log("La longueur du word_to_find n'est pas la bonne.");
+        } else if (errorCode == 2) {
+            console.log("Mot non présent dans le dictionnaire");
+        } else if (errorCode == 3) {
+            console.log("Mot déjà proposé");
+        }
+        playsound("letter_missing");
+        playsound("wrong");
+
+        switchTeamFocus();
+
+        nouvelleLigne();
     }

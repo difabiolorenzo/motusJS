@@ -25,6 +25,11 @@
         game_started = false;
         game_paused = false;
 
+        animationIntervalID_1 = undefined
+        animationIntervalID_2 = undefined
+        animationIntervalID_3 = undefined
+        animationIntervalID_4 = undefined
+
         //SCORE
         score_addition = 50;
         
@@ -33,14 +38,19 @@
 
         //TEAM
         team_enabled = false;
-        change_turn_by_error = "by_error"; // Change de main à chaque erreur ("by_error" || "by_proposition")
+        change_turn_mode = "by_error"; // Change de main à chaque erreur ("by_error" || "by_proposition")
         team_focus = "yellow"; // L'équipe jaune à la main ("yellow" || "blue")
 
         // DEBUG
         debug_index = 0;
-        version_name = "2.1 - Pre-release 4";
-        version_id = "2.1-pre4"
+        version_name = "2.1 - Pre-release 5";
+        version_id = "2.1-pre5"
         document.getElementById("version").innerHTML = version_name;
+        regularCharExpression  = /^[a-z\u00C0-\u00ff]+$/;
+
+        //NUMBERGRID
+        number_grid_enabled = false;
+        use_saving_ball = false;
     }
 
 

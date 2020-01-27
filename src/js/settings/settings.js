@@ -25,6 +25,13 @@ function WordListAddRowRandom(letter_count) {
 
     WordListAddRow(word_list_random_word);
 }
+
+function WordAddCustom() {
+    wordInput = document.getElementById('word_list_selected_word').value
+    if (wordInput.length >= 5 && wordInput.length <= 10 && regularCharExpression.test(wordInput) == true) {
+        WordListAddRow(wordInput)
+    }
+}
  
 function WordListDeleteRow(obj) {
     var word_list_index = obj.parentNode.parentNode.rowIndex;
@@ -60,19 +67,35 @@ function UpdateScoreSettings(value) {
 function UpdateTeamSettings(value) {
     team_enabled = value;
     if (value == true) {
-        // document.getElementById("settings_section_team").style = "display:block"
-
+        // team activated
+        document.getElementById("settings_section_team").style = "display:block"
         document.getElementById("score_1_panel").style = "display:block" // Le score de la seconde équipe s'affiche
         document.getElementById("change_team_button").style = "display:block" // Le bouton de changement d'équipe s'affiche
+
+        document.getElementById("number_grid_placeolder_blue").style = "display:block";
     } else {
-        // document.getElementById("settings_section_team").style = "display:none"
-        
+
+        document.getElementById("settings_section_team").style = "display:none"
         document.getElementById("score_1_panel").style = "display:none" // Le score de la seconde équipe ne s'affiche pas
         document.getElementById("change_team_button").style = "display:none" // Le bouton de changement d'équipe ne s'affiche pas
 
-        
         document.getElementById("score_0_panel").className = "active_score" // Reinitialisation de l'ordre
         document.getElementById("score_1_panel").className = "score"
         team_focus = "yellow";
+
+        document.getElementById("number_grid_placeolder_blue").style = "display:none";
+    }
+}
+
+function UpdateNumberGridSettings(value) {
+    number_grid_enabled = value;
+    if (value == true) {
+        // number grid activated
+        document.getElementById("use_saving_ball_checkbox").disabled = false //checkbox saving ball inside settings
+        document.getElementById("number_grid_button").style = "display:inline-block" //bouton inside game
+    } else {
+        // number grid desactivated
+        document.getElementById("use_saving_ball_checkbox").disabled = true //checkbox saving ball inside settings
+        document.getElementById("number_grid_button").style = "display:none" //bouton inside game
     }
 }

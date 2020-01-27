@@ -47,9 +47,6 @@
         <button class="big_button"
           onclick="window.location.href = 'https://github.com/difabiolorenzo/motusJS'">GitHub</button>
         <button class="big_button" onclick="displayPage('credit_page')">Credits</button>
-        <button class="big_button" id="grid_page_menu_button"
-          onclick="displayPage('number_grid_page'); createNumberGrid('yellow'); createNumberGrid('blue');"
-          style="display: none;">Grilles numérotés</button>
         <button class="big_button" id="debug_menu_button" onclick="displayPage('debug_page')"
           style="display: none;">Debug</button>
       </div>
@@ -186,36 +183,18 @@
         <div class="section-flex">
 
           <div class="settings_input settings_disabled">
-            <p>Affichage:</p>
-            <table>
-              <tbody>
-                <tr>
-                  <th> <label name="display_definition" >Définitions</label> </th>
-                  <th> <input class="input-checkbox" type="checkbox" name="display_definition"
-                      id="display_definition_checkbox" disabled> </th>
-                </tr>
-                <tr>
-                  <th> <label name="display_animation" >Animations</label> </th>
-                  <th> <input class="input-checkbox" type="checkbox" name="display_animation"
-                      id="display_definition_checkbox" checked> </th>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div class="settings_input settings_disabled">
-            <p>Boule Noire!:</p>
+            <p>Grille numérotée:</p>
             <table>
               <tbody>
                 <tr>
                   <th> <label name="use_number_grid" >Utiliser la grille numérotée</label> </th>
                   <th> <input class="input-checkbox" type="checkbox" name="use_number_grid"
-                      id="display_definition_checkbox"> </th>
+                      id="use_number_grid_checkbox" onchange="UpdateNumberGridSettings(this.checked)"> </th>
                 </tr>
                 <tr>
-                  <th> <label name="use_number_grid" >Utiliser la boule magique</label> </th>
-                  <th> <input class="input-checkbox" type="checkbox" name="use_number_grid"
-                      id="display_definition_checkbox"> </th>
+                  <th> <label name="use_saving_ball" >Utiliser la "boule magique"</label> </th>
+                  <th> <input class="input-checkbox" type="checkbox" name="use_saving_ball"
+                      id="use_saving_ball_checkbox" disabled> </th>
                 </tr>
               </tbody>
             </table>
@@ -278,7 +257,9 @@
             <p>Ajouter un mot manuellement:</p>
             <input type="text" id="word_list_selected_word" style="text-transform:uppercase">
             <input type="button" id="add" value="Ajouter"
-              onclick="Javascript:WordListAddRow(document.getElementById('word_list_selected_word').value)">
+              onclick="WordAddCustom()">
+              <code>(Un mot ayant entre 5 et 10 lettres)</code>
+              
           </div>
         </div>
 
@@ -322,23 +303,19 @@
 
     <div id="bottom_section">
       <div class="flex_section">
-        <button class="flex_button" id="new_line_button" onclick="nouvelleLigne();">Nouvelle
-          Ligne</button>
-        <button class="flex_button" id="word_information_button" onclick="wordInformation()">Informations sur le
-          mot</button>
+        <button class="flex_button" id="new_line_button" onclick="nouvelleLigne();">Nouvelle Ligne</button>
+        <button class="flex_button" id="word_information_button" onclick="wordInformation()">Informations sur le mot</button>
       </div>
 
       <div class="flex_section">
-        <button class="flex_button" id="bonus_letter_button" onclick="ajoutLettreBonus();">Lettre
-          bonus</button>
-          <button class="flex_button" id="delete_line_button" onclick="suppressionLigne();">Supprimer la
-              ligne</button>
-        <button class="flex_button" id="change_team_button" onclick="switchTeamFocus()" style="display:none;">Changer d'équipe</button>
+        <button class="flex_button" id="bonus_letter_button" onclick="ajoutLettreBonus();">Lettre bonus</button>
+        <button class="flex_button" id="delete_line_button" onclick="suppressionLigne();">Supprimer la ligne</button>
+        <button class="flex_button" id="change_team_button" onclick="switchTeamFocus()" style="display:none;">Changer d'équipe</button>            
+        <button class="flex_button" id="number_grid_button" onclick="displayPage('number_grid_page');" style="display: none;">Grilles numérotés</button>
       </div>
 
       <div class="flex_section">
-        <button class="flex_button" id="display_word_button" onclick="affichageSolution();">Afficher la
-          réponse</button>
+        <button class="flex_button" id="display_word_button" onclick="affichageSolution();">Afficher la réponse</button>
         <button class="flex_button" id="new_word_button" onclick="reinitWord()">Nouveau Mot</button>
         <button class="flex_button" onclick="displayPage('settings_page')">Paramètres</button>
         <button class="flex_button" onclick="displayPage('main_menu')">Retour</button>
@@ -350,15 +327,94 @@
 
   <!-- Page: Grille des numéros -->
   <div class="page style_2010" id="number_grid_page" style="display:none;">
+    <div class="number_grid_placeolder">
+        <div id="number_grid_placeolder_yellow">
+          <table class="table_number">
+            <tbody>
+              <tr>
+                <td id="yellow_cell_0_0" class="cell_team_yellow"></td>
+                <td id="yellow_cell_0_1" class="cell_team_yellow"></td>
+                <td id="yellow_cell_0_2" class="cell_team_yellow"></td>
+                <td id="yellow_cell_0_3" class="cell_team_yellow"></td>
+                <td id="yellow_cell_0_4" class="cell_team_yellow"></td>
+              </tr>
+              <tr>
+                <td id="yellow_cell_1_0" class="cell_team_yellow"></td>
+                <td id="yellow_cell_1_1" class="cell_team_yellow"></td>
+                <td id="yellow_cell_1_2" class="cell_team_yellow"></td>
+                <td id="yellow_cell_1_3" class="cell_team_yellow"></td>
+                <td id="yellow_cell_1_4" class="cell_team_yellow"></td>
+              </tr>
+              <tr>
+                <td id="yellow_cell_2_0" class="cell_team_yellow"></td>
+                <td id="yellow_cell_2_1" class="cell_team_yellow"></td>
+                <td id="yellow_cell_2_2" class="cell_team_yellow"></td>
+                <td id="yellow_cell_2_3" class="cell_team_yellow"></td>
+                <td id="yellow_cell_2_4" class="cell_team_yellow"></td>
+              </tr>
+              <tr>
+                <td id="yellow_cell_3_0" class="cell_team_yellow"></td>
+                <td id="yellow_cell_3_1" class="cell_team_yellow"></td>
+                <td id="yellow_cell_3_2" class="cell_team_yellow"></td>
+                <td id="yellow_cell_3_3" class="cell_team_yellow"></td>
+                <td id="yellow_cell_3_4" class="cell_team_yellow"></td>
+              </tr>
+              <tr>
+                <td id="yellow_cell_4_0" class="cell_team_yellow"></td>
+                <td id="yellow_cell_4_1" class="cell_team_yellow"></td>
+                <td id="yellow_cell_4_2" class="cell_team_yellow"></td>
+                <td id="yellow_cell_4_3" class="cell_team_yellow"></td>
+                <td id="yellow_cell_4_4" class="cell_team_yellow"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
-    <div class="number_grid_placeolder" id="number_grid_placeolder_yellow">
-    </div>
-
-    <div id="number_grid_placeolder_blue">
+        <div id="number_grid_placeolder_blue" style="display:none">
+          <table class="table_number">
+            <tbody>
+              <tr>
+                <td id="blue_cell_0_0" class="cell_team_blue"></td>
+                <td id="blue_cell_0_1" class="cell_team_blue"></td>
+                <td id="blue_cell_0_2" class="cell_team_blue"></td>
+                <td id="blue_cell_0_3" class="cell_team_blue"></td>
+                <td id="blue_cell_0_4" class="cell_team_blue"></td>
+              </tr>
+              <tr>
+                <td id="blue_cell_1_0" class="cell_team_blue"></td>
+                <td id="blue_cell_1_1" class="cell_team_blue"></td>
+                <td id="blue_cell_1_2" class="cell_team_blue"></td>
+                <td id="blue_cell_1_3" class="cell_team_blue"></td>
+                <td id="blue_cell_1_4" class="cell_team_blue"></td>
+              </tr>
+              <tr>
+                <td id="blue_cell_2_0" class="cell_team_blue"></td>
+                <td id="blue_cell_2_1" class="cell_team_blue"></td>
+                <td id="blue_cell_2_2" class="cell_team_blue"></td>
+                <td id="blue_cell_2_3" class="cell_team_blue"></td>
+                <td id="blue_cell_2_4" class="cell_team_blue"></td>
+              </tr>
+              <tr>
+                <td id="blue_cell_3_0" class="cell_team_blue"></td>
+                <td id="blue_cell_3_1" class="cell_team_blue"></td>
+                <td id="blue_cell_3_2" class="cell_team_blue"></td>
+                <td id="blue_cell_3_3" class="cell_team_blue"></td>
+                <td id="blue_cell_3_4" class="cell_team_blue"></td>
+              </tr>
+              <tr>
+                <td id="blue_cell_4_0" class="cell_team_blue"></td>
+                <td id="blue_cell_4_1" class="cell_team_blue"></td>
+                <td id="blue_cell_4_2" class="cell_team_blue"></td>
+                <td id="blue_cell_4_3" class="cell_team_blue"></td>
+                <td id="blue_cell_4_4" class="cell_team_blue"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
     </div>
 
     <div>
-      <button onclick="displayPage('main_menu')">Retour</button>
+      <button onclick="displayPage('letter_grid_page')">Retour</button>
       <button onclick=" initNumberDisplay('blue');">init blue</button>
       <button onclick=" initNumberDisplay('yellow');">init yellow</button>
     </div>
@@ -372,14 +428,15 @@
       <button onclick="displayPage('main_menu')">Retour</button>
     </div>
 
-    <p>
+
+    <div>
       <button onclick="playsound('grille_creation')">grille_creation</button>
       <button onclick="playsound('grille_numero')">grille_numero</button>
       <button onclick="playsound('grille_boule_noire')">grille_boule_noire</button>
       <button onclick="playsound('grille_numero_tire')">grille_numero_tire</button>
       <button onclick="playsound('motus')">motus</button>
-    </p>
-    <p>
+    </div>
+    <div>
       <button onclick="playsound('letter_ok')">letter_ok</button>
       <button onclick="playsound('letter_bad')">letter_bad</button>
       <button onclick="playsound('letter_missing')">letter_missing</button>
@@ -388,7 +445,7 @@
       <button onclick="playsound('victory')">victory</button>
       <button onclick="playsound('temps_ecoule')">temps_ecoule</button>
       <button onclick="playsound('loose')">loose</button>
-    </p>
+    </div>
 
   </div>
 

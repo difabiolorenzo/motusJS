@@ -177,7 +177,8 @@ function suppressionLettre() {		// Supprime les lettre de droite à gauche
 }
 
 function affichageSolution() {		// Affiche la solution à la dérnière ligne, necessite une boucle en amont
-	animationIntervalID_1 = setInterval(function() {animationAfficheSolution()}, timer);
+
+	if (animationIntervalID_1 == undefined) { animationIntervalID_1 = setInterval(function() {animationAfficheSolution()}, timer); }
 }
 
 function animationAfficheSolution() {
@@ -190,6 +191,7 @@ function animationAfficheSolution() {
 		word_proposed_tab = [];
 		verification_index = 0;
 		clearInterval(animationIntervalID_1);
+		animationIntervalID_1 = undefined
 
 		if (word_found == false) {
 			playsound("loose");
@@ -207,17 +209,19 @@ function animationAfficheSolution() {
 }
 
 function ajoutLettreBonus() {		// Ajoute une lettre bonnus dans les emplacement non trouvés
-	for (var i = 0; i < word_length; i++) {
-		if (placing[i] != 1) {
-			document.getElementById(try_count_index + '_' + i).innerHTML = word_to_find_tab[i];
-			placing[i] = 1;
-			playsound("letter_bonus");
+	if (animationIntervalID_2 == undefined) {
+		for (var i = 0; i < word_length; i++) {
+			if (placing[i] != 1) {
+				document.getElementById(try_count_index + '_' + i).innerHTML = word_to_find_tab[i];
+				placing[i] = 1;
+				playsound("letter_bonus");
 
-			j = 0;
-			letter_bonus_placement = i;
-			animationIntervalID_2 = setInterval(function() {animationLettreBonus()}, 100);
+				j = 0;
+				letter_bonus_placement = i;
+				if (animationIntervalID_2 == undefined) { animationIntervalID_2 = setInterval(function() {animationLettreBonus()}, 100); }
 
-			break;
+				break;
+			}
 		}
 	}
 }
@@ -232,23 +236,8 @@ function animationLettreBonus() {
 
 	if (j == 8) {
 		clearInterval(animationIntervalID_2);
+		animationIntervalID_2 = undefined;
 	}
-}
-
-function errorHandler(errorCode) {		// Affiche dans la console le terme de l'erreur
-	if (errorCode == 1) {
-		console.log("La longueur du word_to_find n'est pas la bonne.");
-	} else if (errorCode == 2) {
-		console.log("Mot non présent dans le dictionnaire");
-	} else if (errorCode == 3) {
-		console.log("Mot déjà proposé");
-	}
-	playsound("letter_missing");
-	playsound("wrong");
-
-	switchTeamFocus();
-
-	nouvelleLigne();
 }
 
 function checkLength() {
@@ -391,20 +380,11 @@ function animationVerificationProposition() {		//Fonction nécéssitant une bouc
 		} else {
 			nouvelleLigne();
 
-			if (team_enabled == true && change_turn_by_error == "by_proposition") {
-				switchTeamFocus()
+			if (team_enabled == true && change_turn_mode == "by_proposition") {
+				switchTeamFocus();
 			}
 		}			
 	}
 }
 
-function wordInformation() {
-	if (word_displayed == true || word_found == true) {
-		if (confirm("Voulez-vous ouvrir une page wiktionary.org sur le mot " + word_to_find.toLowerCase() + "?")) {
-			window.open("https://fr.wiktionary.org/w/index.php?search=" + word_to_find.toLowerCase(), "_blank");
-		}
-	} else {
-		alert("Vous devez trouver le mot ou l'afficher pour pouvoir avoir des informations dessus.");
-	}
-	
-}
+
