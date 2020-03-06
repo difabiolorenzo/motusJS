@@ -11,32 +11,32 @@ document.addEventListener("keydown", function (event) {
 		} else if (event.keyCode == 13) { // enter
 			console.log('Enter');
 			submitWord();
-		} else if (event.keyCode == 48) { // à
+		} else if (event.keyCode == 48 || event.keyCode == 96 ) { // à
 			console.log('Key 0');
-		} else if (event.keyCode == 49) { // &
+			affichageSolution();
+		} else if (event.keyCode == 49 || event.keyCode == 97 ) { // &
 			console.log('Key 1');
 			nouvelleLigne();
-		} else if (event.keyCode == 50) { // é
+		} else if (event.keyCode == 50 || event.keyCode == 98 ) { // é
 			console.log('Key 2');
 			ajoutLettreBonus();
-		} else if (event.keyCode == 51) { // "
+		} else if (event.keyCode == 51 || event.keyCode == 99 ) { // "
 			console.log('Key 3');
-			reinitWord();
-		} else if (event.keyCode == 52) { // '
-			console.log("Key 4");
-			affichageSolution();
-		} else if (event.keyCode == 53) { // (
-			console.log("Key 5");
 			suppressionLigne();
-		} else if (event.keyCode == 54) { // -
-			console.log("Key 6");
+		} else if (event.keyCode == 52 || event.keyCode == 100 ) { // '
+			console.log("Key 4");
 			switchTeamFocus();
-		} else if (event.keyCode == 55) { // è
+		} else if (event.keyCode == 53 || event.keyCode == 101 ) { // (
+			console.log("Key 5");
+		} else if (event.keyCode == 54 || event.keyCode == 102 ) { // -
+			console.log("Key 6");
+		} else if (event.keyCode == 55 || event.keyCode == 103 ) { // è
 			console.log('Key 7');
-		} else if (event.keyCode == 56) { // _
+		} else if (event.keyCode == 56 || event.keyCode == 104 ) { // _
 			console.log('Key 8');
-		} else if (event.keyCode == 57) { // ç
+		} else if (event.keyCode == 57 || event.keyCode == 105 ) { // ç
 			console.log('Key 9');
+			reinitWord();
 		} else if (event.keyCode == 186) { // $ ¤ £
 			console.log('Key $');
 			playsound("temps_ecoule");
