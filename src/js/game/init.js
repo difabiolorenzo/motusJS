@@ -43,8 +43,8 @@
 
         // DEBUG
         debug_index = 0;
-        version_name = "Release 2.1";
-        version_id = "2.1"
+        version_name = "Release 2.1.1";
+        version_id = "2.1.1"
         document.getElementById("version").innerHTML = version_name;
         regularCharExpression  = /^[a-z\u00C0-\u00ff]+$/;
 
