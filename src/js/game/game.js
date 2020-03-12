@@ -12,6 +12,10 @@
         document.getElementById("debug_page").style = "display:none;"
         document.getElementById("credit_page").style = "display:none;"
 
+        if (page_name != "letter_grid_page") {
+            game_paused = true;
+        }
+
         document.getElementById(page_name).style = "display:block;"
     }
 
@@ -83,7 +87,7 @@
             }
             console.log("L'équipe " + team_focus + " a maintenant la main.");
         } else {
-            console.log("La fonction équipe n'est pas activée, vous pouvez le faire dans les paramètres");
+            console.log("Vous pouvez activer la fonction équipe dans le paramètres");
         }
     }
 

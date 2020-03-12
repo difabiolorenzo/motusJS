@@ -11,6 +11,9 @@ document.addEventListener("keydown", function (event) {
 		} else if (event.keyCode == 13) { // enter
 			console.log('Enter');
 			submitWord();
+		} else if (event.keyCode == 37) { // enter
+			console.log('Flèche gauche');
+			suppressionLettre();
 		} else if (event.keyCode == 48 || event.keyCode == 96 ) { // à
 			console.log('Key 0');
 			affichageSolution();

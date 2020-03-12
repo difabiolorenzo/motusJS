@@ -43,7 +43,7 @@
 
         // DEBUG
         debug_index = 0;
-        version_name = "2.2 - Pre-release 1"; document.getElementById("version").innerHTML = version_name;
+        version_name = "2.2 - Pre-release 2"; document.getElementById("version").innerHTML = version_name;
         regularCharExpression  = /^[a-zA-Z\u00C0-\u00ff]+$/;
         godmod = false
 
