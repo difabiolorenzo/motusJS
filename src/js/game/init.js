@@ -12,7 +12,6 @@
         //GAME
         try_number_max = 6;
         lettre_plus_amount = 1;
-        player_count = 1;
         word_found = undefined;
         word_displayed = false;
         dictionary_list = [dictionary_5, dictionary_6, dictionary_7, dictionary_8, dictionary_9, dictionary_10];
@@ -29,6 +28,7 @@
         animationIntervalID_2 = undefined
         animationIntervalID_3 = undefined
         animationIntervalID_4 = undefined
+        animationIntervalID_5 = undefined
 
         //SCORE
         score_addition = 50;
@@ -43,14 +43,38 @@
 
         // DEBUG
         debug_index = 0;
-        version_name = "Release 2.1.1";
-        version_id = "2.1.1"
-        document.getElementById("version").innerHTML = version_name;
-        regularCharExpression  = /^[a-z\u00C0-\u00ff]+$/;
+        version_name = "2.2 - Pre-release 1"; document.getElementById("version").innerHTML = version_name;
+        regularCharExpression  = /^[a-zA-Z\u00C0-\u00ff]+$/;
+        godmod = false
 
         //NUMBERGRID
-        number_grid_enabled = false;
-        use_saving_ball = false;
+        number_grid_enabled = true;
+        use_saving_ball = true;
+
+        black_ball_amount = 3;
+
+        sort_mode = "random"; // soit "random" ou "input"
+        grid_index = -1;
+        grid_j_index = 0;
+        grid_i_index = 0;
+        team_color_grid = [];
+
+        motus_engaged = false;	//il n'existe qu'un seul MOTUS par grille
+
+        yellow_grid_raw = [];
+        blue_grid_raw = [];
+        hided_number_spot = [];
+
+        motus_animation_index = 0;
+        picked_ball_animation = 0;
+        
+        yellow_purgatory = document.getElementById("yellow_purgatory");
+        blue_purgatory = document.getElementById("blue_purgatory");
+
+        yellow_saving_ball = undefined;
+        blue_saving_ball = undefined;
+        yellow_saving_ball_picked = false;
+        blue_saving_ball_picked = false;
     }
 
 
@@ -98,6 +122,9 @@
                 case "motus":
                     $.playSound("src/sounds/motus.mp3");
                     break;
+                case "boule_magique":
+                    $.playSound("src/sounds/boule_magique.mp3");
+                    break;
                 default:
                     break;
             }
@@ -122,6 +149,10 @@
             createLetterGrid();
             initialisationMot();
             nouvelleLigne();
+
+            if (number_grid_enabled == true) {
+                numberDisplay();
+            }
 
            
         }

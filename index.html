@@ -4,8 +4,8 @@
   <title>MotusJS</title>
   <meta charset="utf-8">
   <link rel="stylesheet" type="text/css" title="css" href="src/css/global.css">
-  <link rel="stylesheet" type="text/css" title="css" href="src/css/grid_letter.css">
-  <link rel="stylesheet" type="text/css" title="css" href="src/css/grid_number.css">
+  <link rel="stylesheet" type="text/css" title="css" href="src/css/letter_grid.css">
+  <link rel="stylesheet" type="text/css" title="css" href="src/css/number_grid.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="shortcut icon" type="image/x-icon" href="src/img/favicon.png">
 </head>
@@ -130,7 +130,7 @@
             <p>Scores</p>
 
             <div id="settings_section_score_addiction">
-              <p name="score_addition" >Nombre de points ajoutés</p>
+              <label name="score_addition" >Nombre de points ajoutés</label>
               <select onchange="score_addition = Math.floor(this.value);">
                 <option value=50>50 Points</option>
                 <option value=1>1 Point</option>
@@ -147,7 +147,7 @@
             <table>
               <tbody>
                 <tr>
-                  <th><p name="score_addition" >Passer la main:</p></th>
+                  <th><label name="score_addition" >Passer la main:</label></th>
                   <th>
                     <select onchange="change_turn_mode = this.value;">
                       <option value=by_error>À chaque erreur</option>
@@ -186,19 +186,19 @@
         
         <div class="section-flex">
 
-          <div class="settings_input settings_disabled">
+          <div class="settings_input ">
             <p>Grille numérotée:</p>
             <table>
               <tbody>
                 <tr>
                   <th> <label name="use_number_grid" >Utiliser la grille numérotée</label> </th>
-                  <th> <input class="input-checkbox" type="checkbox" name="use_number_grid"
+                  <th> <input class="input-checkbox" type="checkbox" name="use_number_grid" checked
                       id="use_number_grid_checkbox" onchange="UpdateNumberGridSettings(this.checked)"> </th>
                 </tr>
                 <tr>
                   <th> <label name="use_saving_ball" >Utiliser la "boule magique"</label> </th>
-                  <th> <input class="input-checkbox" type="checkbox" name="use_saving_ball"
-                      id="use_saving_ball_checkbox" disabled> </th>
+                  <th> <input class="input-checkbox" type="checkbox" name="use_saving_ball" checked
+                      id="use_saving_ball_checkbox" onchange="use_saving_ball = this.checked" > </th>
                 </tr>
               </tbody>
             </table>
@@ -314,8 +314,8 @@
       <div class="flex_section">
         <button class="flex_button" id="bonus_letter_button" onclick="ajoutLettreBonus();">Lettre bonus</button>
         <button class="flex_button" id="delete_line_button" onclick="suppressionLigne();">Supprimer la ligne</button>
-        <button class="flex_button" id="change_team_button" onclick="switchTeamFocus()" style="display:none;">Changer d'équipe</button>            
-        <button class="flex_button" id="number_grid_button" onclick="displayPage('number_grid_page');" style="display: none;">Grilles numérotés</button>
+        <button class="flex_button" id="change_team_letter_grid_button" onclick="switchTeamFocus()" style="display:none;">Changer d'équipe</button>            
+        <button class="flex_button" id="number_grid_button" onclick="displayPage('number_grid_page');">Grilles numérotés</button>
       </div>
 
       <div class="flex_section">
@@ -342,9 +342,18 @@
 
   <!-- Page: Grille des numéros -->
   <div class="page style_2010" id="number_grid_page" style="display:none;">
+
+    <div class="flex_section">
+      <button class="flex_button" onclick="displayPage('letter_grid_page')">Retour</button>
+      <button class="flex_button" onclick="numberDisplay()" id="button_change_grid">Changer la grille 1/6</button>
+      <button class="flex_button" onclick="switchTeamFocus()">Changer d'équipe</button>  
+      <button class="flex_button" onclick="pickBall()">Piocher</button>    
+    </div>
+
+
     <div class="number_grid_placeolder">
         <div id="number_grid_placeolder_yellow">
-          <table class="table_number">
+          <table class="table_number" id="number_grid_yellow" onclick="pickBall()">
             <tbody>
               <tr>
                 <td id="yellow_cell_0_0" class="cell_team_yellow"></td>
@@ -383,10 +392,13 @@
               </tr>
             </tbody>
           </table>
+
+          <table id="yellow_purgatory" class="purgatory">
+          </table>
         </div>
 
-        <div id="number_grid_placeolder_blue" style="display:none">
-          <table class="table_number">
+        <div id="number_grid_placeolder_blue" style="display:none;">
+          <table class="table_number" id="number_grid_blue" onclick="pickBall()">
             <tbody>
               <tr>
                 <td id="blue_cell_0_0" class="cell_team_blue"></td>
@@ -425,13 +437,10 @@
               </tr>
             </tbody>
           </table>
-        </div>
-    </div>
 
-    <div>
-      <button onclick="displayPage('letter_grid_page')">Retour</button>
-      <button onclick=" initNumberDisplay('blue');">init blue</button>
-      <button onclick=" initNumberDisplay('yellow');">init yellow</button>
+          <table id="blue_purgatory" class="purgatory">
+          </table>
+        </div>
     </div>
 
   </div>
@@ -450,14 +459,25 @@
       <button onclick="playsound('grille_boule_noire')">grille_boule_noire</button>
       <button onclick="playsound('grille_numero_tire')">grille_numero_tire</button>
       <button onclick="playsound('motus')">motus</button>
+      <button onclick="playsound('boule_magique')">boule_magique</button>
     </div>
+    <br>
+
     <div>
       <button onclick="playsound('letter_ok')">letter_ok</button>
       <button onclick="playsound('letter_bad')">letter_bad</button>
       <button onclick="playsound('letter_missing')">letter_missing</button>
       <button onclick="playsound('letter_bonus')">letter_bonus</button>
       <button onclick="playsound('wrong')">wrong</button>
+    <div>
+    <br>
+
+    </div>
       <button onclick="playsound('victory')">victory</button>
+    <div>
+    <br>
+
+    </div>
       <button onclick="playsound('temps_ecoule')">temps_ecoule</button>
       <button onclick="playsound('loose')">loose</button>
     </div>

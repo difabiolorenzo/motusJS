@@ -1,7 +1,8 @@
 // animation 	animationIntervalID_1 animationAfficheSolution
 // 			    animationIntervalID_2 animationLettreBonus
 // 			    animationIntervalID_3 animationVerificationProposition
-// 			    animationIntervalID_4 animation
+// 			    animationIntervalID_4 animationPickedBall
+// 			    animationIntervalID_5 animationMOTUS
     
     function displayPage(page_name) {        
         document.getElementById("main_menu").style = "display:none;"
@@ -69,16 +70,21 @@
                 document.getElementById("score_0_panel").className = "score"
                 document.getElementById("score_1_panel").className = "active_score"
 
-
+                document.getElementById("number_grid_placeolder_blue").style = "display:block";
+                document.getElementById("number_grid_placeolder_yellow").style = "display:none";
             } else {
                 team_focus = "yellow"
     
                 document.getElementById("score_0_panel").className = "active_score"
                 document.getElementById("score_1_panel").className = "score"
-            }
-        }
 
-        console.log("L'équipe " + team_focus + " a maintenant la main.");
+                document.getElementById("number_grid_placeolder_yellow").style = "display:block";
+                document.getElementById("number_grid_placeolder_blue").style = "display:none";
+            }
+            console.log("L'équipe " + team_focus + " a maintenant la main.");
+        } else {
+            console.log("La fonction équipe n'est pas activée, vous pouvez le faire dans les paramètres");
+        }
     }
 
     function wordInformation() {
@@ -103,7 +109,9 @@
         playsound("letter_missing");
         playsound("wrong");
 
-        switchTeamFocus();
+        if (team_enabled == true) {
+            switchTeamFocus();
+        }
 
         nouvelleLigne();
     }

@@ -9,8 +9,8 @@ function WordListAddRow(word_list_selected_word) {
     var word_list_row = word_list_table.insertRow(word_list_rowCount);
  
     word_list_row.insertCell(0).innerHTML= word_list_selected_word;
-    word_list_row.insertCell(1).innerHTML= '<input type="button" value = "Supprimer" onClick="Javacsript:WordListDeleteRow(this)">';
-    word_list_row.insertCell(2).innerHTML= '<input type="button" value = "Information sur ce mot" onClick="Javacsript:SearchInformationOnWord(this)">';
+    word_list_row.insertCell(1).innerHTML= '<input type="button" value = "❌" onClick="Javascript:WordListDeleteRow(this)">';
+    word_list_row.insertCell(2).innerHTML= '<input type="button" value = "Information sur ce mot" onClick="Javascript:SearchInformationOnWord(this)">';
 
     document.getElementById('word_list_selected_word').value = "";
 
@@ -71,13 +71,16 @@ function UpdateTeamSettings(value) {
         document.getElementById("settings_section_team").style = "display:block"
         document.getElementById("score_1_panel").style = "display:block" // Le score de la seconde équipe s'affiche
         document.getElementById("change_team_button").style = "display:block" // Le bouton de changement d'équipe s'affiche
-
-        document.getElementById("number_grid_placeolder_blue").style = "display:block";
+        
+        // if (team_focus == "blue") { 
+        //     document.getElementById("number_grid_placeolder_blue").style = "display:block";
+        // }
+        
     } else {
 
         document.getElementById("settings_section_team").style = "display:none"
         document.getElementById("score_1_panel").style = "display:none" // Le score de la seconde équipe ne s'affiche pas
-        document.getElementById("change_team_button").style = "display:none" // Le bouton de changement d'équipe ne s'affiche pas
+        document.getElementById("change_team_letter_grid_button").style = "display:none" // Le bouton de changement d'équipe ne s'affiche pas
 
         document.getElementById("score_0_panel").className = "active_score" // Reinitialisation de l'ordre
         document.getElementById("score_1_panel").className = "score"
@@ -93,6 +96,7 @@ function UpdateNumberGridSettings(value) {
         // number grid activated
         document.getElementById("use_saving_ball_checkbox").disabled = false //checkbox saving ball inside settings
         document.getElementById("number_grid_button").style = "display:inline-block" //bouton inside game
+        
     } else {
         // number grid desactivated
         document.getElementById("use_saving_ball_checkbox").disabled = true //checkbox saving ball inside settings

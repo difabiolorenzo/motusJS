@@ -56,9 +56,9 @@ function initialisationMot() {   // Mise dans le tableau word_to_find le word_to
 	
 	breakDownWord();
 	
-	console.log("word_to_find " + word_to_find); // Affichage du word_to_find tiré dans la console
-	console.log("word_composed_letter " + word_composed_letter);
-	console.log("word_composed_letter_amount " + word_composed_letter_amount);
+	console.log("Mot à trouver: " + word_to_find); // Affichage du word_to_find tiré dans la console
+	console.log("Lettres composant le mot: " + word_composed_letter);
+	console.log("Nombre de lettres composant le mot: " + word_composed_letter_amount);
 	
 	for (i=0; i<lettre_plus_amount; i++) {
 		var letter_plus = Math.floor(Math.random() * (word_length - 2) + 2); // Seconde lettre au premier word_to_find
@@ -368,13 +368,16 @@ function animationVerificationProposition() {		//Fonction nécéssitant une bouc
 				word_displayed = true;
 				playsound("victory");
 
-				addScoreTeamFocus(); // Ajoute -score_addtion- à -team_focus-
 
 				document.getElementById("line_" + try_count_index).className = 'victory_line';
 
 				for (i=0 ; i<word_length ; i++) {
 					document.getElementById(try_count_index + '_' + i).className += ' victory_line';
 				}
+
+				setTimeout(function() { 
+					addScoreTeamFocus(); //Ajoute score_addtion à team_focus
+				} , 2250);
 
 				setTimeout(function() { reinitWord() } , 4000); //reinitialisation de la grille
 		} else {
