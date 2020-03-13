@@ -195,12 +195,10 @@ function animationAfficheSolution() {
 
 		if (word_found == false) {
 			playsound("loose");
-
-			switchTeamFocus(); // Change l'équipe de main
 		}
 
 		if (team_enabled == true) {
-			switchTeamFocus();
+			switchTeamFocus(); // Change l'équipe de main
 		}
 
 		word_displayed = true;

@@ -132,6 +132,7 @@ body {
 }
 
 div#main_menu { background-color: var(--motus_red); }
+.style_1990#main_menu  { background-color: #172166;}
 div#main_menu_content { padding-left: 20%; }
 div#settings_page { background-color: #ffffff; }
 div#letter_grid_page { background-color: var(--motus_blue); }

@@ -200,6 +200,10 @@
                   <th> <input class="input-checkbox" type="checkbox" name="use_saving_ball" checked
                       id="use_saving_ball_checkbox" onchange="use_saving_ball = this.checked" > </th>
                 </tr>
+                <tr>
+                  <th> <label name="black_ball_amount" >Nombre de boules noires</label> </th>
+                  <th> <input class="input-checkbox" type="number" id="black_ball_amount" name="black_ball_amount" step="1" value="3" onchange="black_ball_amount = this.value"></th>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -343,7 +347,7 @@
   <!-- Page: Grille des numéros -->
   <div class="page style_2010" id="number_grid_page" style="display:none;">
 
-    <div class="flex_section" style="position: fixed;">
+    <div class="flex_section" style="position: fixed; display: flex;">
       <button class="flex_button" onclick="displayPage('letter_grid_page'); reinitWord()" id="button_return_letter_grid">Retour</button>
       <button class="flex_button" onclick="pickBall()" id="button_pick_number" style="display:none">Piocher</button>    
     </div>

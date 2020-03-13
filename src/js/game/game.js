@@ -120,5 +120,13 @@
             switchTeamFocus();
         }
 
+
+        setTimeout(function() { ligneRattrapage(); } , 3000);
+        
+    }
+
+    function ligneRattrapage() {
+        suppressionLigne();
         nouvelleLigne();
+        ajoutLettreBonus();
     }

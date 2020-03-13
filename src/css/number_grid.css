@@ -70,6 +70,13 @@ table.purgatory {
   padding-top: 0.75vw !important;
 }
 
+.number_grid_placeolder {
+    position: absolute;
+    width: inherit;
+    height: 92%;
+    margin-top: 10vw;
+}
+
 .blue_number.saving_ball {
   animation: saving_blue_ball_animation 0.5s ease-in-out infinite alternate;
 }
@@ -208,11 +215,10 @@ table.purgatory {
 .style_2010 table.purgatory { font-size: 3.3vw; height: auto; width: auto; margin-left: 0%;}
 .style_2019 table.purgatory { font-size: 3.15vw; }
 
-  }
+
 
 .number_grid_placeolder {
-    position: absolute;
-    width: inherit;
-    height: 92%;
     margin-top: 5vw;
 }
+
+  }

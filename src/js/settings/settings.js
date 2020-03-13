@@ -56,6 +56,15 @@ function SearchInformationOnWord(obj) {
 function UpdateStyle(value) {
     document.getElementById("letter_grid_page").className = "page style_" + value;
     document.getElementById("number_grid_page").className = "page style_" + value;
+    document.getElementById("main_menu").className = "page style_" + value;
+
+    if (value == 2010 || value == 2019) {
+        document.getElementById("logo").src = "src/img/motus_logo_2010.png"
+    } else if (value == 2000) {
+        document.getElementById("logo").src = "src/img/motus_logo_2000.png"
+    } else if (value == 1990) {
+        document.getElementById("logo").src = "src/img/motus_logo_1990.png"
+    }
 }
 
 function UpdateScoreSettings(value) {
