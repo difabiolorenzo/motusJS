@@ -43,7 +43,7 @@
 
         // DEBUG
         debug_index = 0;
-        version_name = "2.2 - Pre-release 2"; document.getElementById("version").innerHTML = version_name;
+        version_name = "2.2 - Pre-release 3"; document.getElementById("version").innerHTML = version_name;
         regularCharExpression  = /^[a-zA-Z\u00C0-\u00ff]+$/;
         godmod = false
 
@@ -52,6 +52,8 @@
         use_saving_ball = true;
 
         black_ball_amount = 3;
+        try_picking_ball = 2; //peux piocher X balles par tour
+        try_picking_ball_left = try_picking_ball;
 
         sort_mode = "random"; // soit "random" ou "input"
         grid_index = -1;
@@ -132,7 +134,7 @@
     }
 
     function initGame() {
-        if (game_started == false && game_paused == false) { // si le jeu commence mais n'est pas en pause > creation de la grille  
+        if (game_started == false) { // si le jeu commence mais n'est pas en pause > creation de la grille  
 
             if (word_to_find_list.length == 0) {
 
@@ -151,7 +153,7 @@
             nouvelleLigne();
 
             if (number_grid_enabled == true) {
-                numberDisplay();
+                changeGrid();
             }
 
            

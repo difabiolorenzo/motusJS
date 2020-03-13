@@ -379,7 +379,12 @@ function animationVerificationProposition() {		//Fonction nécéssitant une bouc
 					addScoreTeamFocus(); //Ajoute score_addtion à team_focus
 				} , 2250);
 
-				setTimeout(function() { reinitWord() } , 4000); //reinitialisation de la grille
+				if (number_grid_enabled == true) {
+					setTimeout(function() { goNumberPicking() } , 4000); //reinitialisation de la grille
+				} else {
+					setTimeout(function() { reinitWord() } , 4000); //reinitialisation de la grille
+				}
+				
 		} else {
 			nouvelleLigne();
 

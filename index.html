@@ -35,7 +35,7 @@
   <div class="page" id="main_menu" style="display:block;">
     <!-- Contenu du menu principal -->
     <div id="main_menu_topbar">
-      <img src="./src/img/motus_logo_2014.png" onclick="previewMode()" id="logo"></img>
+      <img src="./src/img/motus_logo_2010.png" onclick="previewMode()" id="logo"></img>
     </div>
 
     <div id="main_menu_content">
@@ -155,7 +155,7 @@
                     </select>
                   </th>
                 </tr>
-                <tr>
+                <!-- <tr>
                   <th><code>(Ne fonctionne pas)</code></th>
                 </tr>
                 <tr>
@@ -165,7 +165,7 @@
                 <tr>
                   <th><label >Nom de l'équipe Bleue</label></th>
                   <th> <input type="text" class="input-text" id="settings_input_blue_team_name" name="" placeholder="Équipe Bleue" value="Équipe Bleue"></th>
-                </tr>
+                </tr> -->
               </tbody>
             </table>
             <div>
@@ -314,8 +314,7 @@
       <div class="flex_section">
         <button class="flex_button" id="bonus_letter_button" onclick="ajoutLettreBonus();">Lettre bonus</button>
         <button class="flex_button" id="delete_line_button" onclick="suppressionLigne();">Supprimer la ligne</button>
-        <button class="flex_button" id="change_team_letter_grid_button" onclick="switchTeamFocus()" style="display:none;">Changer d'équipe</button>            
-        <button class="flex_button" id="number_grid_button" onclick="displayPage('number_grid_page');">Grilles numérotés</button>
+        <button class="flex_button" id="change_team_letter_grid_button" onclick="switchTeamFocus()" style="display:none;">Changer d'équipe</button>
       </div>
 
       <div class="flex_section">
@@ -344,17 +343,15 @@
   <!-- Page: Grille des numéros -->
   <div class="page style_2010" id="number_grid_page" style="display:none;">
 
-    <div class="flex_section">
-      <button class="flex_button" onclick="displayPage('letter_grid_page')">Retour</button>
-      <button class="flex_button" onclick="numberDisplay()" id="button_change_grid">Changer la grille 1/6</button>
-      <button class="flex_button" onclick="switchTeamFocus()">Changer d'équipe</button>  
-      <button class="flex_button" onclick="pickBall()">Piocher</button>    
+    <div class="flex_section" style="position: fixed;">
+      <button class="flex_button" onclick="displayPage('letter_grid_page'); reinitWord()" id="button_return_letter_grid">Retour</button>
+      <button class="flex_button" onclick="pickBall()" id="button_pick_number" style="display:none">Piocher</button>    
     </div>
 
 
     <div class="number_grid_placeolder">
         <div id="number_grid_placeolder_yellow">
-          <table class="table_number" id="number_grid_yellow" onclick="pickBall()">
+          <table class="table_number" id="number_grid_yellow">
             <tbody>
               <tr>
                 <td id="yellow_cell_0_0" class="cell_team_yellow"></td>
@@ -399,7 +396,7 @@
         </div>
 
         <div id="number_grid_placeolder_blue" style="display:none;">
-          <table class="table_number" id="number_grid_blue" onclick="pickBall()">
+          <table class="table_number" id="number_grid_blue">
             <tbody>
               <tr>
                 <td id="blue_cell_0_0" class="cell_team_blue"></td>

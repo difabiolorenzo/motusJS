@@ -163,7 +163,7 @@
       border-color: #80c9f8;
       font-family: Helvetica;
       font-weight: normal;
-      font-size: 5.75vw;
+      font-size: 6.33vw;
   }
   
   .style_1990 #table_letter { border-color: #4e5652;}
@@ -216,11 +216,11 @@
                             }
 
   .not_in_place {
-      height: 7.6vw;
-      width: 8vw;
+      height: 7.256vw;
+      width: 7.75vw;
       border-radius: 100%;
       box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.42);
-      margin-left: 2vw;
+      margin-left: 2.25vw;
       margin-right: -5vw;
       padding-top: 0.1vw;
   }
@@ -330,6 +330,7 @@ a#score_1_panel { background-color: #1681C7; }
       input#word_proposition_input {
         height: 0vw;
         width: 0%;
+        opacity: 0;
       }
 
       div.flex_section { display: flex; }

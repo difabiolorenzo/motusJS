@@ -14,7 +14,10 @@
 
         if (page_name != "letter_grid_page") {
             game_paused = true;
+        } else {
+            game_paused = false;
         }
+
 
         document.getElementById(page_name).style = "display:block;"
     }

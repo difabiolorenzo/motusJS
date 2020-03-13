@@ -67,6 +67,7 @@ table.purgatory {
   text-align: center;
   text-shadow: 2px 2px 5px rgba(0, 0, 0, .6);
   color: #000;
+  padding-top: 0.75vw !important;
 }
 
 .blue_number.saving_ball {
@@ -151,9 +152,9 @@ div#number_grid_placeolder_yellow {
 }
 
 table.table_number, table.purgatory {
-  width: 75%;
-  height: 75%;
-  margin-left: 12.75%;
+  width: 80%;
+  height: 87.5%;
+  margin-left: 10.3%;
   padding: 0;
   margin-top: 0vw;
   margin-bottom: 0vw;
@@ -166,13 +167,13 @@ table.purgatory {
 }
 
 .number, .purgatory_number {
-  height: 5.75vw;
-  width: 6.75vw;
+  height: 6.45vw;
+  width: 8.0vw;
   border-radius: 100%;
   box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.42);
   margin-left: 25%;
   margin-right: 0vw;
-  padding-top: 0.75vw;
+  padding-top: 1.45vw;
 }
 
 .purgatory_cell_team_yellow, .purgatory_cell_team_blue {
@@ -208,3 +209,10 @@ table.purgatory {
 .style_2019 table.purgatory { font-size: 3.15vw; }
 
   }
+
+.number_grid_placeolder {
+    position: absolute;
+    width: inherit;
+    height: 92%;
+    margin-top: 5vw;
+}

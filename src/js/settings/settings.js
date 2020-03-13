@@ -19,11 +19,13 @@ function WordListAddRow(word_list_selected_word) {
 }
 
 function WordListAddRowRandom(letter_count) {
-    var word_list_random_word_index = Math.floor(Math.random() * dictionary_list[letter_count-5].length);
-
-    var word_list_random_word = dictionary_list[letter_count-5][word_list_random_word_index];
-
-    WordListAddRow(word_list_random_word);
+    if (dictionary_list[letter_count-5] != undefined) {
+        var word_list_random_word_index = Math.floor(Math.random() * dictionary_list[letter_count-5].length);
+    
+        var word_list_random_word = dictionary_list[letter_count-5][word_list_random_word_index];
+    
+        WordListAddRow(word_list_random_word);
+    }
 }
 
 function WordAddCustom() {
@@ -70,7 +72,7 @@ function UpdateTeamSettings(value) {
         // team activated
         document.getElementById("settings_section_team").style = "display:block"
         document.getElementById("score_1_panel").style = "display:block" // Le score de la seconde équipe s'affiche
-        document.getElementById("change_team_button").style = "display:block" // Le bouton de changement d'équipe s'affiche
+        document.getElementById("change_team_letter_grid_button").style = "display:block" // Le bouton de changement d'équipe s'affiche
         
         // if (team_focus == "blue") { 
         //     document.getElementById("number_grid_placeolder_blue").style = "display:block";
@@ -95,11 +97,9 @@ function UpdateNumberGridSettings(value) {
     if (value == true) {
         // number grid activated
         document.getElementById("use_saving_ball_checkbox").disabled = false //checkbox saving ball inside settings
-        document.getElementById("number_grid_button").style = "display:inline-block" //bouton inside game
         
     } else {
         // number grid desactivated
         document.getElementById("use_saving_ball_checkbox").disabled = true //checkbox saving ball inside settings
-        document.getElementById("number_grid_button").style = "display:none" //bouton inside game
     }
 }
