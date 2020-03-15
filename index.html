@@ -39,17 +39,13 @@
     </div>
 
     <div id="main_menu_content">
-      <div>
-        <button class="big_button" onclick="initGame()" autofocus=true>Jouer</button>
-      </div>
-      <div>
-        <button class="big_button" onclick="displayPage('settings_page')">Paramètres</button>
-        <button class="big_button"
-          onclick="window.location.href = 'https://github.com/difabiolorenzo/motusJS'">GitHub</button>
-        <button class="big_button" onclick="displayPage('credit_page')">Credits</button>
-        <button class="big_button" id="debug_menu_button" onclick="displayPage('debug_page')"
-          style="display: none;">Debug</button>
-      </div>
+      <button class="big_button" onclick="initGame()" autofocus=true>Jouer</button>
+      <button class="big_button" onclick="displayPage('settings_page')">Paramètres</button>
+      <button class="big_button"
+        onclick="window.location.href = 'https://github.com/difabiolorenzo/motusJS'">GitHub</button>
+      <button class="big_button" onclick="displayPage('credit_page')">Credits</button>
+      <button class="big_button" id="debug_menu_button" onclick="displayPage('debug_page')"
+        style="display: none;">Debug</button>
     </div>
     <div id="version_placeolder">
       <a id="version">JavaScript Not Enambled :'(</a>
@@ -62,9 +58,8 @@
   <div class="page" id="settings_page" style="display:none;">
 
     <div id="settings">
-
       <div id="settings-up">
-        <div class="section-flex" id="settings-top">
+        <div class="section_flex" id="settings-top">
           <h1>Paramètres</h1>
           <button onclick="displayPage('main_menu')">Retour</button>
           <button onclick="window.location.href = 'https://github.com/difabiolorenzo/motusJS/issues/new?'">Signaler un
@@ -73,22 +68,36 @@
         </div>
       </div>
 
-      <div id="settings-right">
 
-        <div class="section-flex">
+      <div class="settings_input">
+        <p>Sons</p>
 
-          <div class="settings_input">
-            <p name="grid_style" >Style de la grille</p>
-            <select onchange="UpdateStyle(this.value);">
-              <option value="2010">Années 2010</option>
-              <option value="2019">Années 2019</option>
-              <option value="2000">Années 2000</option>
-              <option value="1990">Années 1990</option>
-            </select>
-          </div>
+        <div class="section_flex">
+          <table>
+            <tbody>
+              <tr>
+                <th> <label name="check_word">Activer les bruitages</label> </th>
+                <th> <input class="input-checkbox" type="checkbox" name="playsound_enabled_checkbox" checked
+                    onchange="playsound_enabled = this.checked"> </th>
+              </tr>
+              <tr>
+                <th> <label name="play_jingle">Activer le jingle</label> </th>
+                <th> <input class="input-checkbox" type="checkbox" name="play_jingle_checkbox"
+                    onchange="play_jingle = this.checked"> </th>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
-          <div class="settings_input">
-            <p name="grid_style" >Temps de vérification</p>
+      </div>
+
+
+      <div class="settings_input">
+        <p>Visuels</p>
+
+        <div class="section_flex">
+          <div>
+            <label name="grid_style">Temps de vérification</label>
             <select onchange="timer = this.value;">
               <option value=225>Normal</option>
               <option value=500>Très très lent</option>
@@ -96,64 +105,172 @@
               <option value=300>Lent</option>
               <option value=200>Rapide</option>
               <option value=100>Très rapide</option>
-              <option value=1>Instantané</option>
+              <option value=0>Instantané</option>
             </select>
           </div>
 
-          <div class="settings_input">
-            <p>Son</p>
-            <table>
-              <tbody>
-                <tr>
-                  <th> <label name="check_word" >Activer les bruitages</label> </th>
-                  <th> <input class="input-checkbox" type="checkbox" name="playsound_enabled_checkbox" checked
-                      onchange="playsound_enabled = this.checked"> </th>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div class="settings_input">
-            <p>Équipes</p>
-            <table>
-              <tbody>
-                <tr>
-                  <th> <label name="check_word" >Activer les équipes</label> </th>
-                  <th> <input class="input-checkbox" type="checkbox" name="team_enabled_checkbox"
-                      onchange="UpdateTeamSettings(this.checked)"> </th>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div class="settings_input">
-            <p>Scores</p>
-
-            <div id="settings_section_score_addiction">
-              <label name="score_addition" >Nombre de points ajoutés</label>
-              <select onchange="score_addition = Math.floor(this.value);">
-                <option value=50>50 Points</option>
-                <option value=1>1 Point</option>
-              </select>
-            </div>
+          <div>
+            <label name="grid_style" >Style de la grille</label>
+            <select onchange="UpdateStyle(this.value);">
+              <option value="2010">Années 2010</option>
+              <option value="2019">Années 2019</option>
+              <option value="2000">Années 2000</option>
+              <option value="1990">Années 1990</option>
+            </select>
           </div>
         </div>
 
-        <div class="settings_input" id="settings_section_team" style="display: none">
-          <p>Paramètre d'équipes:</p>
+      </div>
+
+
+      <div class="settings_input">
+        <p>Mots</p>
+
+        <div class="section_flex">
 
           <div>
-
             <table>
               <tbody>
                 <tr>
-                  <th><label name="score_addition" >Passer la main:</label></th>
+                  <th> <label>Verifications des mots proposés:</label> </th>
+                  <th> </th>
+                </tr>
+                <tr>
+                  <th> <label name="check_word">Existe dans le dictionnaire</label>
+                  </th>
+                  <th> <input class="input-checkbox" type="checkbox" name="check_word_presence_checkbox" checked
+                      onchange="check_word_presence = this.checked"> </th>
+                </tr>
+                <tr>
+                  <th> <label name="check_word">Déja proposé</label> </th>
+                  <th> <input class="input-checkbox" type="checkbox" name="check_word_duplication_checkbox" checked
+                      onchange="check_word_duplication = this.checked"> </th>
+                </tr>
+                <tr>
+                  <th> <label name="check_word">Longueur du mot</label> </th>
+                  <th> <input class="input-checkbox" type="checkbox" name="check_word_length_checkbox" checked
+                      onchange="check_word_length = this.checked"> </th>
+                </tr>
+                <tr>
+                  <th> <label name="check_word">Première lettre correspondante</label>
+                  </th>
+                  <th> <input class="input-checkbox" type="checkbox" name="check_first_letter_checkbox" checked
+                      onchange="check_word_first_letter = this.checked"> </th>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div>
+            <label name="grid_style"></label>
+            <table>
+              <tbody>
+                <tr>
+                  <th> <label>Possibilité de lettres bonus</label> </th>
+                </tr>
+                <tr>
+                  <th>
+                    <select onchange="lettre_plus_amount = this.value;">
+                      <option value=1>1</option>
+                      <option value=0>0</option>
+                      <option value=2>2</option>
+                      <option value=3>3</option>
+                    </select>
+                    </th>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+  
+          <div>
+            <th>
+              <table>
+                <tbody>
+                  <tr>
+                    <th><label name="always_ask">Longeur des mots</label></th>
+                    <th></th>
+                  </tr>
+                  <tr>
+                    <th> <label name="always_ask">Toujours utiliser des mots de</label>
+                    </th>
+                    <th> <input class="input-checkbox" type="checkbox" name="always_ask"
+                        onchange="always_ask = this.checked"> </th>
+                  </tr>
+                </tbody>
+              </table>
+  
+              <select onchange="always_ask_lenght = this.value;">
+                <option value=8>8 lettres</option>
+                <option value=5>5 lettres</option>
+                <option value=6>6 lettres</option>
+                <option value=7>7 lettres</option>
+                <option value=9>9 lettres</option>
+                <option value=10>10 lettres</option>
+              </select>
+          </div>
+
+        </div>
+      </div>
+
+
+
+      <div class="settings_input">
+        <p>Grilles numérotées</p>
+
+        <div class=" section_flex">
+          <table>
+            <tbody>
+              <tr>
+                <th> <label name="use_number_grid">Utiliser la grille numérotée</label> </th>
+                <th> <input class="input-checkbox" type="checkbox" name="use_number_grid" checked
+                    id="use_number_grid_checkbox" onchange="UpdateNumberGridSettings(this.checked)"> </th>
+              </tr>
+              <tr>
+                <th> <label name="use_saving_ball">Utiliser la "boule magique"</label> </th>
+                <th> <input class="input-checkbox" type="checkbox" name="use_saving_ball" checked
+                    id="use_saving_ball_checkbox" onchange="use_saving_ball = this.checked"> </th>
+              </tr>
+              <tr>
+                <th> <label name="black_ball_amount">Nombre de boules noires</label> </th>
+                <th> <input class="input-checkbox" type="number" id="black_ball_amount" name="black_ball_amount"
+                    step="1" value="3" onchange="black_ball_amount = this.value"></th>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+
+
+      <div class="settings_input">
+        <p>Équipes</p>
+
+        <div class="section_flex">
+          <div>
+            <table>
+              <tbody>
+                <tr>
+                  <th> <label name="check_word">Activer les équipes</label> </th>
+                  <th> <input class="input-checkbox" type="checkbox" name="team_enabled_checkbox"
+                      onchange="UpdateTeamSettings(this.checked)"> </th>
+                </tr>
+                <tr id="settings_section_team" style="display: none">
+                  <th><label name="score_addition">Passer la main:</label></th>
                   <th>
                     <select onchange="change_turn_mode = this.value;">
                       <option value=by_error>À chaque erreur</option>
                       <option value=by_proposition>À chaque proposition</option>
                     </select>
                   </th>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div >
+            <table>
+              <tbody>
+                <tr>
                 </tr>
                 <!-- <tr>
                   <th><code>(Ne fonctionne pas)</code></th>
@@ -168,110 +285,57 @@
                 </tr> -->
               </tbody>
             </table>
-            <div>
-            </div>
-            <div>
-              
-            </div>
-
-            
-            
-          </div>
-          
-        </div>
-
-
-
-
-        
-        <div class="section-flex">
-
-          <div class="settings_input ">
-            <p>Grille numérotée:</p>
-            <table>
-              <tbody>
-                <tr>
-                  <th> <label name="use_number_grid" >Utiliser la grille numérotée</label> </th>
-                  <th> <input class="input-checkbox" type="checkbox" name="use_number_grid" checked
-                      id="use_number_grid_checkbox" onchange="UpdateNumberGridSettings(this.checked)"> </th>
-                </tr>
-                <tr>
-                  <th> <label name="use_saving_ball" >Utiliser la "boule magique"</label> </th>
-                  <th> <input class="input-checkbox" type="checkbox" name="use_saving_ball" checked
-                      id="use_saving_ball_checkbox" onchange="use_saving_ball = this.checked" > </th>
-                </tr>
-                <tr>
-                  <th> <label name="black_ball_amount" >Nombre de boules noires</label> </th>
-                  <th> <input class="input-checkbox" type="number" id="black_ball_amount" name="black_ball_amount" step="1" value="3" onchange="black_ball_amount = this.value"></th>
-                </tr>
-              </tbody>
-            </table>
           </div>
         </div>
-
-        <div class="settings_input">
-          <p>Verifications des mots proposés:</p>
-          <table>
-            <tbody>
-              <tr>
-                <th> <label name="check_word" >Existe dans le dictionnaire</label>
-                </th>
-                <th> <input class="input-checkbox" type="checkbox" name="check_word_presence_checkbox" checked
-                    onchange="check_word_presence = this.checked"> </th>
-              </tr>
-              <tr>
-                <th> <label name="check_word" >Déja proposé</label> </th>
-                <th> <input class="input-checkbox" type="checkbox" name="check_word_duplication_checkbox"
-                    checked onchange="check_word_duplication = this.checked"> </th>
-              </tr>
-              <tr>
-                <th> <label name="check_word" >Longueur du mot</label> </th>
-                <th> <input class="input-checkbox" type="checkbox" name="check_word_length_checkbox" checked
-                    onchange="check_word_length = this.checked"> </th>
-              </tr>
-              <tr>
-                <th> <label name="check_word" >Première lettre correspondante</label>
-                </th>
-                <th> <input class="input-checkbox" type="checkbox" name="check_first_letter_checkbox" checked
-                    onchange="check_word_first_letter = this.checked"> </th>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-
-
-        <div class="settings_input">
-          <p>Ajouter au hasard un mot de:</p>
-          <div class="section-flex">
-            <input type="button" id="word_list_button_random" value="5 lettres"
-              onclick="Javascript:WordListAddRowRandom(5)">
-            <input type="button" id="word_list_button_random" value="6 lettres"
-              onclick="Javascript:WordListAddRowRandom(6)">
-            <input type="button" id="word_list_button_random" value="7 lettres"
-              onclick="Javascript:WordListAddRowRandom(7)">
-            <input type="button" id="word_list_button_random" value="8 lettres"
-              onclick="Javascript:WordListAddRowRandom(8)">
-            <input type="button" id="word_list_button_random" value="9 lettres"
-              onclick="Javascript:WordListAddRowRandom(9)">
-            <input type="button" id="word_list_button_random" value="10 lettres"
-              onclick="Javascript:WordListAddRowRandom(10)">
-          </div>
-        </div>
-
-        <div class="word_list_section settings_input">
-
-          <div class="word_list_section" id="word_list_section_text">
-            <p>Ajouter un mot manuellement:</p>
-            <input type="text" id="word_list_selected_word" style="text-transform:uppercase">
-            <input type="button" id="add" value="Ajouter"
-              onclick="WordAddCustom()">
-              <code>(Un mot ayant entre 5 et 10 lettres)</code>
-              
-          </div>
-        </div>
-
       </div>
+
+
+
+
+
+
+
+      <div class="settings_input">
+        <p>Scores</p>
+
+        <div id="settings_section_score_addiction">
+          <label name="score_addition">Nombre de points ajoutés</label>
+          <select onchange="score_addition = Math.floor(this.value);">
+            <option value=50>50 Points</option>
+            <option value=1>1 Point</option>
+          </select>
+        </div>
+      </div>
+
+      
+
+      <div class="settings_input">
+        <p>Ajouter au hasard un mot de:</p>
+        <div class="section_flex">
+          <input type="button" id="word_list_button_random" value="5 lettres"
+            onclick="Javascript:WordListAddRowRandom(5)">
+          <input type="button" id="word_list_button_random" value="6 lettres"
+            onclick="Javascript:WordListAddRowRandom(6)">
+          <input type="button" id="word_list_button_random" value="7 lettres"
+            onclick="Javascript:WordListAddRowRandom(7)">
+          <input type="button" id="word_list_button_random" value="8 lettres"
+            onclick="Javascript:WordListAddRowRandom(8)">
+          <input type="button" id="word_list_button_random" value="9 lettres"
+            onclick="Javascript:WordListAddRowRandom(9)">
+          <input type="button" id="word_list_button_random" value="10 lettres"
+            onclick="Javascript:WordListAddRowRandom(10)">
+        </div>
+      </div>
+
+      <div class="word_list_section settings_input">
+        <div class="word_list_section" id="word_list_section_text">
+          <p>Ajouter un mot manuellement:</p>
+          <input type="text" id="word_list_selected_word" style="text-transform:uppercase">
+          <input type="button" id="add" value="Ajouter" onclick="WordAddCustom()">
+          <code>(Un mot ayant entre 5 et 10 lettres)</code>
+        </div>
+      </div>
+
 
       <div id="settings-left">
         <div>
@@ -312,18 +376,22 @@
     <div id="bottom_section">
       <div class="flex_section">
         <button class="flex_button" id="new_line_button" onclick="nouvelleLigne();">Nouvelle Ligne</button>
-        <button class="flex_button" id="word_information_button" onclick="wordInformation()">Informations sur le mot</button>
+        <button class="flex_button" id="word_information_button" onclick="wordInformation()">Informations sur le
+          mot</button>
       </div>
 
       <div class="flex_section">
         <button class="flex_button" id="bonus_letter_button" onclick="ajoutLettreBonus();">Lettre bonus</button>
         <button class="flex_button" id="delete_line_button" onclick="suppressionLigne();">Supprimer la ligne</button>
-        <button class="flex_button" id="change_team_letter_grid_button" onclick="switchTeamFocus()" style="display:none;">Changer d'équipe</button>
+        <button class="flex_button" id="change_team_letter_grid_button" onclick="switchTeamFocus()"
+          style="display:none;">Changer d'équipe</button>
       </div>
 
       <div class="flex_section">
         <button class="flex_button" id="display_word_button" onclick="affichageSolution();">Afficher la réponse</button>
         <button class="flex_button" id="new_word_button" onclick="reinitWord()">Nouveau Mot</button>
+        <button class="flex_button" id="number_grid_button" onclick="displayPage('number_grid_page');" style="display:none">Grilles
+          numérotés</button>
         <button class="flex_button" onclick="displayPage('settings_page')">Paramètres</button>
         <button class="flex_button" onclick="displayPage('main_menu')">Retour</button>
       </div>
@@ -337,7 +405,7 @@
         <p>Changement de main d'équipe: <kbd>4</kbd> ou <kbd>'</kbd></p>
         <br>
         <p>Reinitialiser le mot en cours: <kbd>9</kbd> ou <kbd>ç</kbd></p>
-        <p>Affichage de la solution:  <kbd>0</kbd> ou <kbd>à</kbd></p>
+        <p>Affichage de la solution: <kbd>0</kbd> ou <kbd>à</kbd></p>
       </div>
     </div>
   </div>
@@ -348,101 +416,102 @@
   <div class="page style_2010" id="number_grid_page" style="display:none;">
 
     <div class="flex_section" style="position: fixed; display: flex;">
-      <button class="flex_button" onclick="displayPage('letter_grid_page'); reinitWord()" id="button_return_letter_grid">Retour</button>
-      <button class="flex_button" onclick="pickBall()" id="button_pick_number" style="display:none">Piocher</button>    
+      <button class="flex_button" onclick="displayPage('letter_grid_page'); reinitWord()"
+        id="button_return_letter_grid">Retour</button>
+      <button class="flex_button" onclick="pickBall()" id="button_pick_number" style="display:none">Piocher</button>
     </div>
 
 
     <div class="number_grid_placeolder">
-        <div id="number_grid_placeolder_yellow">
-          <table class="table_number" id="number_grid_yellow">
-            <tbody>
-              <tr>
-                <td id="yellow_cell_0_0" class="cell_team_yellow"></td>
-                <td id="yellow_cell_0_1" class="cell_team_yellow"></td>
-                <td id="yellow_cell_0_2" class="cell_team_yellow"></td>
-                <td id="yellow_cell_0_3" class="cell_team_yellow"></td>
-                <td id="yellow_cell_0_4" class="cell_team_yellow"></td>
-              </tr>
-              <tr>
-                <td id="yellow_cell_1_0" class="cell_team_yellow"></td>
-                <td id="yellow_cell_1_1" class="cell_team_yellow"></td>
-                <td id="yellow_cell_1_2" class="cell_team_yellow"></td>
-                <td id="yellow_cell_1_3" class="cell_team_yellow"></td>
-                <td id="yellow_cell_1_4" class="cell_team_yellow"></td>
-              </tr>
-              <tr>
-                <td id="yellow_cell_2_0" class="cell_team_yellow"></td>
-                <td id="yellow_cell_2_1" class="cell_team_yellow"></td>
-                <td id="yellow_cell_2_2" class="cell_team_yellow"></td>
-                <td id="yellow_cell_2_3" class="cell_team_yellow"></td>
-                <td id="yellow_cell_2_4" class="cell_team_yellow"></td>
-              </tr>
-              <tr>
-                <td id="yellow_cell_3_0" class="cell_team_yellow"></td>
-                <td id="yellow_cell_3_1" class="cell_team_yellow"></td>
-                <td id="yellow_cell_3_2" class="cell_team_yellow"></td>
-                <td id="yellow_cell_3_3" class="cell_team_yellow"></td>
-                <td id="yellow_cell_3_4" class="cell_team_yellow"></td>
-              </tr>
-              <tr>
-                <td id="yellow_cell_4_0" class="cell_team_yellow"></td>
-                <td id="yellow_cell_4_1" class="cell_team_yellow"></td>
-                <td id="yellow_cell_4_2" class="cell_team_yellow"></td>
-                <td id="yellow_cell_4_3" class="cell_team_yellow"></td>
-                <td id="yellow_cell_4_4" class="cell_team_yellow"></td>
-              </tr>
-            </tbody>
-          </table>
+      <div id="number_grid_placeolder_yellow">
+        <table class="table_number" id="number_grid_yellow">
+          <tbody>
+            <tr>
+              <td id="yellow_cell_0_0" class="cell_team_yellow"></td>
+              <td id="yellow_cell_0_1" class="cell_team_yellow"></td>
+              <td id="yellow_cell_0_2" class="cell_team_yellow"></td>
+              <td id="yellow_cell_0_3" class="cell_team_yellow"></td>
+              <td id="yellow_cell_0_4" class="cell_team_yellow"></td>
+            </tr>
+            <tr>
+              <td id="yellow_cell_1_0" class="cell_team_yellow"></td>
+              <td id="yellow_cell_1_1" class="cell_team_yellow"></td>
+              <td id="yellow_cell_1_2" class="cell_team_yellow"></td>
+              <td id="yellow_cell_1_3" class="cell_team_yellow"></td>
+              <td id="yellow_cell_1_4" class="cell_team_yellow"></td>
+            </tr>
+            <tr>
+              <td id="yellow_cell_2_0" class="cell_team_yellow"></td>
+              <td id="yellow_cell_2_1" class="cell_team_yellow"></td>
+              <td id="yellow_cell_2_2" class="cell_team_yellow"></td>
+              <td id="yellow_cell_2_3" class="cell_team_yellow"></td>
+              <td id="yellow_cell_2_4" class="cell_team_yellow"></td>
+            </tr>
+            <tr>
+              <td id="yellow_cell_3_0" class="cell_team_yellow"></td>
+              <td id="yellow_cell_3_1" class="cell_team_yellow"></td>
+              <td id="yellow_cell_3_2" class="cell_team_yellow"></td>
+              <td id="yellow_cell_3_3" class="cell_team_yellow"></td>
+              <td id="yellow_cell_3_4" class="cell_team_yellow"></td>
+            </tr>
+            <tr>
+              <td id="yellow_cell_4_0" class="cell_team_yellow"></td>
+              <td id="yellow_cell_4_1" class="cell_team_yellow"></td>
+              <td id="yellow_cell_4_2" class="cell_team_yellow"></td>
+              <td id="yellow_cell_4_3" class="cell_team_yellow"></td>
+              <td id="yellow_cell_4_4" class="cell_team_yellow"></td>
+            </tr>
+          </tbody>
+        </table>
 
-          <table id="yellow_purgatory" class="purgatory">
-          </table>
-        </div>
+        <table id="yellow_purgatory" class="purgatory">
+        </table>
+      </div>
 
-        <div id="number_grid_placeolder_blue" style="display:none;">
-          <table class="table_number" id="number_grid_blue">
-            <tbody>
-              <tr>
-                <td id="blue_cell_0_0" class="cell_team_blue"></td>
-                <td id="blue_cell_0_1" class="cell_team_blue"></td>
-                <td id="blue_cell_0_2" class="cell_team_blue"></td>
-                <td id="blue_cell_0_3" class="cell_team_blue"></td>
-                <td id="blue_cell_0_4" class="cell_team_blue"></td>
-              </tr>
-              <tr>
-                <td id="blue_cell_1_0" class="cell_team_blue"></td>
-                <td id="blue_cell_1_1" class="cell_team_blue"></td>
-                <td id="blue_cell_1_2" class="cell_team_blue"></td>
-                <td id="blue_cell_1_3" class="cell_team_blue"></td>
-                <td id="blue_cell_1_4" class="cell_team_blue"></td>
-              </tr>
-              <tr>
-                <td id="blue_cell_2_0" class="cell_team_blue"></td>
-                <td id="blue_cell_2_1" class="cell_team_blue"></td>
-                <td id="blue_cell_2_2" class="cell_team_blue"></td>
-                <td id="blue_cell_2_3" class="cell_team_blue"></td>
-                <td id="blue_cell_2_4" class="cell_team_blue"></td>
-              </tr>
-              <tr>
-                <td id="blue_cell_3_0" class="cell_team_blue"></td>
-                <td id="blue_cell_3_1" class="cell_team_blue"></td>
-                <td id="blue_cell_3_2" class="cell_team_blue"></td>
-                <td id="blue_cell_3_3" class="cell_team_blue"></td>
-                <td id="blue_cell_3_4" class="cell_team_blue"></td>
-              </tr>
-              <tr>
-                <td id="blue_cell_4_0" class="cell_team_blue"></td>
-                <td id="blue_cell_4_1" class="cell_team_blue"></td>
-                <td id="blue_cell_4_2" class="cell_team_blue"></td>
-                <td id="blue_cell_4_3" class="cell_team_blue"></td>
-                <td id="blue_cell_4_4" class="cell_team_blue"></td>
-              </tr>
-            </tbody>
-          </table>
+      <div id="number_grid_placeolder_blue" style="display:none;">
+        <table class="table_number" id="number_grid_blue">
+          <tbody>
+            <tr>
+              <td id="blue_cell_0_0" class="cell_team_blue"></td>
+              <td id="blue_cell_0_1" class="cell_team_blue"></td>
+              <td id="blue_cell_0_2" class="cell_team_blue"></td>
+              <td id="blue_cell_0_3" class="cell_team_blue"></td>
+              <td id="blue_cell_0_4" class="cell_team_blue"></td>
+            </tr>
+            <tr>
+              <td id="blue_cell_1_0" class="cell_team_blue"></td>
+              <td id="blue_cell_1_1" class="cell_team_blue"></td>
+              <td id="blue_cell_1_2" class="cell_team_blue"></td>
+              <td id="blue_cell_1_3" class="cell_team_blue"></td>
+              <td id="blue_cell_1_4" class="cell_team_blue"></td>
+            </tr>
+            <tr>
+              <td id="blue_cell_2_0" class="cell_team_blue"></td>
+              <td id="blue_cell_2_1" class="cell_team_blue"></td>
+              <td id="blue_cell_2_2" class="cell_team_blue"></td>
+              <td id="blue_cell_2_3" class="cell_team_blue"></td>
+              <td id="blue_cell_2_4" class="cell_team_blue"></td>
+            </tr>
+            <tr>
+              <td id="blue_cell_3_0" class="cell_team_blue"></td>
+              <td id="blue_cell_3_1" class="cell_team_blue"></td>
+              <td id="blue_cell_3_2" class="cell_team_blue"></td>
+              <td id="blue_cell_3_3" class="cell_team_blue"></td>
+              <td id="blue_cell_3_4" class="cell_team_blue"></td>
+            </tr>
+            <tr>
+              <td id="blue_cell_4_0" class="cell_team_blue"></td>
+              <td id="blue_cell_4_1" class="cell_team_blue"></td>
+              <td id="blue_cell_4_2" class="cell_team_blue"></td>
+              <td id="blue_cell_4_3" class="cell_team_blue"></td>
+              <td id="blue_cell_4_4" class="cell_team_blue"></td>
+            </tr>
+          </tbody>
+        </table>
 
-          <table id="blue_purgatory" class="purgatory">
-          </table>
-        </div>
+        <table id="blue_purgatory" class="purgatory">
+        </table>
+      </div>
     </div>
 
   </div>
@@ -454,42 +523,45 @@
       <button onclick="displayPage('main_menu')">Retour</button>
     </div>
 
-
-    <div>
-      <button onclick="playsound('grille_creation')">grille_creation</button>
-      <button onclick="playsound('grille_numero')">grille_numero</button>
-      <button onclick="playsound('grille_boule_noire')">grille_boule_noire</button>
-      <button onclick="playsound('grille_numero_tire')">grille_numero_tire</button>
-      <button onclick="playsound('motus')">motus</button>
-      <button onclick="playsound('boule_magique')">boule_magique</button>
+    <div class="flex_section">
+      <button class="nostyle_button" onclick="playsound('grille_creation')">grille_creation</button>
+      <button class="nostyle_button" onclick="playsound('grille_numero')">grille_numero</button>
+      <button class="nostyle_button" onclick="playsound('grille_boule_noire')">grille_boule_noire</button>
+      <button class="nostyle_button" onclick="playsound('grille_numero_tire')">grille_numero_tire</button>
+      <button class="nostyle_button" onclick="playsound('motus')">motus</button>
+      <button class="nostyle_button" onclick="playsound('boule_magique')">boule_magique</button>
     </div>
-    <br>
+    <hr>
 
+    <div class="flex_section">
+      <button class="nostyle_button" onclick="playsound('letter_ok')">letter_ok</button>
+      <button class="nostyle_button" onclick="playsound('letter_bad')">letter_bad</button>
+      <button class="nostyle_button" onclick="playsound('letter_missing')">letter_missing</button>
+      <button class="nostyle_button" onclick="playsound('letter_bonus')">letter_bonus</button>
+      <button class="nostyle_button" onclick="playsound('wrong')">wrong</button>
+      <div>
+        <hr>
+      </div>
+
+    </div class="flex_section">
+    <button class="nostyle_button" onclick="playsound('victory')">victory</button>
     <div>
-      <button onclick="playsound('letter_ok')">letter_ok</button>
-      <button onclick="playsound('letter_bad')">letter_bad</button>
-      <button onclick="playsound('letter_missing')">letter_missing</button>
-      <button onclick="playsound('letter_bonus')">letter_bonus</button>
-      <button onclick="playsound('wrong')">wrong</button>
-    <div>
-    <br>
+      <hr>
 
+      <div class="flex_section">
+        <button class="nostyle_button" onclick="playsound('temps_ecoule')">temps_ecoule</button>
+        <button class="nostyle_button" onclick="playsound('loose')">loose</button>
+        <button class="nostyle_button" onclick="playsound('jingle')">jingle</button>
+      </div>
     </div>
-      <button onclick="playsound('victory')">victory</button>
-    <div>
-    <br>
-
-    </div>
-      <button onclick="playsound('temps_ecoule')">temps_ecoule</button>
-      <button onclick="playsound('loose')">loose</button>
-    </div>
-
+  </div>
+  </div>
   </div>
 
   <!-- Page: Credits / Licences -->
   <div class="page" id="credit_page" style="display:none;">
     <div id="credit-up">
-      <div class="section-flex" id="credit-top">
+      <div class="section_flex" id="credit-top">
         <h1>Credits</h1>
         <button onclick="displayPage('main_menu')">Retour</button>
       </div>
@@ -516,7 +588,7 @@
       </div>
       <div class="section">
         <h2>Dictionnaires</h2>
-        <p>Les dictionnaires des mots de 5, 6, 7, 8, 9 et 10 lettres proviennent du jeu <a
+        <p>Les dictionnaires des mots proviennent du jeu <a
             href="ftp://ftp.ac-grenoble.fr/ge/educational_games">XScrabble.</a></p>
       </div>
     </div>

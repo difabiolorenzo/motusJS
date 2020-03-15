@@ -1,5 +1,7 @@
 function createLetterGrid() {
-	word_length = word_to_find_list[0].length;
+	if (word_to_find_list[0].length != undefined) {
+		word_length = word_to_find_list[0].length;
+	}
 
 	document.getElementById("letter_grid_placeolder").innerHTML = "";
 
@@ -55,11 +57,12 @@ function initialisationMot() {   // Mise dans le tableau word_to_find le word_to
 	}
 	
 	breakDownWord();
-	
-	console.log("Mot à trouver: " + word_to_find); // Affichage du word_to_find tiré dans la console
-	console.log("Lettres composant le mot: " + word_composed_letter);
-	console.log("Nombre de lettres composant le mot: " + word_composed_letter_amount);
-	
+
+	console.log('Mot à trouver: ' + '%c' + word_to_find, 'background: black; color: gold'); // Affichage du word_to_find tiré dans la console
+	// console.log('Lettres composant le mot: ' + '%c' + word_composed_letter, 'background: black; color: gold');
+	// console.log('Nombre de lettres composant le mot: ' + '%c' + word_composed_letter_amount, 'background: black; color: gold');
+
+
 	for (i=0; i<lettre_plus_amount; i++) {
 		var letter_plus = Math.floor(Math.random() * (word_length - 2) + 2); // Seconde lettre au premier word_to_find
 		placing[letter_plus] = 1; // La seconde lettre est une lettre correcte
@@ -277,6 +280,7 @@ function verifDuplication() {		// Vérification de la présence du word_to_find 
 			}
 		}
 		word_proposed_tab_list.push(word_proposed);
+		console.log(word_proposed)
 	
 		if (already_proposed == true) {
 			errorHandler(3); //Mot déjà proposé
@@ -324,8 +328,6 @@ function verificationProposition() {		// Vérifie par rapport à word_to_find le
 	}
 
 	if (i >= word_length) { // Fin de la vérification
-		console.log(placing);
-		console.log(word_composed_letter);
 
 		for (i=0; i < placing.length; i++) { //duplication de word_composed_letter_amount
 			if (placing_dup[i] == 1) {

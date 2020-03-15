@@ -61,13 +61,13 @@ table.purgatory {
 }
 
 .purgatory_number {
-  height: 7.5vw;
+  height: 7vw;
   width: 10vw;
   margin-left: 0%;
   text-align: center;
   text-shadow: 2px 2px 5px rgba(0, 0, 0, .6);
   color: #000;
-  padding-top: 0.75vw !important;
+  padding-top: 2.75vw !important;
 }
 
 .number_grid_placeolder {
@@ -90,13 +90,13 @@ table.purgatory {
 .table_number {border-right: 1px solid red;}
 
 
-.style_1990 table.table_number, .style_1990 table.purgatory { font-family: Arial; font-weight: bold; font-size: 4vw; }
-.style_2000 table.table_number, .style_2000 table.purgatory { font-family: Verdana; font-weight: bold; font-size: 3.75vw; }
-.style_2010 table.table_number, .style_2010 table.purgatory { font-family: Helvetica;font-weight: bold;font-size: 7.5vw;}
+.style_1990 table.table_number, .style_1990 table.purgatory {font-family: Arial;font-weight: bold;font-size: 6vw;}
+.style_2000 table.table_number, .style_2000 table.purgatory {font-family: Verdana;font-weight: bold;font-size: 5.75vw;}
+.style_2010 table.table_number, .style_2010 table.purgatory {font-family: Helvetica;font-weight: bold;font-size: 7vw;}
 .style_2019 table.table_number, .style_2019 table.purgatory { font-family: Helvetica;font-weight: bold;font-size: 7vw;}
 
-.style_1990 table.purgatory {font-size: 3.3vw;}
-.style_2000 table.purgatory {font-size: 2.95vw;}
+.style_1990 table.purgatory {font-size: 4.25vw;}
+.style_2000 table.purgatory {font-size: 3.55vw;}
 .style_2010 table.purgatory {font-size: 4.4vw;;}
 .style_2019 table.purgatory {font-size: 4.5vw;}
 
@@ -160,8 +160,8 @@ div#number_grid_placeolder_yellow {
 
 table.table_number, table.purgatory {
   width: 80%;
-  height: 87.5%;
-  margin-left: 10.3%;
+  height: 85%;
+  margin-left: 9.5%;
   padding: 0;
   margin-top: 0vw;
   margin-bottom: 0vw;
@@ -192,12 +192,13 @@ table.purgatory {
 }
 
 .purgatory_number {
-  height: 4.5vw;
+  height: 4.4vw;
   width: 5.25vw;
   margin-left: 0%;
   text-align: center;
   text-shadow: 2px 2px 5px rgba(0, 0, 0, .6);
   color: #000;
+  padding-top: 0.75vw !important;
 }
 
 .cell_team_blue, .cell_team_yellow {border-left: 2px solid red;}
@@ -212,7 +213,7 @@ table.purgatory {
 
 .style_1990 table.purgatory { font-size: 3.3vw; }
 .style_2000 table.purgatory { font-size: 2.95vw; }
-.style_2010 table.purgatory { font-size: 3.3vw; height: auto; width: auto; margin-left: 0%;}
+.style_2010 table.purgatory {font-size: 3.3vw;height: auto;width: auto;margin-left: 3.33%;}
 .style_2019 table.purgatory { font-size: 3.15vw; }
 
 
