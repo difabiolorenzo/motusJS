@@ -1,21 +1,20 @@
 @keyframes saving_ball_animation {
   0% {
-        box-shadow: inset 0 0vw 1vw 0vw #ffffff, 0 0vw 1.25vw 0.125vw #ffffff;
+    box-shadow: inset 0 0vw 1vw 0vw #ffffff, 0 0vw 1.25vw 0.125vw #ffffff;
   }
   100% {
-        box-shadow: inset 0 0vw 2.25vw 0.75vw #ffffff, 0 0vw 0.75vw 0vw #ffffff;
+    box-shadow: inset 0 0vw 2.25vw 0.75vw #ffffff, 0 0vw 0.75vw 0vw #ffffff;
   }
- }
+}
 
- @keyframes saving_blue_ball_animation {
+@keyframes saving_blue_ball_animation {
   0% {
-        box-shadow: inset 0 0vw 1vw 0vw #ffffff, 0 0vw 1.25vw 0.125vw #000000;
+    box-shadow: inset 0 0vw 1vw 0vw #ffffff, 0 0vw 1.25vw 0.125vw #000000;
   }
   100% {
-        box-shadow: inset 0 0vw 2.25vw 0.75vw #ffffff, 0 0vw 0.75vw 0vw #000000;
+    box-shadow: inset 0 0vw 2.25vw 0.75vw #ffffff, 0 0vw 0.75vw 0vw #000000;
   }
- }
-  
+}  
 
 .cell_team_yellow, .cell_team_blue, .cell_purgatory {
   text-align: center;
@@ -77,29 +76,23 @@ table.purgatory {
     margin-top: 10vw;
 }
 
-.blue_number.saving_ball {
-  animation: saving_blue_ball_animation 0.5s ease-in-out infinite alternate;
-}
-.saving_ball {
-  animation: saving_ball_animation 0.5s ease-in-out infinite alternate;
-}
+.blue_number.saving_ball { animation: saving_blue_ball_animation 0.5s ease-in-out infinite alternate; }
+.saving_ball { animation: saving_ball_animation 0.5s ease-in-out infinite alternate; }
 
-.cell_team_blue, .cell_team_yellow {border-left: 1px solid red;}
-.cell_team_blue, .cell_team_yellow {border-bottom: 1px solid red;}
-.table_number {border-top: 1px solid red;}
-.table_number {border-right: 1px solid red;}
+.cell_team_blue, .cell_team_yellow { border-left: 1px solid red; }
+.cell_team_blue, .cell_team_yellow { border-bottom: 1px solid red; }
+.table_number { border-top: 1px solid red; }
+.table_number { border-right: 1px solid red; }
 
+.style_1990 table.table_number, .style_1990 table.purgatory { font-family: Arial;font-weight: bold;font-size: 6vw; }
+.style_2000 table.table_number, .style_2000 table.purgatory { font-family: Verdana;font-weight: bold;font-size: 5.75vw; }
+.style_2010 table.table_number, .style_2010 table.purgatory { font-family: Helvetica;font-weight: bold;font-size: 7vw; }
+.style_2019 table.table_number, .style_2019 table.purgatory { font-family: Helvetica;font-weight: bold;font-size: 7vw; }
 
-.style_1990 table.table_number, .style_1990 table.purgatory {font-family: Arial;font-weight: bold;font-size: 6vw;}
-.style_2000 table.table_number, .style_2000 table.purgatory {font-family: Verdana;font-weight: bold;font-size: 5.75vw;}
-.style_2010 table.table_number, .style_2010 table.purgatory {font-family: Helvetica;font-weight: bold;font-size: 7vw;}
-.style_2019 table.table_number, .style_2019 table.purgatory { font-family: Helvetica;font-weight: bold;font-size: 7vw;}
-
-.style_1990 table.purgatory {font-size: 4.25vw;}
-.style_2000 table.purgatory {font-size: 3.55vw;}
-.style_2010 table.purgatory {font-size: 4.4vw;;}
-.style_2019 table.purgatory {font-size: 4.5vw;}
-
+.style_1990 table.purgatory { font-size: 4.25vw; }
+.style_2000 table.purgatory { font-size: 3.55vw; }
+.style_2010 table.purgatory { font-size: 4.4vw;; }
+.style_2019 table.purgatory { font-size: 4.5vw; }
 
 .style_1990 .cell_team_blue, .style_1990 #number_grid_blue { background-color: #e6f500; border-color: #9a9c28; }
 .style_2000 .cell_team_blue, .style_2000 #number_grid_blue { background-color: #eedd11; border-color: #9c840f; }
@@ -108,118 +101,108 @@ table.purgatory {
 
 .style_1990 .cell_team_yellow, .style_1990 #number_grid_yellow { background-color: #0080dc; border-color: #184565; }
 .style_2000 .cell_team_yellow, .style_2000 #number_grid_yellow { background-color: #117AEE; border-color: #0F359C; }
-.style_2010 .cell_team_yellow, .style_2010 #number_grid_yellow { background-image: linear-gradient(to bottom, #11A7FF, #0065CF); border-color: #7ccfef;}
+.style_2010 .cell_team_yellow, .style_2010 #number_grid_yellow { background-image: linear-gradient(to bottom, #11A7FF, #0065CF); border-color: #7ccfef; }
 .style_2019 .cell_team_yellow, .style_2019 #number_grid_yellow { background-color: #0092f1; text-shadow: 2px 2px 5px #00000066; border-color:#80c9f8; }
 
-.style_1990 .yellow_number { background-color: #e3d310;}
-.style_2000 .yellow_number { background-color: #e3d310;}
-.style_2010 .yellow_number { background-image: -webkit-radial-gradient(5vw 0vw, circle cover, #ffff35, #c79300);}
-.style_2019 .yellow_number { background-color: #d9d100;box-shadow: 2px 2px 7px -2px hsla(0, 0%, 0%, .5);background-image: linear-gradient(180deg, #ffb500, #fff0); font-family: Gotham;}
+.style_1990 .yellow_number { background-color: #e3d310; }
+.style_2000 .yellow_number { background-color: #e3d310; }
+.style_2010 .yellow_number { background-image: -webkit-radial-gradient(5vw 0vw, circle cover, #ffff35, #c79300); }
+.style_2019 .yellow_number { background-color: #d9d100;box-shadow: 2px 2px 7px -2px hsla(0, 0%, 0%, .5);background-image: linear-gradient(180deg, #ffb500, #fff0); font-family: Gotham; }
 
-.style_1990 .blue_number { background-color: #036fc5;}
-.style_2000 .blue_number { background-color: #036fc5;}
-.style_2010 .blue_number { background-image: -webkit-radial-gradient(5vw 0vw, circle cover, #0069d9, #0090ff);}
-.style_2019 .blue_number { background-color: #009dd9;box-shadow: 2px 2px 7px -2px hsla(0, 0%, 0%, .5);background-image: linear-gradient(180deg, #0090ff, #fff0); font-family: Gotham;}
+.style_1990 .blue_number { background-color: #036fc5; }
+.style_2000 .blue_number { background-color: #036fc5; }
+.style_2010 .blue_number { background-image: -webkit-radial-gradient(5vw 0vw, circle cover, #0069d9, #0090ff); }
+.style_2019 .blue_number { background-color: #009dd9;box-shadow: 2px 2px 7px -2px hsla(0, 0%, 0%, .5);background-image: linear-gradient(180deg, #0090ff, #fff0); font-family: Gotham; }
 
-.style_1990 .black_number { background-color: #171717;}
-.style_2000 .black_number { background-color: #212121;}
-.style_2010 .black_number { background-image: -webkit-radial-gradient(5vw 0vw, circle cover, #4e4e4e, #000000);box-shadow: 5px 5px 15px 0px #00000040;}
+.style_1990 .black_number { background-color: #171717; }
+.style_2000 .black_number { background-color: #212121; }
+.style_2010 .black_number { background-image: -webkit-radial-gradient(5vw 0vw, circle cover, #4e4e4e, #000000);box-shadow: 5px 5px 15px 0px #00000040; }
 .style_2019 .black_number { background-color: #1b1b1b;box-shadow: 2px 2px 7px -2px hsla(0, 0%, 0%, .5);}
 
-.style_1990 .motus_cell { background-color: #bb0000;color: f1f1f1;}
-.style_2000 .motus_cell { background-color: #bb0000;color: f1f1f1;}
-.style_2010 .motus_cell { background-image: -webkit-radial-gradient(5vw 0vw, circle cover, #ff3636, #610000);color: f1f1f1;}
-.style_2019 .motus_cell { background-color: #de0000;box-shadow: 2px 2px 7px -2px hsla(0, 0%, 0%, .5);color: f1f1f1;background-image: linear-gradient(180deg, #8c0000, #fff0);}
+.style_1990 .motus_cell { background-color: #bb0000;color: f1f1f1; }
+.style_2000 .motus_cell { background-color: #bb0000;color: f1f1f1; }
+.style_2010 .motus_cell { background-image: -webkit-radial-gradient(5vw 0vw, circle cover, #ff3636, #610000);color: f1f1f1; }
+.style_2019 .motus_cell { background-color: #de0000;box-shadow: 2px 2px 7px -2px hsla(0, 0%, 0%, .5);color: f1f1f1;background-image: linear-gradient(180deg, #8c0000, #fff0); }
 
-.style_1990 .hided_yellow_number { background-color: #c5b70c;}
-.style_2000 .hided_yellow_number { background-color: #B7AD21;}
-.style_2010 .hided_yellow_number { background-image: -webkit-radial-gradient(3.33vw 2vw, circle cover, #fff29b 0%, #edb800 50%);}
-.style_2019 .hided_yellow_number { background-image: -webkit-radial-gradient(4.75vw 1.75vw, circle cover, #f7de83 10%, #fdcc1b 40%);}
+.style_1990 .hided_yellow_number { background-color: #c5b70c; }
+.style_2000 .hided_yellow_number { background-color: #B7AD21; }
+.style_2010 .hided_yellow_number { background-image: -webkit-radial-gradient(3.33vw 2vw, circle cover, #fff29b 0%, #edb800 50%); }
+.style_2019 .hided_yellow_number { background-image: -webkit-radial-gradient(4.75vw 1.75vw, circle cover, #f7de83 10%, #fdcc1b 40%); }
 
-.style_1990 .hided_blue_number { background-color: #0260aa;}
-.style_2000 .hided_blue_number { background-color: #0c57c7;}
-.style_2010 .hided_blue_number { background-image: -webkit-radial-gradient(3.33vw 2vw, circle cover, #5fabff 0%, #00449a 50%);}
-.style_2019 .hided_blue_number { background-image: -webkit-radial-gradient(4.75vw 1.75vw, circle cover, #5fabff 10%, #00449a 40%);}
+.style_1990 .hided_blue_number { background-color: #0260aa; }
+.style_2000 .hided_blue_number { background-color: #0c57c7; }
+.style_2010 .hided_blue_number { background-image: -webkit-radial-gradient(3.33vw 2vw, circle cover, #5fabff 0%, #00449a 50%); }
+.style_2019 .hided_blue_number { background-image: -webkit-radial-gradient(4.75vw 1.75vw, circle cover, #5fabff 10%, #00449a 40%); }
 
+div#number_grid_placeolder_yellow { /* display: flex; */ padding-top: 0%; }
 
-div#number_grid_placeolder_yellow {
-    /* display: flex; */
-    padding-top: 0%;
-}
-
-  
-  /* Desktop: */
-  @media only screen and (min-width: 1025px) {
-    .cell_team_yellow, .cell_team_blue, .cell_purgatory {
-  text-align: center;
-  width: 10%;
-  height: 15%;
-  text-shadow: 2px 2px 5px rgba(0, 0, 0, .6);
-  color: black;
-}
-
-table.table_number, table.purgatory {
-  width: 80%;
-  height: 85%;
-  margin-left: 9.5%;
-  padding: 0;
-  margin-top: 0vw;
-  margin-bottom: 0vw;
-}
-
-table.purgatory {
-  display: flex;
-  padding-top: 1vw;
-  place-content: center;
-}
-
-.number, .purgatory_number {
-  height: 6.45vw;
-  width: 8.0vw;
-  border-radius: 100%;
-  box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.42);
-  margin-left: 25%;
-  margin-right: 0vw;
-  padding-top: 1.45vw;
-}
-
-.purgatory_cell_team_yellow, .purgatory_cell_team_blue {
-  text-align: center;
-  width: 10%;
-  height: 15%;
-  text-shadow: 2px 2px 5px rgba(0, 0, 0, .6);
-  color: black;
-}
-
-.purgatory_number {
-  height: 4.4vw;
-  width: 5.25vw;
-  margin-left: 0%;
-  text-align: center;
-  text-shadow: 2px 2px 5px rgba(0, 0, 0, .6);
-  color: #000;
-  padding-top: 0.75vw !important;
-}
-
-.cell_team_blue, .cell_team_yellow {border-left: 2px solid red;}
-.cell_team_blue, .cell_team_yellow {border-bottom: 2px solid red;}
-.table_number {border-top: 2px solid red;}
-.table_number {border-right: 2px solid red;}
-
-.style_1990 table.table_number, .style_1990 table.purgatory { font-size: 4vw; }
-.style_2000 table.table_number, .style_2000 table.purgatory { font-size: 3.75vw; }
-.style_2010 table.table_number, .style_2010 table.purgatory { font-size: 4.25vw; }
-.style_2019 table.table_number, .style_2019 table.purgatory { font-size: 4.25vw; }
-
-.style_1990 table.purgatory { font-size: 3.3vw; }
-.style_2000 table.purgatory { font-size: 2.95vw; }
-.style_2010 table.purgatory {font-size: 3.3vw;height: auto;width: auto;margin-left: 3.33%;}
-.style_2019 table.purgatory { font-size: 3.15vw; }
-
-
-
-.number_grid_placeolder {
-    margin-top: 5vw;
-}
-
+/* Desktop: */
+@media only screen and (min-width: 1025px) {
+  .cell_team_yellow, .cell_team_blue, .cell_purgatory {
+    text-align: center;
+    width: 10%;
+    height: 15%;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, .6);
+    color: black;
   }
+
+  table.table_number, table.purgatory {
+    width: 80%;
+    height: 85%;
+    margin-left: 9.5%;
+    padding: 0;
+    margin-top: 0vw;
+    margin-bottom: 0vw;
+  }
+
+  table.purgatory {
+    display: flex;
+    padding-top: 1vw;
+    place-content: center;
+  }
+
+  .number, .purgatory_number {
+    height: 6.45vw;
+    width: 8.0vw;
+    border-radius: 100%;
+    box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.42);
+    margin-left: 25%;
+    margin-right: 0vw;
+    padding-top: 1.45vw;
+  }
+
+  .purgatory_cell_team_yellow, .purgatory_cell_team_blue {
+    text-align: center;
+    width: 10%;
+    height: 15%;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, .6);
+    color: black;
+  }
+
+  .purgatory_number {
+    height: 4.4vw;
+    width: 5.25vw;
+    margin-left: 0%;
+    text-align: center;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, .6);
+    color: #000;
+    padding-top: 0.75vw !important;
+  }
+
+  .cell_team_blue, .cell_team_yellow { border-left: 2px solid red; }
+  .cell_team_blue, .cell_team_yellow { border-bottom: 2px solid red; }
+  .table_number { border-top: 2px solid red; }
+  .table_number { border-right: 2px solid red; }
+
+  .style_1990 table.table_number, .style_1990 table.purgatory { font-size: 4vw; }
+  .style_2000 table.table_number, .style_2000 table.purgatory { font-size: 3.75vw; }
+  .style_2010 table.table_number, .style_2010 table.purgatory { font-size: 4.25vw; }
+  .style_2019 table.table_number, .style_2019 table.purgatory { font-size: 4.25vw; }
+
+  .style_1990 table.purgatory { font-size: 3.3vw; }
+  .style_2000 table.purgatory { font-size: 2.95vw; }
+  .style_2010 table.purgatory { font-size: 3.3vw;height: auto;width: auto;margin-left: 3.33%; }
+  .style_2019 table.purgatory { font-size: 3.15vw; }
+
+  .number_grid_placeolder { margin-top: 5vw; }
+}

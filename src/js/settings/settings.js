@@ -37,7 +37,7 @@ function initVariables() {
 
     //SCORE
     score_addition = 50;
-    
+
     score_yellow = 0;
     score_blue = 0;
 
@@ -48,7 +48,7 @@ function initVariables() {
 
     // DEBUG
     debug_index = 0;
-    version_name = "2.2 - Pre-release 6"; document.getElementById("version").innerHTML = version_name;
+    version_name = "2.2 - Pre-release 7"; document.getElementById("version").innerHTML = version_name;
     regularCharExpression  = /^[a-zA-Z\u00C0-\u00ff]+$/;
     godmod = false
 
@@ -74,7 +74,7 @@ function initVariables() {
 
     motus_animation_index = 0;
     picked_ball_animation = 0;
-    
+
     yellow_purgatory = document.getElementById("yellow_purgatory");
     blue_purgatory = document.getElementById("blue_purgatory");
 

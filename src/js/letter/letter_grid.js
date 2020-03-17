@@ -375,7 +375,7 @@ function animationVerificationProposition() {		//Fonction nécéssitant une bouc
 	} else if (placing_dup[verification_index] == 2) {
 		playsound("letter_bad");
 		document.getElementById(try_count_index + '_' + verification_index).innerHTML = "<div class=\"not_in_place\">" + document.getElementById(try_count_index + '_' + verification_index).innerHTML + "</div>" //ajout d'un div dans la cellule
-		innerHTMLDisplayWindow((try_count_index + '_' + verification_index), ("<div class=\"not_in_place\">" + displayWindow.document.getElementById(try_count_index + '_' + verification_index).innerHTML + "</div>"));
+		if (other_window_display == true) { innerHTMLDisplayWindow((try_count_index + '_' + verification_index), ("<div class=\"not_in_place\">" + displayWindow.document.getElementById(try_count_index + '_' + verification_index).innerHTML + "</div>"))};
 	}
 	verification_index++;
 

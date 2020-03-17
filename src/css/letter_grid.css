@@ -1,6 +1,3 @@
-
-
-
 @keyframes victory_line_animation {
     0% {
       background-position: -500%;
@@ -40,77 +37,66 @@
   /*                  */
   
   div.input_section {
-      display: flex;
-      opacity: 100;
-      height: 12.5vw;
-      padding-left: 1%;
-      padding-right: 1%;
-      margin-top: 1%;
-      margin-bottom: 2%;
+    display: flex;
+    opacity: 100;
+    height: 12.5vw;
+    padding-left: 1%;
+    padding-right: 1%;
+    margin-top: 1%;
+    margin-bottom: 2%;
   }
   
   div.flex_section {
-      display: block;
-      width: 100%;
+    display: block;
+    width: 100%;
   }
   
-  div#top_section {
-      margin-bottom: 7.5%;
-  }
-  
-  div#bottom_section {
-      height: 12%;width: 100%;
-  }
-  
-  div#letter_grid_page {
-      display: block;
-  }
+  div#top_section { margin-bottom: 7.5%; }  
+  div#bottom_section { height: 12%;width: 100%; }  
+  div#letter_grid_page { display: block; }
   
   button.flex_button {
-      width: 47.75%;
-      font-size: 3vw;
-      height: 8.5vw;
-      margin-top: 1vw;
-      margin-right: 0.75vw;
-      margin-bottom: 1vw;
-      margin-left: 0.75vw;
+    width: 47.75%;
+    font-size: 3vw;
+    height: 8.5vw;
+    margin-top: 1vw;
+    margin-right: 0.75vw;
+    margin-bottom: 1vw;
+    margin-left: 0.75vw;
   }
   
   input#word_proposition_input, button#validate_button  {
-      text-align-last: center;
-      text-transform: uppercase;
-      border: 2px solid #fff;
-      margin: 0;
-      padding: 0;
-      font-weight: bold;
+    text-align-last: center;
+    text-transform: uppercase;
+    border: 2px solid #fff;
+    margin: 0;
+    padding: 0;
+    font-weight: bold;
   }
   
-  .style_1990 input#word_proposition_input {    background-color: #00808e;}
-  .style_2000 input#word_proposition_input {    background-color: #117AEE;}
-  .style_2010 input#word_proposition_input {    background-image: linear-gradient(to bottom, #11A7FF, #0065CF);}
-  .style_2019 input#word_proposition_input {background-color: #0092f1;}
+  .style_1990 input#word_proposition_input { background-color: #00808e; }
+  .style_2000 input#word_proposition_input { background-color: #117AEE; }
+  .style_2010 input#word_proposition_input { background-image: linear-gradient(to bottom, #11A7FF, #0065CF); }
+  .style_2019 input#word_proposition_input { background-color: #0092f1; }
   
   input#word_proposition_input {
-      letter-spacing: 2.5vw;
-      height: auto;
-      width: 80%;
-      font-size: 4vw;
-      margin-left: 10%;
+    letter-spacing: 2.5vw;
+    height: auto;
+    width: 80%;
+    font-size: 4vw;
+    margin-left: 10%;
   }
   
   button#validate_button {
-      width: 0;
-      height: 0;
-      font-size: 3vw;
-      margin-left: 0.75%;
-      opacity: 0;
+    width: 0;
+    height: 0;
+    font-size: 3vw;
+    margin-left: 0.75%;
+    opacity: 0;
   }
   
-  
-  
-  
-  
-  
+
+
   /*          */
   /*          */
   /*  TABLE   */
@@ -118,22 +104,22 @@
   /*          */
   
   #table_letter {
-      margin: 1%;
-      height: 65%;
-      width: 98%;
-      border-spacing: 0px;
-      border-top: 1px solid;
-      border-right: 1px solid;
+    margin: 1%;
+    height: 65%;
+    width: 98%;
+    border-spacing: 0px;
+    border-top: 1px solid;
+    border-right: 1px solid;
   }
 
   .display_page #table_letter {
-      margin: 0%;
-      height: 100%;
-      width: 100%;
+    margin: 0%;
+    height: 100%;
+    width: 100%;
   }
   
   .changing_grid {
-      animation: changing_grid_animation 1s linear infinite;
+    animation: changing_grid_animation 1s linear infinite;
   }
   
   
@@ -148,28 +134,28 @@
   
   
   .style_1990 #table_letter {
-      border-color: #4e5652;
-      font-family: Arial;
-      font-weight: bold;
-      font-size: 6vw;
+    border-color: #4e5652;
+    font-family: Arial;
+    font-weight: bold;
+    font-size: 6vw;
   }
   .style_2000 #table_letter {
-      border-color: #0F359C;
-      font-family: Verdana;
-      font-weight: bold;
-      font-size: 5.75vw;
+    border-color: #0F359C;
+    font-family: Verdana;
+    font-weight: bold;
+    font-size: 5.75vw;
   }
   .style_2010 #table_letter {
-      border-color:#e2e2e2;
-      font-family: Helvetica;
-      font-weight: bold;
-      font-size: 6.25vw;
+    border-color:#e2e2e2;
+    font-family: Helvetica;
+    font-weight: bold;
+    font-size: 6.25vw;
   }
   .style_2019 #table_letter {
-      border-color: #80c9f8;
-      font-family: Helvetica;
-      font-weight: normal;
-      font-size: 6.33vw;
+    border-color: #80c9f8;
+    font-family: Helvetica;
+    font-weight: normal;
+    font-size: 6.33vw;
   }
   
   .style_1990 #table_letter { border-color: #4e5652;}
@@ -183,13 +169,13 @@
   .style_2019 #table_letter td { border-color: #80c9f8;}
   
   #table_letter td {
-      border-left: 1px solid;
-      border-bottom: 1px solid;
-      text-align: center;
-      width: 10%;
-      height: 15%;
-      text-shadow: 2px 2px 5px rgba(0, 0, 0, .6);
-      color: white;
+    border-left: 1px solid;
+    border-bottom: 1px solid;
+    text-align: center;
+    width: 10%;
+    height: 15%;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, .6);
+    color: white;
   }
   
   .style_1990 .background { background-color: #00808e;}
@@ -215,31 +201,26 @@
   
   
   td.correct.victory_line {
-                            background-image: linear-gradient(100deg, #fff0 20%, #ffffff36 30%, #ffffff80 50%, #ffffff24 70%, #fff0 80%);
-                            background-repeat: no-repeat;
-                            background-size: 80%;
-                            animation: victory_line_animation 0.8s linear infinite;
-                            }
+    background-image: linear-gradient(100deg, #fff0 20%, #ffffff36 30%, #ffffff80 50%, #ffffff24 70%, #fff0 80%);
+    background-repeat: no-repeat;
+    background-size: 80%;
+    animation: victory_line_animation 0.8s linear infinite;
+}
 
   .not_in_place {
-      height: 7.256vw;
-      width: 7.75vw;
-      border-radius: 100%;
-      box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.42);
-      margin-left: 2.25vw;
-      margin-right: -5vw;
-      padding-top: 0.1vw;
+    height: 7.256vw;
+    width: 7.75vw;
+    border-radius: 100%;
+    box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.42);
+    margin-left: 2.25vw;
+    margin-right: -5vw;
+    padding-top: 0.1vw;
   }
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
+
+
+
+
   /*          */
   /*          */
   /*  SCORE   */
@@ -247,44 +228,40 @@
   /*          */
   
   div#score-placeolder {
-      display: flex;
-      padding: 1vw;
-      height: 7.5vw;
+    display: flex;
+    padding: 1vw;
+    height: 7.5vw;
   }
-  
-  
-a#score_0_panel { background-color: #FBC800; }
 
+a#score_0_panel { background-color: #FBC800; }
 a#score_1_panel { background-color: #1681C7; }
 
-  a.active_score {
-      border: 0.4vw solid #ffffff !important;
-      animation: active_score_animation 0.5s ease-in-out infinite alternate;
-  }
+a.active_score {
+    border: 0.4vw solid #ffffff !important;
+    animation: active_score_animation 0.5s ease-in-out infinite alternate;
+}
 
-
-
-  div#score_placeolder {
+div#score_placeolder {
     display: flex;
     height: 5vw;
     padding-left: 25%;
     padding-right: 25%;
-   }
+}
 
-      a.score, a.active_score {
-        height: 7.5vw;
-        font-size: 6vw;
-        padding-top: 1.15vw;
-        margin-top: -0.5vw;
-        width: 100%;
-        color: white;
-        text-align: center;
-        margin: 0vw;
-        box-shadow: inset 0px 20px 10vw 0vw black;
-        border: 0.4vw solid #00000038;
-        margin-left: 1vw;
-        margin-right: 1vw;
-      }
+a.score, a.active_score {
+    height: 7.5vw;
+    font-size: 6vw;
+    padding-top: 1.15vw;
+    margin-top: -0.5vw;
+    width: 100%;
+    color: white;
+    text-align: center;
+    margin: 0vw;
+    box-shadow: inset 0px 20px 10vw 0vw black;
+    border: 0.4vw solid #00000038;
+    margin-left: 1vw;
+    margin-right: 1vw;
+}
   
   
   
@@ -295,9 +272,8 @@ a#score_1_panel { background-color: #1681C7; }
   @media only screen and (min-width: 1025px) {
 
     .style_2010 .correct, button#validate_button {background-image: linear-gradient(#f3927e, #9c341b);box-shadow: 0.25vw 0.25vw 0.25vw #ffae9d inset, -0.25vw -0.25vw 0.25vw #883733 inset !important;}
-  
-    a.score,
-    a.active_score {
+
+    a.score, a.active_score {
       height: 3.5vw;
       width: 100%;
       border: 0.4vw solid #ffffff80;
@@ -309,43 +285,43 @@ a#score_1_panel { background-color: #1681C7; }
       box-shadow: inset 0px 20px 10vw 0vw black;
       margin-left: 1vw;
       margin-right: 1vw;
-  }
+    }
   
-      div#top_section {
-          margin-bottom: 1%;
-      }
+    div#top_section {
+        margin-bottom: 1%;
+    }
   
 
-      #table_letter td {
-          border-left: 2px solid;
-          border-bottom: 2px solid;
-      }
-      #table_letter {
-          margin: 0%;
-          height: 100%;
-          width: 100%;
-          border-top: 2px solid;
-          border-right: 2px solid;
-      }
-  
-      div.input_section {
-          opacity: 100;
-          height: 0vw;
-      }
+    #table_letter td {
+        border-left: 2px solid;
+        border-bottom: 2px solid;
+    }
+    #table_letter {
+        margin: 0%;
+        height: 100%;
+        width: 100%;
+        border-top: 2px solid;
+        border-right: 2px solid;
+    }
 
-      input#word_proposition_input {
+    div.input_section {
+        opacity: 100;
+        height: 0vw;
+    }
+
+    input#word_proposition_input {
         height: 0vw;
         width: 0%;
         opacity: 0;
-      }
+    }
 
-      div.flex_section { display: flex; }
+    div.flex_section { display: flex; }
 
-      button.flex_button {
-          width: 100%;
-          font-size: 1.5em;
-          height: 4vw;
-          margin: 0.5vw;
-      }
+    button.flex_button {
+        width: 100%;
+        font-size: 1.5em;
+        height: 4vw;
+        margin: 0.5vw;
+    }
   }
 

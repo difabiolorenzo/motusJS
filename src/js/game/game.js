@@ -210,13 +210,11 @@
                 while (prompt_new_word < 5 || prompt_new_word > 10 || prompt_new_word == undefined) {
                     prompt_new_word = Number(window.prompt("Plus aucun mot n'est prédéfini dans les paramètres, veuillez entrer le nombre de lettres (compris entre 5 et 10) du prochain mot tiré au hasard:", "8"));
                     if (prompt_new_word >= 5 || prompt_new_word <= 10) {
-
                         WordListAddRowRandom(prompt_new_word);
                     }
                 }
             }
         }
-
         createLetterGrid();
         initialisationMot();
         nouvelleLigne();
@@ -224,9 +222,7 @@
 
     function previewMode() {
         debug_index++;
-
         //debug
-
         // if (debug_index == 1) {
         //     UpdateStyle(2019);
         // } else if (debug_index == 2) {
@@ -254,7 +250,6 @@
 
         document.getElementById("score_0_panel").innerHTML = score_yellow;
         document.getElementById("score_1_panel").innerHTML = score_blue;
-
     }
 
     function switchTeamFocus() {
@@ -290,7 +285,6 @@
         } else {
             alert("Vous devez trouver le mot ou l'afficher pour pouvoir avoir des informations dessus.");
         }
-
     }
 
     function errorHandler(errorCode) { // Affiche dans la console le terme de l'erreur
@@ -305,9 +299,7 @@
         playsound("wrong");
 
         if (team_enabled == true) { switchTeamFocus(); }
-
         setTimeout(function () { ligneRattrapage(); }, 3000);
-
     }
 
     function ligneRattrapage() {
