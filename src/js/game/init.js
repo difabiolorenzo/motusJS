@@ -17,7 +17,9 @@
             }        
             createLetterGrid();
             initialisationMot();
-            nouvelleLigne();
+            if (other_window_display == false) {
+                nouvelleLigne();
+            }
 
             if (number_grid_enabled == true) {
                 changeGrid();

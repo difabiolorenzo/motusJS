@@ -122,6 +122,7 @@
         document.getElementById("letter_grid_page").className = "page style_" + value;
         document.getElementById("number_grid_page").className = "page style_" + value;
         document.getElementById("main_menu").className = "page style_" + value;
+        classNameDisplayWindow("display_page", ("page style_" + value))
 
         if (value == 2010 || value == 2019) {
             document.getElementById("logo").src = "src/img/motus_logo_2010.png"
@@ -313,4 +314,34 @@
         suppressionLigne();
         nouvelleLigne();
         ajoutLettreBonus();
+    }
+
+    function createDisplayWindow() {
+        displayWindow = window.open("", "MotusJS - Display Window", "width=1080,height=720");
+		writeInDisplayWindow("<title>MotusJS</title>");
+		writeInDisplayWindow("<meta charset=\"utf-8\">");
+		writeInDisplayWindow("<link rel=\"stylesheet\" type=\"text/css\" title=\"css\" href=\"src/css/global.css\">");
+		writeInDisplayWindow("<link rel=\"stylesheet\" type=\"text/css\" title=\"css\" href=\"src/css/letter_grid.css\">");
+		writeInDisplayWindow("<link rel=\"stylesheet\" type=\"text/css\" title=\"css\" href=\"src/css/number_grid.css\">");
+		writeInDisplayWindow("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
+		writeInDisplayWindow("<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"src/img/favicon.png\">");
+        writeInDisplayWindow("<div id=\"display_page\" class=\"style_2010\"><div class=\"display_page\" id=\"letter_grid_placeolder\"></div></div>");
+    }
+
+    function writeInDisplayWindow(arg) {
+        if (other_window_display == true) { displayWindow.document.write(arg); }
+    }
+
+    function innerHTMLDisplayWindow(id, html) {
+        if (other_window_display == true) { displayWindow.document.getElementById(id).innerHTML = html; }
+    }
+
+    function classNameDisplayWindow(id, html, mode) {
+        if (other_window_display == true) {
+            if (mode == "+=") {
+                displayWindow.document.getElementById(id).className += html;
+            } else {
+                displayWindow.document.getElementById(id).className = html;
+            }
+        }
     }

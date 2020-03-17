@@ -1,15 +1,17 @@
 function initVariables() {
 
     // SETTINGS
-    check_word_length = true;
-    check_word_presence = true;
-    check_word_duplication = true;
-    check_word_first_letter = true;
+    other_window_display = false;
 
     playsound_enabled = true;
     play_jingle = false;
 
     //GAME
+    check_word_length = true;
+    check_word_presence = true;
+    check_word_duplication = true;
+    check_word_first_letter = true;
+
     try_number_max = 6;
     lettre_plus_amount = 1;
     word_found = undefined;
@@ -46,7 +48,7 @@ function initVariables() {
 
     // DEBUG
     debug_index = 0;
-    version_name = "2.2 - Pre-release 5"; document.getElementById("version").innerHTML = version_name;
+    version_name = "2.2 - Pre-release 6"; document.getElementById("version").innerHTML = version_name;
     regularCharExpression  = /^[a-zA-Z\u00C0-\u00ff]+$/;
     godmod = false
 

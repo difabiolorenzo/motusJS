@@ -125,6 +125,12 @@
       border-top: 1px solid;
       border-right: 1px solid;
   }
+
+  .display_page #table_letter {
+      margin: 0%;
+      height: 100%;
+      width: 100%;
+  }
   
   .changing_grid {
       animation: changing_grid_animation 1s linear infinite;

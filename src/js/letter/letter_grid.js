@@ -2,11 +2,9 @@ function createLetterGrid() {
 	if (word_to_find_list[0].length != undefined) {
 		word_length = word_to_find_list[0].length;
 	}
-
 	document.getElementById("letter_grid_placeolder").innerHTML = "";
 
-	var letter_html_table = "<table id=\"table_letter\">";
-
+	letter_html_table = "<table id=\"table_letter\">";
 	for (var j = 0; j <= try_number_max-1; j++) {
 		letter_html_table += "<tr id=\"line_" + j + "\"" +" >";
 		for (var i = 0; i < word_length; i++) {
@@ -15,8 +13,13 @@ function createLetterGrid() {
 		letter_html_table += "</tr>";
 	}
 	letter_html_table += "</table>";
-
 	document.getElementById("letter_grid_placeolder").innerHTML = letter_html_table;
+
+	if (other_window_display == true) {
+		createDisplayWindow();
+		displayWindow.document.getElementById("letter_grid_placeolder").innerHTML = "";
+		displayWindow.document.getElementById("letter_grid_placeolder").innerHTML = letter_html_table;
+	}
 	
 	keyboardInput.maxLength = word_length;
 }
@@ -131,33 +134,42 @@ function submitWord() {
 }
 
 function nouvelleLigne() {		// Ajoute une nouvelle ligne avec les bonnes lettres proposées
-	try_count_index++;
+	if (try_count_index < try_number_max-1) {
+		try_count_index++;
 
-	for (var i = 0; i < word_length; i++) {
-		document.getElementById(try_count_index + '_' + i).innerHTML = ".";
-		if (placing[i] == 1) {
-			document.getElementById(try_count_index + '_' + i).innerHTML = word_to_find_tab[i];
+		for (var i = 0; i < word_length; i++) {
+			document.getElementById(try_count_index + '_' + i).innerHTML = ".";
+			innerHTMLDisplayWindow((try_count_index + '_' + i), ".");
+			if (placing[i] == 1) {
+				document.getElementById(try_count_index + '_' + i).innerHTML = word_to_find_tab[i];
+				innerHTMLDisplayWindow(((try_count_index + '_' + i)), word_to_find_tab[i]);
+			}
 		}
+		
+		word_proposed_tab = [];
+		word_proposed = "";
 	}
-	
-	word_proposed_tab = [];
-	word_proposed = "";
 }
 
 function suppressionLigne() {		// Supprime la ligne
-	if (try_count_index >= try_number_max) {
-		try_count_index = try_number_max-1;
+	if (try_count_index >= 0 && try_count_index <= try_number_max) {
+		
+		if (try_count_index >= try_number_max) {
+			try_count_index = try_number_max-1;
+		}
+		for (var i = 0; i < word_length; i++) {
+			document.getElementById(try_count_index + '_' + i).innerHTML = "";
+			innerHTMLDisplayWindow((try_count_index + '_' + i), "");
+	
+			document.getElementById(try_count_index + '_' + i).className = 'background';
+			classNameDisplayWindow((try_count_index + '_' + i),'background');
+		}
+		for (var i = 0; i < word_length; i++) { 
+			lettre_ok.push('');
+			placing.push(0);
+		}
+		try_count_index--;
 	}
-
-	for (var i = 0; i < word_length; i++) {
-		document.getElementById(try_count_index + '_' + i).innerHTML = "";
-		document.getElementById(try_count_index + '_' + i).className = 'background';
-	}
-	for (var i = 0; i < word_length; i++) { 
-		lettre_ok.push('');
-		placing.push(0);
-	}
-	try_count_index--;
 }
 
 function letterAddFromKeyboard(letter) {
@@ -165,18 +177,24 @@ function letterAddFromKeyboard(letter) {
 		if (letter == word_to_find_tab[0]) {
 			word_proposed_tab.push(letter);
 			document.getElementById(try_count_index + '_' + (word_proposed_tab.length - 1)).innerHTML = word_proposed_tab[word_proposed_tab.length-1];
+			innerHTMLDisplayWindow((try_count_index + '_' + (word_proposed_tab.length - 1)), word_proposed_tab[word_proposed_tab.length-1]);
 		} else {
 			playsound("letter_missing");
 		}	
 	} else {
 		word_proposed_tab.push(letter);
 		document.getElementById(try_count_index + '_' + (word_proposed_tab.length - 1)).innerHTML = word_proposed_tab[word_proposed_tab.length-1];
+		innerHTMLDisplayWindow((try_count_index + '_' + (word_proposed_tab.length - 1)), word_proposed_tab[word_proposed_tab.length-1]);
+		
 	}
 }
 
 function suppressionLettre() {		// Supprime les lettre de droite à gauche
-	document.getElementById(try_count_index + '_' + (word_proposed_tab.length - 1)).innerHTML = ".";
-	word_proposed_tab.pop();
+	if (word_proposed_tab.length >= 1) {
+		document.getElementById(try_count_index + '_' + (word_proposed_tab.length - 1)).innerHTML = ".";
+		innerHTMLDisplayWindow((try_count_index + '_' + (word_proposed_tab.length - 1)), ".");
+		word_proposed_tab.pop();
+	}
 }
 
 function affichageSolution() {		// Affiche la solution à la dérnière ligne, necessite une boucle en amont
@@ -186,7 +204,9 @@ function affichageSolution() {		// Affiche la solution à la dérnière ligne, n
 
 function animationAfficheSolution() {
 	document.getElementById(try_number_max-1 + '_' + verification_index).innerHTML = word_to_find_tab[verification_index];
+	innerHTMLDisplayWindow((try_number_max-1 + '_' + verification_index), word_to_find_tab[verification_index]);
 	document.getElementById(try_number_max-1 + '_' + verification_index).className = 'correct';
+	classNameDisplayWindow((try_number_max-1 + '_' + verification_index),'correct');
 	playsound("letter_ok");
 	verification_index++;
 
@@ -214,6 +234,7 @@ function ajoutLettreBonus() {		// Ajoute une lettre bonnus dans les emplacement 
 		for (var i = 0; i < word_length; i++) {
 			if (placing[i] != 1) {
 				document.getElementById(try_count_index + '_' + i).innerHTML = word_to_find_tab[i];
+				innerHTMLDisplayWindow((try_count_index + '_' + i), word_to_find_tab[i]);
 				placing[i] = 1;
 				playsound("letter_bonus");
 
@@ -230,8 +251,10 @@ function ajoutLettreBonus() {		// Ajoute une lettre bonnus dans les emplacement 
 function animationLettreBonus() {
 	if ((j%2) == 1) {
 		document.getElementById(try_count_index + '_' + letter_bonus_placement).className = 'background';
+		classNameDisplayWindow((try_count_index + '_' + letter_bonus_placement),'background');
 	} else {
 		document.getElementById(try_count_index + '_' + letter_bonus_placement).className = 'correct';
+		classNameDisplayWindow((try_count_index + '_' + letter_bonus_placement),'correct');
 	}
 	j++;
 
@@ -348,9 +371,11 @@ function animationVerificationProposition() {		//Fonction nécéssitant une bouc
 	} else if (placing_dup[verification_index] == 1) {
 		playsound("letter_ok");
 		document.getElementById(try_count_index + '_' + verification_index).className = 'correct';
+		classNameDisplayWindow((try_count_index + '_' + verification_index),'correct');
 	} else if (placing_dup[verification_index] == 2) {
 		playsound("letter_bad");
 		document.getElementById(try_count_index + '_' + verification_index).innerHTML = "<div class=\"not_in_place\">" + document.getElementById(try_count_index + '_' + verification_index).innerHTML + "</div>" //ajout d'un div dans la cellule
+		innerHTMLDisplayWindow((try_count_index + '_' + verification_index), ("<div class=\"not_in_place\">" + displayWindow.document.getElementById(try_count_index + '_' + verification_index).innerHTML + "</div>"));
 	}
 	verification_index++;
 
@@ -370,9 +395,11 @@ function animationVerificationProposition() {		//Fonction nécéssitant une bouc
 
 
 				document.getElementById("line_" + try_count_index).className = 'victory_line';
+				classNameDisplayWindow(("line_" + try_count_index),'victory_line');
 
 				for (i=0 ; i<word_length ; i++) {
 					document.getElementById(try_count_index + '_' + i).className += ' victory_line';
+					classNameDisplayWindow((try_count_index + '_' + i),' victory_line', "+=");
 				}
 
 				setTimeout(function() { 
