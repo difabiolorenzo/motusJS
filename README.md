@@ -25,15 +25,19 @@ Si le mot est trouvé, l'équipe rapport 50 points, cette équipe à ensuite le 
 
 ### Raccourcis clavier
 - Validation du mot avec la touche **Entrer**
+- Suppression de la lettre avec la touche **erase** (**←**) ou **flèche gauche**
+
 - Nouvelle ligne avec la touche **&** ou **1**
-- Nouvelle ligne avec lettre bonus avec la touche **é** ou **2**
-- Nouveau mot avec la touche **"** ou **3**
-- Affichage du mot avec la touche **'** ou **4**
-- Suppression de la ligne avec la touche **(** ou **5**
+- Lettre bonus avec la touche **é** ou **2**
+- Suppression de la ligne avec la touche **"** ou **3**
+- Remplacement de la ligne avec la touche **'** ou **4**
 - Changement d'équipe ayant la main **(** ou **5**
+
+- Nouveau mot avec la touche **ç** ou **9**
+- Affichage du mot avec la touche **à** ou **0**
+
 - Son du temps écoulé avec la touche **$** (**¤**)
 
-- Boutons permettant les fonctions ci-dessus disponible en bas de la grille de mot.
 
 ## Inspiration
 - [https://www.france.tv/france-2/motus/]

@@ -173,7 +173,7 @@ div#settings {
 }
 
 .section_flex {
-  display: block;
+  display: flex;
   overflow-y: scroll;
 }
 
@@ -231,7 +231,6 @@ input#settings_input_blue_team_name {
   p, label, select { font-size:1.5em;text-align: left !important; margin-left: 1vw; }
   table#word_list { padding:2vw;width: 100%;  }
   #settings_page p {  text-align: left !important;margin-left: 2.5vw; }
-  .section_flex { display: flex; }
 
   input[type="checkbox"i] {
     height:2vw;

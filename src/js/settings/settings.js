@@ -21,7 +21,7 @@ function initVariables() {
     word_to_find_list = [];
 
     always_ask = false;
-    always_ask_lenght = 8;
+    always_ask_length = 8;
             
     keyboardInput = document.getElementById("word_proposition_input");
 
@@ -34,6 +34,13 @@ function initVariables() {
     animationIntervalID_3 = undefined
     animationIntervalID_4 = undefined
     animationIntervalID_5 = undefined
+
+    automatic_behaviour = true
+    automatic_behaviour_line_start = true;
+    automatic_behaviour_new_line_error = "replace_bonus"; //"replace_bonus" "replace_only" "add_bonus" "add_only" "none"
+    automatic_behaviour_redirect_number_grid = true;
+    automatic_behaviour_redirect_letter_grid = true;
+    automatic_behaviour_ask_new_word = true;
 
     //SCORE
     score_addition = 50;
@@ -48,7 +55,7 @@ function initVariables() {
 
     // DEBUG
     debug_index = 0;
-    version_name = "2.2 - Pre-release 7"; document.getElementById("version").innerHTML = version_name;
+    version_name = "2.2 - Pre-release 8"; document.getElementById("version").innerHTML = version_name;
     regularCharExpression  = /^[a-zA-Z\u00C0-\u00ff]+$/;
     godmod = false
 

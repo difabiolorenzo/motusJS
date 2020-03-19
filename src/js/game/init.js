@@ -4,7 +4,7 @@
             if (word_to_find_list.length == 0) {
 
                if (always_ask == true) {
-                    WordListAddRowRandom(always_ask_lenght);
+                    WordListAddRowRandom(always_ask_length);
                } else {
                     var prompt_new_word;
                     while (prompt_new_word < 5 || prompt_new_word > 10 || prompt_new_word == undefined) {
@@ -17,7 +17,7 @@
             }        
             createLetterGrid();
             initialisationMot();
-            if (other_window_display == false) {
+            if (other_window_display == false && automatic_behaviour == true && automatic_behaviour_line_start == true) {
                 nouvelleLigne();
             }
 

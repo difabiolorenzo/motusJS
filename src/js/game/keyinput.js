@@ -28,9 +28,11 @@ document.addEventListener("keydown", function (event) {
 			suppressionLigne();
 		} else if (event.keyCode == 52 || event.keyCode == 100 ) { // '
 			console.log("Key 4");
-			switchTeamFocus();
+			suppressionLigne();
+			nouvelleLigne();
 		} else if (event.keyCode == 53 || event.keyCode == 101 ) { // (
 			console.log("Key 5");
+			switchTeamFocus();
 		} else if (event.keyCode == 54 || event.keyCode == 102 ) { // -
 			console.log("Key 6");
 		} else if (event.keyCode == 55 || event.keyCode == 103 ) { // è

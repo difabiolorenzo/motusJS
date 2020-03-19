@@ -147,9 +147,10 @@ function pickBall(picked_ball) {							// Tire au hasard une boule du tableau gr
 			try_picking_ball_left--;
 			if (try_picking_ball_left == 0) {
 				document.getElementById("button_pick_number").style = "display:none";	//affichage du bouton piocher
-				document.getElementById("button_return_letter_grid").style = "display:none";	//affichage du bouton piocher
 				
-				setTimeout(function() { displayPage('letter_grid_page'); reinitWord() } , 2000);
+				if (automatic_behaviour == true && automatic_behaviour_redirect_letter_grid == true) {
+					setTimeout(function() { displayPage('letter_grid_page'); reinitWord() } , 2000);
+				}
 			}
 
 			if (picked_ball == undefined) {
@@ -183,9 +184,10 @@ function pickBall(picked_ball) {							// Tire au hasard une boule du tableau gr
 						try_picking_ball_left = 0;
 							
 						document.getElementById("button_pick_number").style = "display:none";	//affichage du bouton piocher
-						document.getElementById("button_return_letter_grid").style = "display:none";	//affichage du bouton piocher
 						
-						setTimeout(function() { displayPage('letter_grid_page'); reinitWord() } , 2000);
+						if (automatic_behaviour == true && automatic_behaviour_redirect_letter_grid == true) {
+							setTimeout(function() { displayPage('letter_grid_page'); reinitWord() } , 2000);
+						}
 					}
 					yellow_purgatory.rows[0].insertCell().innerHTML += '<td class="cell_purgatory"> <div class="purgatory_number black_number"></div> </td>'
 					yellow_grid_complete.splice(picked_ball_random_index, 1);
@@ -208,8 +210,10 @@ function pickBall(picked_ball) {							// Tire au hasard une boule du tableau gr
 							
 						document.getElementById("button_pick_number").style = "display:none";	//affichage du bouton piocher
 						document.getElementById("button_return_letter_grid").style = "display:none";	//affichage du bouton piocher
-						
-						setTimeout(function() { displayPage('letter_grid_page'); reinitWord() } , 2000);
+
+						if (automatic_behaviour == true && automatic_behaviour_redirect_letter_grid == true) {
+							setTimeout(function() { displayPage('letter_grid_page'); reinitWord() } , 2000);
+						}
 					}
 					blue_purgatory.rows[0].insertCell().innerHTML += '<td class="cell_purgatory"> <div class="purgatory_number black_number"></div> </td>'
 					blue_grid_complete.splice(picked_ball_random_index, 1);
@@ -467,7 +471,11 @@ function pickBall(picked_ball) {							// Tire au hasard une boule du tableau gr
 			motus_engaged = true;
 			clearInterval(animationIntervalID_5);
 			addScoreTeamFocus(); addScoreTeamFocus(); // ajoute 100 ou 2 points
-			setTimeout(function() { displayPage('letter_grid_page'); reinitWord(); changeGrid();} , 3000);
+			if (automatic_behaviour == true && automatic_behaviour_redirect_letter_grid == true) {
+				setTimeout(function() { displayPage('letter_grid_page'); reinitWord(); changeGrid();} , 3000);
+			} else {
+				setTimeout(function() { changeGrid(); } , 3000);
+			}
 		}
 	}
 

@@ -133,11 +133,37 @@
         }
     }
 
+    function UpdateAutomaticBehaviourSettings(value) {
+        automatic_behaviour = value;
+        if (value == true) {
+            document.getElementById("check_automatic_behaviour_settings").style = "display:block"
+        } else {
+            document.getElementById("check_automatic_behaviour_settings").style = "display:none"
+        }
+    }
+
     function UpdateScoreSettings(value) {
         score_enabled = value;
         if (value == true) {
-            document.getElementById("").style = "display:block"
             document.getElementById("score_placeolder").style = "display:flex"
+        }
+    }
+
+    function UpdateAlwaysAskSettings(value) {
+        always_ask = value;
+        if (value == true) {
+            document.getElementById("always_ask_length_dropdown").style = "opacity: 100;"
+        } else {
+            document.getElementById("always_ask_length_dropdown").style = "height: 0; opacity: 0;"
+        }
+    }
+
+    function UpdateSoundSettings(value) {
+        playsound_enabled = value;
+        if (value == true) {
+            document.getElementById("play_jingle_settings").style = "opacity: 100;"
+        } else {
+            document.getElementById("play_jingle_settings").style = "height: 0; opacity: 0;"
         }
     }
 
@@ -145,7 +171,7 @@
         team_enabled = value;
         if (value == true) {
             // team activated
-            document.getElementById("settings_section_team").style = "display:block"
+            document.getElementById("settings_section_team").style = "opacity: 100;"
             document.getElementById("score_1_panel").style = "display:block" // Le score de la seconde équipe s'affiche
             document.getElementById("change_team_letter_grid_button").style = "display:block" // Le bouton de changement d'équipe s'affiche
 
@@ -155,7 +181,7 @@
 
         } else {
 
-            document.getElementById("settings_section_team").style = "display:none"
+            document.getElementById("settings_section_team").style = "height: 0; opacity: 0;"
             document.getElementById("score_1_panel").style = "display:none" // Le score de la seconde équipe ne s'affiche pas
             document.getElementById("change_team_letter_grid_button").style = "display:none" // Le bouton de changement d'équipe ne s'affiche pas
 
@@ -198,11 +224,10 @@
     }
 
     function reinitWord() {
-
         word_to_find_list.splice(0, 1);
         if (word_to_find_list.length > 0) {} else {
             if (always_ask == true) {
-                WordListAddRowRandom(always_ask_lenght);
+                WordListAddRowRandom(always_ask_length);
             } else {
                 console.log("Aucun mot dans la liste");
 
@@ -303,9 +328,21 @@
     }
 
     function ligneRattrapage() {
-        suppressionLigne();
-        nouvelleLigne();
-        ajoutLettreBonus();
+        if (automatic_behaviour == true) {
+            if (automatic_behaviour_new_line_error == "replace_bonus") {
+                suppressionLigne();
+                nouvelleLigne();
+                ajoutLettreBonus();
+            } else if (automatic_behaviour_new_line_error == "replace_only") {
+                suppressionLigne();
+                nouvelleLigne();
+            } else if (automatic_behaviour_new_line_error == "add_bonus") {
+                nouvelleLigne();
+                ajoutLettreBonus();
+            } else if (automatic_behaviour_new_line_error == "add_only") {
+                nouvelleLigne();
+            }
+        }
     }
 
     function createDisplayWindow() {
@@ -317,6 +354,7 @@
 		writeInDisplayWindow("<link rel=\"stylesheet\" type=\"text/css\" title=\"css\" href=\"src/css/number_grid.css\">");
 		writeInDisplayWindow("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
 		writeInDisplayWindow("<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"src/img/favicon.png\">");
+		writeInDisplayWindow("<script type=\"text/javascript\" src=\"./src/js/game/keyinput.js\"></script>");
         writeInDisplayWindow("<div id=\"display_page\" class=\"style_2010\"><div class=\"display_page\" id=\"letter_grid_placeolder\"></div></div>");
     }
 

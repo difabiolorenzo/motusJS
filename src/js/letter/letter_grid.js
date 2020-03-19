@@ -142,7 +142,7 @@ function nouvelleLigne() {		// Ajoute une nouvelle ligne avec les bonnes lettres
 			innerHTMLDisplayWindow((try_count_index + '_' + i), ".");
 			if (placing[i] == 1) {
 				document.getElementById(try_count_index + '_' + i).innerHTML = word_to_find_tab[i];
-				innerHTMLDisplayWindow(((try_count_index + '_' + i)), word_to_find_tab[i]);
+				innerHTMLDisplayWindow((try_count_index + '_' + i), word_to_find_tab[i]);
 			}
 		}
 		
@@ -407,9 +407,13 @@ function animationVerificationProposition() {		//Fonction nécéssitant une bouc
 				} , 2250);
 
 				if (number_grid_enabled == true) {
-					setTimeout(function() { goNumberPicking() } , 4000); //reinitialisation de la grille
+					if (automatic_behaviour == true && automatic_behaviour_redirect_number_grid == true) {
+						setTimeout(function() { goNumberPicking() } , 4000); //reinitialisation de la grille
+					}
 				} else {
-					setTimeout(function() { reinitWord() } , 4000); //reinitialisation de la grille
+					if (automatic_behaviour == true && automatic_behaviour_ask_new_word == true) {
+						setTimeout(function() { reinitWord() } , 4000); //reinitialisation de la grille
+					}
 				}
 				
 		} else {
