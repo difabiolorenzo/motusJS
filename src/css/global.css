@@ -5,15 +5,11 @@
 
 :root {
   --motus_red: #A52A2E;
-  --button_red: #8a1216;
-  --button_red_hover: #691517;
   --motus_blue: #A6D5FF;
-  --button_blue: #3c65a2;
-  --button_blue_hover: #233e67;
   --motus_yellow: #ffe84e;
   --team_yellow: #FBC800;
   --team_blue: #1681C7;
-  color: dark;
+  --motus_dark: #2d2d2d;
 }
 
 
@@ -71,6 +67,15 @@ button, input, select {
   border: 0;
   font-family: 'Gotham';
   margin: 0.15em;
+  cursor: pointer;
+}
+
+select:disabled, input:disabled {
+    opacity: 0.33;
+   cursor:default
+}
+select:disabled:hover, input:disabled:hover {
+    opacity: 0.175;
 }
 
 .nostyle_button {
@@ -135,12 +140,12 @@ body {
 }
 
 div#main_menu {background-color: var(--motus_red);}
-.style_2019#main_menu  { background-color:var(--team_blue);}
+.style_2019#main_menu  { background-color:var(--motus_dark);}
 .style_2000#main_menu  { background-color: #b1161b;}
-.style_1990#main_menu  { background-color: #172166;}
+.style_1990#main_menu  {background-color: #002761;}
 div#main_menu_content { padding-left: 20%; }
 div#settings_page { background-color: #ffffff; }
-div#letter_grid_page { background-color: var(--motus_blue); }
+div#letter_grid_page {background-color: var(--motus_blue);}
 div#number_grid_page {background-color: var(--motus_blue);}
 div#debug_page { background-color: #3e2792; }
 
@@ -154,15 +159,15 @@ table#word_list {
 }
 
 img#logo {
-  width: 50%;
-  margin-left: 25%;
-  margin-top: 15%;
-  margin-bottom: 30%;
+  width: 50vw;
+  margin-left: 25vw;
+  margin-top: 7.5vh;
+  margin-bottom: 17vh;
 }
 
 button.big_button {
-  width: 80%;
-  height: 7.5%;
+  width: 60vw;
+  height: 7.5vh;
   font-size: 1.5em;
   margin-bottom: 1vh;
 }
@@ -210,15 +215,15 @@ input#settings_input_blue_team_name {
 /* Desktop: */
 @media only screen and (min-width: 1024px) {
   img#logo {
-    width: 25%;
-    margin-left: 37.5%;
-    margin-bottom: 5%;
-    margin-top: 7.5%;
+    width: 25vw;
+    margin-left: 37.5vw;
+    margin-bottom: 7.5vh;
+    margin-top: 15vh;
   }
   h1 { margin-block-start: 0.75em; }
   button.big_button {
-    width: 75%;
-    height: 7.5%;
+    width: 60vw;
+    height: 7.5vh;
     font-size: 1.5em;
     margin-bottom: 0.25vh;
   }
@@ -250,5 +255,31 @@ input#settings_input_blue_team_name {
     font: 1em monospace;
     border-radius: 0.25vw;
     box-shadow: inset 0 -0.125vw 0 #d1d5da;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+
+  .page, div#settings_page {
+    background-color: #3c3c3c;
+  }
+  div#letter_grid_page {background-color: var(--motus_dark);}
+  div#number_grid_page {background-color: var(--motus_dark);}
+  code, h1, h2, h3 {
+    color: #efefef;
+  }
+  a:-webkit-any-link, p, label {
+    color: #d4d4d4;
+  }
+  table#word_list {
+    background-color: #4f4f4f;
+  }
+  input[type="checkbox" i] {
+    background-color: blue;
+  }
+  button, input { background-color: #ffffff1a;}
+  button:hover, input:hover { background-color: rgba(255, 255, 255, 0.25);}
+  .big_button {   background-color: #0003; }
+  .big_button:hover {   background-color: #0005; }
   }
 }

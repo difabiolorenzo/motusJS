@@ -230,7 +230,7 @@ function animationAfficheSolution() {
 }
 
 function ajoutLettreBonus() {		// Ajoute une lettre bonnus dans les emplacement non trouvés
-	if (animationIntervalID_2 == undefined) {
+	if (animationIntervalID_2 == undefined && word_displayed == false) {
 		for (var i = 0; i < word_length; i++) {
 			if (placing[i] != 1) {
 				document.getElementById(try_count_index + '_' + i).innerHTML = word_to_find_tab[i];
@@ -245,6 +245,9 @@ function ajoutLettreBonus() {		// Ajoute une lettre bonnus dans les emplacement 
 				break;
 			}
 		}
+	}
+	if (word_displayed == true) {
+		errorHandler(4);
 	}
 }
 
@@ -406,7 +409,7 @@ function animationVerificationProposition() {		//Fonction nécéssitant une bouc
 					addScoreTeamFocus(); //Ajoute score_addtion à team_focus
 				} , 2250);
 
-				if (number_grid_enabled == true) {
+				if (use_number_grid == true) {
 					if (automatic_behaviour == true && automatic_behaviour_redirect_number_grid == true) {
 						setTimeout(function() { goNumberPicking() } , 4000); //reinitialisation de la grille
 					}

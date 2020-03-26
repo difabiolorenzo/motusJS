@@ -41,8 +41,7 @@
     <div id="main_menu_content">
       <button class="big_button" onclick="initGame()" autofocus=true>Jouer</button>
       <button class="big_button" onclick="displayPage('settings_page')">Paramètres</button>
-      <button class="big_button"
-        onclick="window.location.href = 'https://github.com/difabiolorenzo/motusJS'">GitHub</button>
+      <button class="big_button" onclick="window.location.href = 'https://github.com/difabiolorenzo/motusJS'">GitHub</button>
       <button class="big_button" onclick="displayPage('credit_page')">Credits</button>
       <button class="big_button" id="debug_menu_button" onclick="displayPage('debug_page')"
         style="display: none;">Debug</button>
@@ -77,6 +76,8 @@
             <label name="grid_style">Temps de vérification</label>
             <select onchange="timer = this.value;">
               <option value=225>Normal</option>
+              <option value=1000>1 seconde de latence</option>
+              <option value=600>Extrêmement lent</option>
               <option value=500>Très très lent</option>
               <option value=400>Très lent</option>
               <option value=300>Lent</option>
@@ -197,7 +198,7 @@
         </div>
       </div>
 
-      <div class="settings_input">
+      <div id="number_grid_settings" class="settings_input">
         <p>Grilles numérotées</p>
 
         <div class=" section_flex">
@@ -209,18 +210,49 @@
                     id="use_number_grid_checkbox" onchange="UpdateNumberGridSettings(this.checked)"> </th>
               </tr>
               <tr>
+                <th> <label name="try_picking_ball">Nombre de balles tirées</label> </th>
+                <th> <input class="input-checkbox" type="number" id="try_picking_ball_input" name="try_picking_ball"
+                    step="1" value="2" onchange="try_picking_ball = this.value"></th>
+              </tr>
+              <tr>
                 <th> <label name="use_saving_ball">Utiliser la "boule magique"</label> </th>
                 <th> <input class="input-checkbox" type="checkbox" name="use_saving_ball" checked
-                    id="use_saving_ball_checkbox" onchange="use_saving_ball = this.checked"> </th>
+                    id="use_saving_ball_checkbox" onchange="UpdateSavingBallettings(this.checked)"> </th>
+              </tr>
+              <tr>
+                <th> <label name="limiting_saving_ball">Limiter les "boules magiques" aux première grilles</label> </th>
+                <th> <input class="input-checkbox" type="checkbox" name="limiting_saving_ball" checked
+                    id="limiting_saving_ball_checkbox" onchange="limiting_saving_ball = this.checked"> </th>
               </tr>
               <tr>
                 <th> <label name="black_ball_amount">Nombre de boules noires</label> </th>
-                <th> <input class="input-checkbox" type="number" id="black_ball_amount" name="black_ball_amount"
+                <th> <input class="input-checkbox" type="number" id="black_ball_amount_input" name="black_ball_amount"
                     step="1" value="3" onchange="black_ball_amount = this.value"></th>
               </tr>
             </tbody>
           </table>
         </div>
+        
+
+        <div class=" section_flex">
+          <table>
+            <tbody>
+              <tr>
+                <th> <label name="use_number_grid">Mode de séléctions des boules</label> </th>
+                <th>  <select id="sort_mode_select" onchange="UpdateNulberSelectMode(this.value);">
+                        <option value="random">par hasard</option>
+                        <option value="input_touch">par clique (n'inclut pas les boules noires)</option>
+                        <option value="input_keyboard">par clavier (n'inclut pas les boules noires))</option>
+                      </select>
+                </th>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        
+  
+        
       </div>
 
       <div class="settings_input">
@@ -263,7 +295,6 @@
         <p>Gameplay & Sons</p>
 
         <div class="section_flex">
-          <div style="display:block" class="settings_input">
             <table>
               <tbody>
                 <tr>
@@ -271,21 +302,17 @@
                   <th> <input class="input-checkbox" type="checkbox" name="check_automatic_behaviour" checked
                       onchange="UpdateAutomaticBehaviourSettings(this.checked)"> </th>
                 </tr>
-              </tbody>
-            </table>
-            <table id="check_automatic_behaviour_settings">
-              <tbody>
                 <tr>
                   <th>  <label name="check_automatic_behaviour_line_start">Ligne au commencement</label> 
                         <br>
                         <code>desactivé si le double affichage est présent</th>
-                  <th> <input class="input-checkbox" type="checkbox" name="check_automatic_behaviour_line_start" checked
+                  <th> <input id="check_automatic_behaviour_line_start" class="input-checkbox" type="checkbox" name="check_automatic_behaviour_line_start" checked
                       onchange="automatic_behaviour_line_start = this.checked"> </th>
                 </tr>
                 <tr>
                   <th> <label name="check_automatic_behaviour_new_line_error">Nouvelle ligne après erreur</label> </th>
                   <th> 
-                    <select onchange="automatic_behaviour_new_line_error = this.value;">
+                    <select id="check_automatic_behaviour_new_line_error" onchange="automatic_behaviour_new_line_error = this.value;">
                       <option value="replace_bonus">Replacer + lettre bonus</option>
                       <option value="replace_only">Replacer</option>
                       <option value="add_bonus">Ajouter + lettre bonus</option>
@@ -296,22 +323,30 @@
                 </tr>
                 <tr>
                   <th> <label name="check_automatic_behaviour_redirect_number_grid">Redirection vers grille numérotée</label> </th>
-                  <th> <input class="input-checkbox" type="checkbox" name="check_automatic_behaviour_redirect_number_grid" checked
+                  <th> <input id="check_automatic_behaviour_redirect_number_grid" class="input-checkbox" type="checkbox" name="check_automatic_behaviour_redirect_number_grid" checked
                       onchange="automatic_behaviour_redirect_number_grid = this.checked"> </th>
                 </tr>
                 <tr>
                   <th> <label name="check_automatic_behaviour_redirect_letter_grid">Redirection vers grille de mot</label> </th>
-                  <th> <input class="input-checkbox" type="checkbox" name="check_automatic_behaviour_redirect_letter_grid" checked
+                  <th> <input id="check_automatic_behaviour_redirect_letter_grid" class="input-checkbox" type="checkbox" name="check_automatic_behaviour_redirect_letter_grid"
                       onchange="automatic_behaviour_redirect_letter_grid = this.checked"> </th>
                 </tr>
                 <tr>
                   <th> <label name="check_automatic_behaviour_new_word">Propose un nouveau mot</label> </th>
-                  <th> <input class="input-checkbox" type="checkbox" name="check_automatic_behaviour_ask_new_word" checked
+                  <th> <input id="check_automatic_behaviour_new_word" class="input-checkbox" type="checkbox" name="check_automatic_behaviour_ask_new_word" checked
                       onchange="automatic_behaviour_ask_new_word = this.checked"> </th>
                 </tr>
               </tbody>
             </table>
-          </div>
+        </div>
+
+      </div>
+
+
+      <div class="settings_input">
+        <p>Sons</p>
+
+        <div class="section_flex">
           <table>
             <tbody>
               <tr>
@@ -337,7 +372,7 @@
             <label>Ajouter un mot manuellement:</label>
             <input type="text" id="word_list_selected_word" style="text-transform:uppercase">
             <input type="button" id="add" value="Ajouter" onclick="WordAddCustom()">
-            <code>(Un mot ayant entre 5 et 10 lettres)</code>
+            <br><code>(Un mot ayant entre 5 et 10 lettres)</code>
           </div>
         
           <div>
@@ -402,22 +437,23 @@
     <div id="bottom_section">
       <div class="flex_section">
         <button class="flex_button" id="new_line_button" onclick="nouvelleLigne();">Nouvelle Ligne</button>
-        <button class="flex_button" id="word_information_button" onclick="wordInformation()">Informations sur le
-          mot</button>
+        <button class="flex_button" id="delete_line_button" onclick="suppressionLigne();">Supprimer la ligne</button>
+      </div>
+      <div class="flex_section">
+        <button class="flex_button" id="bonus_letter_button" onclick="ajoutLettreBonus();">Lettre bonus</button>
+        <button class="flex_button" id="word_information_button" onclick="wordInformation()">Informations sur le mot</button>
       </div>
 
       <div class="flex_section">
-        <button class="flex_button" id="bonus_letter_button" onclick="ajoutLettreBonus();">Lettre bonus</button>
-        <button class="flex_button" id="delete_line_button" onclick="suppressionLigne();">Supprimer la ligne</button>
-        <button class="flex_button" id="change_team_letter_grid_button" onclick="switchTeamFocus()"
-          style="display:none;">Changer d'équipe</button>
+        <button class="flex_button" id="number_grid_button" onclick="goNumberPicking();" style="display:block">Grilles numérotés</button>
+        <button class="flex_button" id="change_team_letter_grid_button" onclick="switchTeamFocus()" style="display:none;">Changer d'équipe</button>
       </div>
 
       <div class="flex_section">
         <button class="flex_button" id="display_word_button" onclick="affichageSolution();">Afficher la réponse</button>
         <button class="flex_button" id="new_word_button" onclick="reinitWord()">Nouveau Mot</button>
-        <button class="flex_button" id="number_grid_button" onclick="goNumberPicking();" style="display:block">Grilles
-          numérotés</button>
+      </div>
+      <div class="flex_section">
         <button class="flex_button" onclick="displayPage('settings_page')">Paramètres</button>
         <button class="flex_button" onclick="displayPage('main_menu')">Retour</button>
       </div>
@@ -443,8 +479,8 @@
   <div class="page style_2010" id="number_grid_page" style="display:none;">
 
     <div class="flex_section" style="position: fixed; display: flex;">
-      <button class="flex_button" onclick="displayPage('letter_grid_page'); reinitWord()"
-        id="button_return_letter_grid">Retour</button>
+      <button class="flex_button" onclick="displayPage('letter_grid_page');" id="button_return_letter_grid">Retour</button>
+      <input class="flex_button" id="keyboard_number_grid_input" type="text" style="display:none">
       <button class="flex_button" onclick="pickBall()" id="button_pick_number" style="display:none">Piocher</button>
     </div>
 
@@ -543,6 +579,44 @@
 
   </div>
 
+  <!-- Page: Credits / Licences -->
+  <div class="page" id="credit_page" style="display:none;">
+    <div id="credit-up">
+      <div class="section_flex" id="credit-top">
+        <h1>Credits</h1>
+        <button onclick="displayPage('main_menu')">Retour</button>
+      </div>
+      <div class="section">
+        <h2>Motus</h2>
+        <p>Motus est une marque déposé par FranceTélévision.</p>
+        <p>L’ensemble des éléments (logos, marques et autres éléments reproduits) sont réservés et protégés par le droit
+          de la propriété intellectuelle, notamment les droits d’auteur, droits voisins, droits des marques, tous
+          reviennent à <a href="https://www.francetelevisions.fr/cgu">francetelevisions</a></p>
+        <p></p>
+      </div>
+      <div class="section">
+        <h2>jQuery</h2>
+        <p>l'utilisation de jQuery dans motusJS est limitée à l'audio</p>
+        <p>Le code de jQuery est sous licence <a
+            href="https://tldrlegal.com/license/creative-commons-cc0-1.0-universal">CC0</a></p>
+      </div>
+      <div class="section">
+        <h2>Code</h2>
+        <p>motusJS est construit sur les base du code de <b>sogroo</b> avec son site <a
+            href="http://www.anagrammeur.com/jeux/motus/motus.php">anagrammeur.com</a></p>
+        <p>le code ayant été remanié du tout au tout, et ne ressamblant plus du tout au sien, je tiens tout de même à
+          féliciter <b>sogroo</b> pour son travail.</p>
+      </div>
+      <div class="section">
+        <h2>Dictionnaires</h2>
+        <p>Les dictionnaires des mots proviennent du jeu <a
+            href="ftp://ftp.ac-grenoble.fr/ge/educational_games">XScrabble.</a></p>
+      </div>
+    </div>
+  </div>
+
+  
+
   <!-- Page: Debug -->
   <div class="page" id="debug_page" style="display:none; color:white;">
     <div>
@@ -585,41 +659,6 @@
   </div>
   </div>
 
-  <!-- Page: Credits / Licences -->
-  <div class="page" id="credit_page" style="display:none;">
-    <div id="credit-up">
-      <div class="section_flex" id="credit-top">
-        <h1>Credits</h1>
-        <button onclick="displayPage('main_menu')">Retour</button>
-      </div>
-      <div class="section">
-        <h2>Motus</h2>
-        <p>Motus est une marque déposé par FranceTélévision.</p>
-        <p>L’ensemble des éléments (logos, marques et autres éléments reproduits) sont réservés et protégés par le droit
-          de la propriété intellectuelle, notamment les droits d’auteur, droits voisins, droits des marques, tous
-          reviennent à <a href="https://www.francetelevisions.fr/cgu">francetelevisions</a></p>
-        <p></p>
-      </div>
-      <div class="section">
-        <h2>jQuery</h2>
-        <p>l'utilisation de jQuery dans motusJS est limitée à l'audio</p>
-        <p>Le code de jQuery est sous licence <a
-            href="https://tldrlegal.com/license/creative-commons-cc0-1.0-universal">CC0</a></p>
-      </div>
-      <div class="section">
-        <h2>Code</h2>
-        <p>motusJS est construit sur les base du code de <b>sogroo</b> avec son site <a
-            href="http://www.anagrammeur.com/jeux/motus/motus.php">anagrammeur.com</a></p>
-        <p>le code ayant été remanié du tout au tout, et ne ressamblant plus du tout au sien, je tiens tout de même à
-          féliciter <b>sogroo</b> pour son travail.</p>
-      </div>
-      <div class="section">
-        <h2>Dictionnaires</h2>
-        <p>Les dictionnaires des mots proviennent du jeu <a
-            href="ftp://ftp.ac-grenoble.fr/ge/educational_games">XScrabble.</a></p>
-      </div>
-    </div>
-  </div>
 </body>
 
 </html>

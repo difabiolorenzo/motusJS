@@ -23,6 +23,9 @@
                 case "letter_missing":
                     $.playSound("src/sounds/lettre_absente.mp3");
                     break;
+                case "error":
+                    $.playSound("src/sounds/lettre_absente.mp3");
+                    break;
                 case "letter_bonus":
                     $.playSound("src/sounds/lettre_bonus.mp3");
                     break;
@@ -124,8 +127,10 @@
         document.getElementById("main_menu").className = "page style_" + value;
         classNameDisplayWindow("display_page", ("page style_" + value))
 
-        if (value == 2010 || value == 2019) {
+        if (value == 2010 ) {
             document.getElementById("logo").src = "src/img/motus_logo_2010.png"
+        } else if (value == 2019) {
+            document.getElementById("logo").src = "src/img/motus_logo_2010_black.png"
         } else if (value == 2000) {
             document.getElementById("logo").src = "src/img/motus_logo_2000.png"
         } else if (value == 1990) {
@@ -136,9 +141,17 @@
     function UpdateAutomaticBehaviourSettings(value) {
         automatic_behaviour = value;
         if (value == true) {
-            document.getElementById("check_automatic_behaviour_settings").style = "display:block"
+            document.getElementById("check_automatic_behaviour_line_start").disabled = false
+            document.getElementById("check_automatic_behaviour_new_line_error").disabled = false
+            document.getElementById("check_automatic_behaviour_redirect_number_grid").disabled = false
+            document.getElementById("check_automatic_behaviour_redirect_letter_grid").disabled = false
+            document.getElementById("check_automatic_behaviour_new_word").disabled = false
         } else {
-            document.getElementById("check_automatic_behaviour_settings").style = "display:none"
+            document.getElementById("check_automatic_behaviour_line_start").disabled = true
+            document.getElementById("check_automatic_behaviour_new_line_error").disabled = true
+            document.getElementById("check_automatic_behaviour_redirect_number_grid").disabled = true
+            document.getElementById("check_automatic_behaviour_redirect_letter_grid").disabled = true
+            document.getElementById("check_automatic_behaviour_new_word").disabled = true
         }
     }
 
@@ -194,14 +207,44 @@
     }
 
     function UpdateNumberGridSettings(value) {
-        number_grid_enabled = value;
+        use_number_grid = value;
         if (value == true) {
-            // number grid activated
-            document.getElementById("use_saving_ball_checkbox").disabled = false //checkbox saving ball inside settings
+            document.getElementById("number_grid_button").style = "display:block"
 
+            document.getElementById("use_saving_ball_checkbox").disabled = false
+            document.getElementById("black_ball_amount_input").disabled = false
+            document.getElementById("try_picking_ball_input").disabled = false
+            if (use_saving_ball == true) {
+                document.getElementById("limiting_saving_ball_checkbox").disabled = false
+            }
+            document.getElementById("sort_mode_select").disabled = false
         } else {
-            // number grid desactivated
-            document.getElementById("use_saving_ball_checkbox").disabled = true //checkbox saving ball inside settings
+            document.getElementById("number_grid_button").style = "display:none"
+
+            document.getElementById("use_saving_ball_checkbox").disabled = true
+            document.getElementById("limiting_saving_ball_checkbox").disabled = true
+            document.getElementById("black_ball_amount_input").disabled = true
+            document.getElementById("try_picking_ball_input").disabled = true
+            document.getElementById("sort_mode_select").disabled = true
+        }
+    }
+
+    function UpdateSavingBallettings(value) {
+        use_saving_ball = value;
+        if (value == true) {
+            document.getElementById("limiting_saving_ball_checkbox").disabled = false
+        } else {
+            document.getElementById("limiting_saving_ball_checkbox").disabled = true
+        }
+    }
+
+    function UpdateNulberSelectMode(mode) {
+        sort_mode = mode;
+
+        if (mode == "input_keyboard") {
+            document.getElementById("keyboard_number_grid_input").style = "display:block";
+        } else {
+            document.getElementById("keyboard_number_grid_input").style = "display:none";
         }
     }
 
@@ -212,6 +255,8 @@
         document.getElementById("number_grid_page").style = "display:none;"
         document.getElementById("debug_page").style = "display:none;"
         document.getElementById("credit_page").style = "display:none;"
+
+        displayed_page = page_name;
 
         if (page_name != "letter_grid_page") {
             game_paused = true;
@@ -247,23 +292,22 @@
 
     function previewMode() {
         debug_index++;
-        //debug
-        // if (debug_index == 1) {
-        //     UpdateStyle(2019);
-        // } else if (debug_index == 2) {
-        //     UpdateStyle(2000);
-        // } else if (debug_index == 3) {
-        //     document.getElementById("debug_menu_button").style = "display: block";
-		// 	document.getElementById("number_grid_button").style = "display:block";
-        //     godmod = true;
-        //     UpdateStyle(1990);
-        // } else if (debug_index == 4) {
-        //     document.getElementById("debug_menu_button").style = "display: none";
-		// 	document.getElementById("number_grid_button").style = "display: none";
-        //     godmod = false;
-        //     UpdateStyle(2010);
-        //     debug_index = 0;
-        // }
+        if (debug_index == 1) {
+            UpdateStyle(2019);
+        } else if (debug_index == 2) {
+            UpdateStyle(2000);
+        } else if (debug_index == 3) {
+            document.getElementById("debug_menu_button").style = "display: block";
+			document.getElementById("number_grid_button").style = "display:block";
+            godmod = true;
+            UpdateStyle(1990);
+        } else if (debug_index == 4) {
+            document.getElementById("debug_menu_button").style = "display: none";
+			document.getElementById("number_grid_button").style = "display: none";
+            godmod = false;
+            UpdateStyle(2010);
+            debug_index = 0;
+        }
     }
 
     function addScoreTeamFocus() {
@@ -312,19 +356,25 @@
         }
     }
 
-    function errorHandler(errorCode) { // Affiche dans la console le terme de l'erreur
+    function errorHandler(errorCode, catching_up) { // Affiche dans la console le terme de l'erreur
         if (errorCode == 1) {
             console.log("La longueur du word_to_find n'est pas la bonne.");
         } else if (errorCode == 2) {
             console.log("Mot non présent dans le dictionnaire");
         } else if (errorCode == 3) {
             console.log("Mot déjà proposé");
+        } else if (errorCode == 4) {
+            console.log("Mot déjà affiché");
+        } else if (errorCode == 5) {
+            console.log("Boule non valide");
         }
-        playsound("letter_missing");
-        playsound("wrong");
+        playsound("error");
 
-        if (team_enabled == true) { switchTeamFocus(); }
-        setTimeout(function () { ligneRattrapage(); }, 3000);
+        if (catching_up == true) {
+            if (team_enabled == true) { switchTeamFocus(); }
+            setTimeout(function () { ligneRattrapage(); }, 3000);
+            playsound("wrong");
+        }
     }
 
     function ligneRattrapage() {

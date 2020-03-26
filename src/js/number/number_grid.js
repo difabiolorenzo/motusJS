@@ -24,8 +24,6 @@ function getAllBalls() {
 	blue_grid_placement_complete = [];
 	yellow_grid_complete = [];
 	blue_grid_complete = [];
-	yellow_grid_number = [];
-	blue_grid_number = [];
 
 	//Copie des numéros de x_grid_raw vers x_grid_complete
 
@@ -49,7 +47,7 @@ function createSavingBall() {
 	blue_saving_ball = blue_grid_raw[Math.floor(Math.random() * blue_grid_raw.length)];
 }
 
-function changeGrid() {
+function changeNumberGrid() {
 	if (grid_index >= 0 && grid_index < 5) {
 		grid_index++
 	} else {
@@ -79,7 +77,9 @@ function numberDisplay() {
 		team_color_grid = yellow_grid;
 		for (i=0 ; i<25; i++) {
 			if (use_saving_ball == true && team_color_grid[grid_index][grid_i_index*5+grid_j_index] == yellow_saving_ball) {
-				document.getElementById("yellow_cell_" + grid_i_index + "_" + grid_j_index).innerHTML = "<div class=\"number yellow_number saving_ball\" id=\"" + "yellow_number_" + grid_i_index + "_" + grid_j_index + "\" onclick=\"manuallyPickBall('" + team_color_grid[grid_index][grid_i_index*5+grid_j_index] +"')\">" + team_color_grid[grid_index][grid_i_index*5+grid_j_index] + "</div>"
+				if ( (limiting_saving_ball == true && grid_index == 0) || (limiting_saving_ball == false) ) {
+					document.getElementById("yellow_cell_" + grid_i_index + "_" + grid_j_index).innerHTML = "<div class=\"number yellow_number saving_ball\" id=\"" + "yellow_number_" + grid_i_index + "_" + grid_j_index + "\" onclick=\"manuallyPickBall('" + team_color_grid[grid_index][grid_i_index*5+grid_j_index] +"')\">" + team_color_grid[grid_index][grid_i_index*5+grid_j_index] + "</div>"
+				}
 			} else {
 				document.getElementById("yellow_cell_" + grid_i_index + "_" + grid_j_index).innerHTML = "<div class=\"number yellow_number\" id=\"" + "yellow_number_" + grid_i_index + "_" + grid_j_index + "\" onclick=\"manuallyPickBall('" + team_color_grid[grid_index][grid_i_index*5+grid_j_index] +"')\">" + team_color_grid[grid_index][grid_i_index*5+grid_j_index] + "</div>"
 			}
@@ -99,9 +99,11 @@ function numberDisplay() {
 		
 		team_color_grid = blue_grid;
 		for (i=0 ; i<25; i++) {
-			
+
 			if (use_saving_ball == true && team_color_grid[grid_index][grid_i_index*5+grid_j_index] == blue_saving_ball) {
-				document.getElementById("blue_cell_" + grid_i_index + "_" + grid_j_index).innerHTML = "<div class=\"number blue_number saving_ball\" id=\"" + "blue_number_" + grid_i_index + "_" + grid_j_index + "\" onclick=\"manuallyPickBall('" + team_color_grid[grid_index][grid_i_index*5+grid_j_index] +"')\">" + team_color_grid[grid_index][grid_i_index*5+grid_j_index] + "</div>"
+				if ( (limiting_saving_ball == true && grid_index == 0) || (limiting_saving_ball == false) ) {
+					document.getElementById("blue_cell_" + grid_i_index + "_" + grid_j_index).innerHTML = "<div class=\"number blue_number saving_ball\" id=\"" + "blue_number_" + grid_i_index + "_" + grid_j_index + "\" onclick=\"manuallyPickBall('" + team_color_grid[grid_index][grid_i_index*5+grid_j_index] +"')\">" + team_color_grid[grid_index][grid_i_index*5+grid_j_index] + "</div>"
+				}
 			} else {
 				document.getElementById("blue_cell_" + grid_i_index + "_" + grid_j_index).innerHTML = "<div class=\"number blue_number\" id=\"" + "blue_number_" + grid_i_index + "_" + grid_j_index + "\" onclick=\"manuallyPickBall('" + team_color_grid[grid_index][grid_i_index*5+grid_j_index] +"')\">" + team_color_grid[grid_index][grid_i_index*5+grid_j_index] + "</div>"
 			}
@@ -142,7 +144,7 @@ function emptyPurgatory() {
 	document.getElementById("blue_purgatory").innerHTML = "<td></td>";
 }
 
-function pickBall(picked_ball) {							// Tire au hasard une boule du tableau grid_complete de l'équipe ayant la main
+function pickBall(picked_ball, picked_ball_random_index) {							// Tire au hasard une boule du tableau grid_complete de l'équipe ayant la main
 		if (motus_engaged == false && picked_ball_animation == 0 && motus_animation_index == 0 && try_picking_ball_left > 0) {
 			try_picking_ball_left--;
 			if (try_picking_ball_left == 0) {
@@ -265,12 +267,6 @@ function pickBall(picked_ball) {							// Tire au hasard une boule du tableau gr
 			}
 		} else {
 			playsound('letter_missing');
-		}
-	}
-
-	function manuallyPickBall(number) {
-		if (godmod == true) {
-			pickBall(number);
 		}
 	}
 
@@ -472,9 +468,9 @@ function pickBall(picked_ball) {							// Tire au hasard une boule du tableau gr
 			clearInterval(animationIntervalID_5);
 			addScoreTeamFocus(); addScoreTeamFocus(); // ajoute 100 ou 2 points
 			if (automatic_behaviour == true && automatic_behaviour_redirect_letter_grid == true) {
-				setTimeout(function() { displayPage('letter_grid_page'); reinitWord(); changeGrid();} , 3000);
+				setTimeout(function() { displayPage('letter_grid_page'); reinitWord(); changeNumberGrid();} , 5000);
 			} else {
-				setTimeout(function() { changeGrid(); } , 3000);
+				setTimeout(function() { changeNumberGrid(); } , 3000);
 			}
 		}
 	}
@@ -485,4 +481,72 @@ function pickBall(picked_ball) {							// Tire au hasard une boule du tableau gr
 		document.getElementById("button_pick_number").style = "display:block";	//affichage du bouton piocher
 		document.getElementById("button_return_letter_grid").style = "display:block";	//affichage du bouton piocher
 		displayPage('number_grid_page');
+	}
+	
+	function manuallyPickBall(number) {
+		if (sort_mode == "input_touch") {
+			arbitraryPickBall(number)
+		}
+	}
+	
+	function arbitraryPickBall(number) {
+		for (i = 0; i<yellow_grid_complete.length; i++) {
+			if ( team_focus == "yellow" && number == yellow_grid_complete[i]) {
+				pickBall(number, i);
+				break;
+			} else if ( team_focus == "blue" && number == blue_grid_complete[i]) {
+				pickBall(number, i);
+				break;
+			}
+
+			//fin de la vérification, aucune boule valide trouvée
+			if ( number != yellow_grid_complete[i] && i == yellow_grid_complete.length-1) {
+				errorHandler(5, false)
+			}
+		}
+	}
+
+	function numberAddFromKeyboard(number) {
+		if (number_proposed_tab.length < 2 ) {
+			number_proposed_tab.push(number);
+			number_proposed = number_proposed_tab.join('');
+		} else {
+			deleteProposedNumberFromKeyboard()
+
+			number_proposed_tab.push(number);
+			number_proposed = number_proposed_tab.join('');
+		}
+		checkProposedNumberFromKeyboard();
+	}
+
+	function checkProposedNumberFromKeyboard() {
+		for (i=0 ; i<25; i++) {
+			if (number_proposed != yellow_grid[grid_index][i]) {
+				document.getElementById("yellow_cell_" + ((i)-(i % 5))/5 + "_" + i%5).className = "cell_team_yellow"
+			} else if (number_proposed == yellow_grid[grid_index][i]) {
+				console.log(i);
+				
+				document.getElementById("yellow_cell_" + ((i)-(i % 5))/5 + "_" + i%5).className = "cell_team_yellow selected_cell"
+			}
+		}
+		document.getElementById("keyboard_number_grid_input").value = number_proposed;
+	}
+
+	function validateProposedNumberFromKeyboard() {
+		arbitraryPickBall(number_proposed);
+		deleteProposedNumberFromKeyboard();
+	}
+
+	function eraseProposedNumberFromKeyboard() {
+		number_proposed_tab.pop();
+		number_proposed = number_proposed_tab.join('');
+
+		checkProposedNumberFromKeyboard();
+	}
+	
+	function deleteProposedNumberFromKeyboard() {
+		number_proposed_tab = [];
+		number_proposed = "";
+
+		checkProposedNumberFromKeyboard();
 	}

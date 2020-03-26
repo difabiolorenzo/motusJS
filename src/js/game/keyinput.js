@@ -53,13 +53,31 @@ document.addEventListener("keydown", function (event) {
 			if (event.keyCode >= 65 && event.keyCode <= 90 || event.keyCode >= 97 && event.keyCode <= 122) { //if between a & z OR A & Z
 				for (i = 0; i < 26; i++) {
 					if (i == (event.keyCode - 65) || i == (event.keyCode - 97)) {
-						letterAddFromKeyboard(String.fromCharCode(i + 65));
+						letterAddFromKeyboard(String.fromCharCode(i + 65));	//convert keyboard input into letter
 						// console.log(event.keyCode + " " + String.fromCharCode(i + 65));
 					}
 				}
 			}
 		}
-		
 		word_proposed = word_proposed_tab.join('');
+
+	} else if (displayed_page == "number_grid_page" && sort_mode == "input_keyboard") {
+		if (event.keyCode >= 48 && event.keyCode <= 57 <= 105 || event.keyCode >= 96 && event.keyCode) { //if between 0 & 9
+			for (i = 0; i < 26; i++) {
+				if (i == (event.keyCode - 48) || i == (event.keyCode - 96)) {
+					numberAddFromKeyboard(String.fromCharCode(i + 48));	//convert keyboard input into number
+				}
+			}
+		} else if (event.keyCode == 8) { // erase
+			console.log('Erase');
+			eraseProposedNumberFromKeyboard();
+		} else if (event.keyCode == 13) { // enter
+			console.log('Enter');
+			validateProposedNumberFromKeyboard();
+		} else if (event.keyCode == 46) { // suppr
+			console.log('Delete');
+			deleteProposedNumberFromKeyboard();
+		}
 	}
-})
+}
+)

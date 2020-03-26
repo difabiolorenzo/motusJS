@@ -6,6 +6,8 @@ function initVariables() {
     playsound_enabled = true;
     play_jingle = false;
 
+    displayed_page = "main_menu"; // "main_menu" "settings_page" "letter_grid_page" "number_grid_page" "debug_page" "credit_page"
+
     //GAME
     check_word_length = true;
     check_word_presence = true;
@@ -39,7 +41,7 @@ function initVariables() {
     automatic_behaviour_line_start = true;
     automatic_behaviour_new_line_error = "replace_bonus"; //"replace_bonus" "replace_only" "add_bonus" "add_only" "none"
     automatic_behaviour_redirect_number_grid = true;
-    automatic_behaviour_redirect_letter_grid = true;
+    automatic_behaviour_redirect_letter_grid = false;
     automatic_behaviour_ask_new_word = true;
 
     //SCORE
@@ -55,19 +57,20 @@ function initVariables() {
 
     // DEBUG
     debug_index = 0;
-    version_name = "2.2 - Pre-release 8"; document.getElementById("version").innerHTML = version_name;
+    version_name = "2.2 - Pre-release 9"; document.getElementById("version").innerHTML = version_name;
     regularCharExpression  = /^[a-zA-Z\u00C0-\u00ff]+$/;
     godmod = false
 
     //NUMBERGRID
-    number_grid_enabled = true;
+    use_number_grid = true;
     use_saving_ball = true; // Boule magique
+    limiting_saving_ball = true //Limite la boule magique à la grille 1
 
     black_ball_amount = 3;  // Nombre de boules noires
     try_picking_ball = 2; //peux piocher X balles par tour
     try_picking_ball_left = try_picking_ball;
 
-    sort_mode = "random"; // soit "random" ou "input"
+    sort_mode = "random"; // soit "random" "input_keyboard" "input_touch"
     grid_index = -1;
     grid_j_index = 0;
     grid_i_index = 0;
@@ -81,6 +84,9 @@ function initVariables() {
 
     motus_animation_index = 0;
     picked_ball_animation = 0;
+    
+	number_proposed_tab = [];
+	number_proposed = undefined;
 
     yellow_purgatory = document.getElementById("yellow_purgatory");
     blue_purgatory = document.getElementById("blue_purgatory");

@@ -14,13 +14,13 @@
   100% {
     box-shadow: inset 0 0vw 2.25vw 0.75vw #ffffff, 0 0vw 0.75vw 0vw #000000;
   }
-}  
+}
 
 .cell_team_yellow, .cell_team_blue, .cell_purgatory {
   text-align: center;
   width: 10%;
   height: 15%;
-  text-shadow: 2px 2px 5px rgba(0, 0, 0, .6);
+  text-shadow: 2px 2px 5px #00000099;
   color: black;
 }
 
@@ -45,7 +45,7 @@ table.purgatory {
   height: 10vw;
   width: 12.5vw;
   border-radius: 100%;
-  box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.42);
+  box-shadow: 2px 2px 5px 0px #0000006b;
   margin-left: 16.6%;
   margin-right: 0vw;
   padding-top: 2.5vw;
@@ -55,7 +55,7 @@ table.purgatory {
   text-align: center;
   width: 10%;
   height: 15%;
-  text-shadow: 2px 2px 5px rgba(0, 0, 0, .6);
+  text-shadow: 2px 2px 5px #00000099;
   color: black;
 }
 
@@ -64,9 +64,10 @@ table.purgatory {
   width: 10vw;
   margin-left: 0%;
   text-align: center;
-  text-shadow: 2px 2px 5px rgba(0, 0, 0, .6);
+  text-shadow: 2px 2px 5px #00000099;
   color: #000;
   padding-top: 2.75vw !important;
+  margin-bottom: 1vw;
 }
 
 .number_grid_placeolder {
@@ -74,6 +75,15 @@ table.purgatory {
     width: inherit;
     height: 92%;
     margin-top: 10vw;
+}
+
+#keyboard_number_grid_input {
+  width: 15vw;
+  padding: 0;
+  text-align: center;
+  border-radius: 0;
+  text-transform: uppercase;
+  font-size: 1.25em;
 }
 
 .blue_number.saving_ball { animation: saving_blue_ball_animation 0.5s ease-in-out infinite alternate; }
@@ -103,6 +113,10 @@ table.purgatory {
 .style_2000 .cell_team_yellow, .style_2000 #number_grid_yellow { background-color: #117AEE; border-color: #0F359C; }
 .style_2010 .cell_team_yellow, .style_2010 #number_grid_yellow { background-image: linear-gradient(to bottom, #11A7FF, #0065CF); border-color: #7ccfef; }
 .style_2019 .cell_team_yellow, .style_2019 #number_grid_yellow { background-color: #0092f1; text-shadow: 2px 2px 5px #00000066; border-color:#80c9f8; }
+
+.selected_cell {
+  color:white !important;
+}
 
 .style_1990 .yellow_number { background-color: #e3d310; }
 .style_2000 .yellow_number { background-color: #e3d310; }
@@ -142,13 +156,13 @@ div#number_grid_placeolder_yellow { /* display: flex; */ padding-top: 0%; }
     text-align: center;
     width: 10%;
     height: 15%;
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, .6);
+    text-shadow: 2px 2px 5px #00000099;
     color: black;
   }
 
   table.table_number, table.purgatory {
     width: 80%;
-    height: 85%;
+    height: 82.5%;
     margin-left: 9.5%;
     padding: 0;
     margin-top: 0vw;
@@ -165,7 +179,7 @@ div#number_grid_placeolder_yellow { /* display: flex; */ padding-top: 0%; }
     height: 6.45vw;
     width: 8.0vw;
     border-radius: 100%;
-    box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.42);
+    box-shadow: 2px 2px 5px 0px #0000006b;
     margin-left: 25%;
     margin-right: 0vw;
     padding-top: 1.45vw;
@@ -175,7 +189,7 @@ div#number_grid_placeolder_yellow { /* display: flex; */ padding-top: 0%; }
     text-align: center;
     width: 10%;
     height: 15%;
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, .6);
+    text-shadow: 2px 2px 5px #00000099;
     color: black;
   }
 
@@ -184,9 +198,10 @@ div#number_grid_placeolder_yellow { /* display: flex; */ padding-top: 0%; }
     width: 5.25vw;
     margin-left: 0%;
     text-align: center;
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, .6);
+    text-shadow: 2px 2px 5px #00000099;
     color: #000;
     padding-top: 0.75vw !important;
+    margin-bottom: 0vw;
   }
 
   .cell_team_blue, .cell_team_yellow { border-left: 2px solid red; }
@@ -201,8 +216,13 @@ div#number_grid_placeolder_yellow { /* display: flex; */ padding-top: 0%; }
 
   .style_1990 table.purgatory { font-size: 3.3vw; }
   .style_2000 table.purgatory { font-size: 2.95vw; }
-  .style_2010 table.purgatory { font-size: 3.3vw;height: auto;width: auto;margin-left: 3.33%; }
+  .style_2010 table.purgatory {font-size: 3.3vw;height: auto;width: auto;margin-left: 3.33%;}
   .style_2019 table.purgatory { font-size: 3.15vw; }
 
   .number_grid_placeolder { margin-top: 5vw; }
+
+  #keyboard_number_grid_input {
+    width: 10vw;
+    font-size: 3em;
+}
 }
