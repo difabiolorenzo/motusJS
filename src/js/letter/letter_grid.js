@@ -179,7 +179,7 @@ function letterAddFromKeyboard(letter) {
 			document.getElementById(try_count_index + '_' + (word_proposed_tab.length - 1)).innerHTML = word_proposed_tab[word_proposed_tab.length-1];
 			innerHTMLDisplayWindow((try_count_index + '_' + (word_proposed_tab.length - 1)), word_proposed_tab[word_proposed_tab.length-1]);
 		} else {
-			playsound("letter_missing");
+			playsound("error");
 		}	
 	} else {
 		word_proposed_tab.push(letter);
@@ -247,7 +247,7 @@ function ajoutLettreBonus() {		// Ajoute une lettre bonnus dans les emplacement 
 		}
 	}
 	if (word_displayed == true) {
-		errorHandler(4);
+		errorHandler(4, true);
 	}
 }
 
@@ -269,7 +269,7 @@ function animationLettreBonus() {
 
 function checkLength() {
 	if (word_proposed_tab.length != word_length) {  //vérification de la longueur du word_to_find
-		errorHandler(1); //La longueur du word_to_find n'est pas la bonne.
+		errorHandler(1, true); //La longueur du word_to_find n'est pas la bonne.
 	} else {
 		verifPresence();
 	}
@@ -285,7 +285,7 @@ function verifPresence() {		// Vérification de la présence du word_to_find pro
 		}
 
 		if (in_dictionary == false) {
-			errorHandler(2); //Mot non présent dans le dictionary
+			errorHandler(2, true); //Mot non présent dans le dictionary
 		} else {
 			verifDuplication();
 		}
@@ -309,7 +309,7 @@ function verifDuplication() {		// Vérification de la présence du word_to_find 
 		console.log(word_proposed)
 	
 		if (already_proposed == true) {
-			errorHandler(3); //Mot déjà proposé
+			errorHandler(3, true); //Mot déjà proposé
 			} else {
 			verificationProposition()
 		}
