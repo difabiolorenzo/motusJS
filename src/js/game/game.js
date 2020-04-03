@@ -4,12 +4,6 @@
     // 			    animationIntervalID_4 animationPickedBall
     // 			    animationIntervalID_5 animationMOTUS
 
-    // Tableau des mots à choisir
-
-
-
-
-
     //SOUND
     function playsound(sound) {
         if (playsound_enabled == true) {
@@ -68,183 +62,21 @@
         }
     }
 
-    function WordListAddRow(word_list_selected_word) {
-
-        var word_list_selected_word = word_list_selected_word.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toUpperCase();
-        var word_list_table = document.getElementById("word_list");
-
-        var word_list_rowCount = word_list_table.rows.length;
-        var word_list_row = word_list_table.insertRow(word_list_rowCount);
-
-        word_list_row.insertCell(0).innerHTML = word_list_selected_word;
-        word_list_row.insertCell(1).innerHTML = '<input type="button" value = "❌" onClick="Javascript:WordListDeleteRow(this)">';
-        word_list_row.insertCell(2).innerHTML = '<input type="button" value = "Information sur ce mot" onClick="Javascript:SearchInformationOnWord(this)">';
-
-        document.getElementById('word_list_selected_word').value = "";
-
-        // Ajout du mot dans la liste de mot à trouver
-        word_to_find_list.push(word_list_selected_word);
-    }
-
-    function WordListAddRowRandom(letter_count) {
-        if (dictionary_list[letter_count - 5] != undefined) {
-            var word_list_random_word_index = Math.floor(Math.random() * dictionary_list[letter_count - 5].length);
-
-            var word_list_random_word = dictionary_list[letter_count - 5][word_list_random_word_index];
-
-            WordListAddRow(word_list_random_word);
-        }
-    }
-
-    function WordAddCustom() {
-        wordInput = document.getElementById('word_list_selected_word').value
-        if (wordInput.length >= 5 && wordInput.length <= 10 && regularCharExpression.test(wordInput) == true) {
-            WordListAddRow(wordInput)
-        }
-    }
-
-    function WordListDeleteRow(obj) {
-        var word_list_index = obj.parentNode.parentNode.rowIndex;
-        var word_list_table = document.getElementById("word_list");
-        word_list_table.deleteRow(word_list_index);
-
-        // Suppresion du mot de la liste de mot à trouver
-        word_to_find_list.splice(word_list_index - 1, 1);
-    }
-
-    function SearchInformationOnWord(obj) {
-        word_list_index = obj.parentNode.parentNode.rowIndex;
-        console.log(word_to_find_list[word_list_index - 1])
-
-        if (confirm("Voulez-vous ouvrir une page wiktionary.org sur le mot " + word_to_find_list[word_list_index - 1].toLowerCase() + "?")) {
-            window.open("https://fr.wiktionary.org/w/index.php?search=" + word_to_find_list[word_list_index - 1].toLowerCase(), "_blank");
-        }
-    }
-
     function UpdateStyle(value) {
         document.getElementById("letter_grid_page").className = "page style_" + value;
         document.getElementById("number_grid_page").className = "page style_" + value;
         document.getElementById("main_menu").className = "page style_" + value;
-        classNameDisplayWindow("display_page", ("page style_" + value))
+
+        var logo_img = document.getElementById("logo");
 
         if (value == 2010 ) {
-            document.getElementById("logo").src = "src/img/motus_logo_2010.png"
+            logo_img.src = "src/img/motus_logo_2010.png"
         } else if (value == 2019) {
-            document.getElementById("logo").src = "src/img/motus_logo_2010_black.png"
+            logo_img.src = "src/img/motus_logo_2010_black.png"
         } else if (value == 2000) {
-            document.getElementById("logo").src = "src/img/motus_logo_2000.png"
+            logo_img.src = "src/img/motus_logo_2000.png"
         } else if (value == 1990) {
-            document.getElementById("logo").src = "src/img/motus_logo_1990.png"
-        }
-    }
-
-    function UpdateAutomaticBehaviourSettings(value) {
-        automatic_behaviour = value;
-        if (value == true) {
-            document.getElementById("check_automatic_behaviour_line_start").disabled = false
-            document.getElementById("check_automatic_behaviour_new_line_error").disabled = false
-            document.getElementById("check_automatic_behaviour_redirect_number_grid").disabled = false
-            document.getElementById("check_automatic_behaviour_redirect_letter_grid").disabled = false
-            document.getElementById("check_automatic_behaviour_new_word").disabled = false
-        } else {
-            document.getElementById("check_automatic_behaviour_line_start").disabled = true
-            document.getElementById("check_automatic_behaviour_new_line_error").disabled = true
-            document.getElementById("check_automatic_behaviour_redirect_number_grid").disabled = true
-            document.getElementById("check_automatic_behaviour_redirect_letter_grid").disabled = true
-            document.getElementById("check_automatic_behaviour_new_word").disabled = true
-        }
-    }
-
-    function UpdateScoreSettings(value) {
-        score_enabled = value;
-        if (value == true) {
-            document.getElementById("score_placeolder").style = "display:flex"
-        }
-    }
-
-    function UpdateAlwaysAskSettings(value) {
-        always_ask = value;
-        if (value == true) {
-            document.getElementById("always_ask_length_dropdown").style = "opacity: 100;"
-        } else {
-            document.getElementById("always_ask_length_dropdown").style = "height: 0; opacity: 0;"
-        }
-    }
-
-    function UpdateSoundSettings(value) {
-        playsound_enabled = value;
-        if (value == true) {
-            document.getElementById("play_jingle_settings").style = "opacity: 100;"
-        } else {
-            document.getElementById("play_jingle_settings").style = "height: 0; opacity: 0;"
-        }
-    }
-
-    function UpdateTeamSettings(value) {
-        team_enabled = value;
-        if (value == true) {
-            // team activated
-            document.getElementById("settings_section_team").style = "opacity: 100;"
-            document.getElementById("score_1_panel").style = "display:block" // Le score de la seconde équipe s'affiche
-            document.getElementById("change_team_letter_grid_button").style = "display:block" // Le bouton de changement d'équipe s'affiche
-
-            // if (team_focus == "blue") { 
-            //     document.getElementById("number_grid_placeolder_blue").style = "display:block";
-            // }
-
-        } else {
-
-            document.getElementById("settings_section_team").style = "height: 0; opacity: 0;"
-            document.getElementById("score_1_panel").style = "display:none" // Le score de la seconde équipe ne s'affiche pas
-            document.getElementById("change_team_letter_grid_button").style = "display:none" // Le bouton de changement d'équipe ne s'affiche pas
-
-            document.getElementById("score_0_panel").className = "active_score" // Reinitialisation de l'ordre
-            document.getElementById("score_1_panel").className = "score"
-            team_focus = "yellow";
-
-            document.getElementById("number_grid_placeolder_blue").style = "display:none";
-        }
-    }
-
-    function UpdateNumberGridSettings(value) {
-        use_number_grid = value;
-        if (value == true) {
-            document.getElementById("number_grid_button").style = "display:block"
-
-            document.getElementById("use_saving_ball_checkbox").disabled = false
-            document.getElementById("black_ball_amount_input").disabled = false
-            document.getElementById("try_picking_ball_input").disabled = false
-            if (use_saving_ball == true) {
-                document.getElementById("limiting_saving_ball_checkbox").disabled = false
-            }
-            document.getElementById("sort_mode_select").disabled = false
-        } else {
-            document.getElementById("number_grid_button").style = "display:none"
-
-            document.getElementById("use_saving_ball_checkbox").disabled = true
-            document.getElementById("limiting_saving_ball_checkbox").disabled = true
-            document.getElementById("black_ball_amount_input").disabled = true
-            document.getElementById("try_picking_ball_input").disabled = true
-            document.getElementById("sort_mode_select").disabled = true
-        }
-    }
-
-    function UpdateSavingBallettings(value) {
-        use_saving_ball = value;
-        if (value == true) {
-            document.getElementById("limiting_saving_ball_checkbox").disabled = false
-        } else {
-            document.getElementById("limiting_saving_ball_checkbox").disabled = true
-        }
-    }
-
-    function UpdateNulberSelectMode(mode) {
-        sort_mode = mode;
-
-        if (mode == "input_keyboard") {
-            document.getElementById("keyboard_number_grid_input").style = "display:block";
-        } else {
-            document.getElementById("keyboard_number_grid_input").style = "display:none";
+            logo_img.src = "src/img/motus_logo_1990.png"
         }
     }
 
@@ -266,28 +98,6 @@
 
 
         document.getElementById(page_name).style = "display:block;"
-    }
-
-    function reinitWord() {
-        word_to_find_list.splice(0, 1);
-        if (word_to_find_list.length > 0) {} else {
-            if (always_ask == true) {
-                WordListAddRowRandom(always_ask_length);
-            } else {
-                console.log("Aucun mot dans la liste");
-
-                var prompt_new_word;
-                while (prompt_new_word < 5 || prompt_new_word > 10 || prompt_new_word == undefined) {
-                    prompt_new_word = Number(window.prompt("Plus aucun mot n'est prédéfini dans les paramètres, veuillez entrer le nombre de lettres (compris entre 5 et 10) du prochain mot tiré au hasard:", "8"));
-                    if (prompt_new_word >= 5 || prompt_new_word <= 10) {
-                        WordListAddRowRandom(prompt_new_word);
-                    }
-                }
-            }
-        }
-        createLetterGrid();
-        initialisationMot();
-        nouvelleLigne();
     }
 
     function previewMode() {
@@ -346,13 +156,17 @@
         }
     }
 
-    function wordInformation() {
+    function wordFoundInformation() {
         if (word_displayed == true || word_found == true) {
-            if (confirm("Voulez-vous ouvrir une page wiktionary.org sur le mot " + word_to_find.toLowerCase() + "?")) {
-                window.open("https://fr.wiktionary.org/w/index.php?search=" + word_to_find.toLowerCase(), "_blank");
-            }
+            wordInformation(word_to_find);
         } else {
             alert("Vous devez trouver le mot ou l'afficher pour pouvoir avoir des informations dessus.");
+        }
+    }
+
+    function wordInformation(word) {
+        if (confirm("Voulez-vous ouvrir une page wiktionary.org sur le mot " + word.toLowerCase() + "?")) {
+            window.open("https://fr.wiktionary.org/w/index.php?search=" + word.toLowerCase(), "_blank");
         }
     }
 
@@ -372,56 +186,40 @@
 
         if (catching_up == true) {
             if (team_enabled == true) { switchTeamFocus(); }
-            setTimeout(function () { ligneRattrapage(); }, 3000);
+            setTimeout(function () { retryLine(); }, 3000);
             playsound("wrong");
         }
     }
 
-    function ligneRattrapage() {
+    function retryLine() {
         if (automatic_behaviour == true) {
             if (automatic_behaviour_new_line_error == "replace_bonus") {
                 suppressionLigne();
-                nouvelleLigne();
+                newWordLine();
                 ajoutLettreBonus();
             } else if (automatic_behaviour_new_line_error == "replace_only") {
                 suppressionLigne();
-                nouvelleLigne();
+                newWordLine();
             } else if (automatic_behaviour_new_line_error == "add_bonus") {
-                nouvelleLigne();
+                newWordLine();
                 ajoutLettreBonus();
             } else if (automatic_behaviour_new_line_error == "add_only") {
-                nouvelleLigne();
+                newWordLine();
             }
         }
-    }
+    }    
 
-    function createDisplayWindow() {
-        displayWindow = window.open("", "MotusJS - Display Window", "width=1080,height=720");
-		writeInDisplayWindow("<title>MotusJS</title>");
-		writeInDisplayWindow("<meta charset=\"utf-8\">");
-		writeInDisplayWindow("<link rel=\"stylesheet\" type=\"text/css\" title=\"css\" href=\"src/css/global.css\">");
-		writeInDisplayWindow("<link rel=\"stylesheet\" type=\"text/css\" title=\"css\" href=\"src/css/letter_grid.css\">");
-		writeInDisplayWindow("<link rel=\"stylesheet\" type=\"text/css\" title=\"css\" href=\"src/css/number_grid.css\">");
-		writeInDisplayWindow("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
-		writeInDisplayWindow("<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"src/img/favicon.png\">");
-		writeInDisplayWindow("<script type=\"text/javascript\" src=\"./src/js/game/keyinput.js\"></script>");
-        writeInDisplayWindow("<div id=\"display_page\" class=\"style_2010\"><div class=\"display_page\" id=\"letter_grid_placeolder\"></div></div>");
-    }
+	function goNumberPicking() {
+		try_picking_ball_left = try_picking_ball;
 
-    function writeInDisplayWindow(arg) {
-        if (other_window_display == true) { displayWindow.document.write(arg); }
+		document.getElementById("button_pick_number").style = "display:block";	//affichage du bouton piocher
+		document.getElementById("button_return_letter_grid").style = "display:block";	//affichage du bouton piocher
+		displayPage('number_grid_page');
     }
-
-    function innerHTMLDisplayWindow(id, html) {
-        if (other_window_display == true) { displayWindow.document.getElementById(id).innerHTML = html; }
-    }
-
-    function classNameDisplayWindow(id, html, mode) {
-        if (other_window_display == true) {
-            if (mode == "+=") {
-                displayWindow.document.getElementById(id).className += html;
-            } else {
-                displayWindow.document.getElementById(id).className = html;
-            }
+    
+	function goLetterGrid() {
+        if (word_found == true) {
+            reinitWord();
         }
-    }
+        displayPage('letter_grid_page');
+	}

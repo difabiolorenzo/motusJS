@@ -14,18 +14,11 @@ function createLetterGrid() {
 	}
 	letter_html_table += "</table>";
 	document.getElementById("letter_grid_placeolder").innerHTML = letter_html_table;
-
-	if (other_window_display == true) {
-		createDisplayWindow();
-		displayWindow.document.getElementById("letter_grid_placeolder").innerHTML = "";
-		displayWindow.document.getElementById("letter_grid_placeolder").innerHTML = letter_html_table;
-	}
 	
 	keyboardInput.maxLength = word_length;
 }
 
-function initialisationMot() {   // Mise dans le tableau word_to_find le word_to_find
-
+function wordInitialization() {   // Mise dans le tableau word_to_find le word_to_find
 	try_count_index = -1;
 	verification_index = 0;
 	
@@ -73,6 +66,35 @@ function initialisationMot() {   // Mise dans le tableau word_to_find le word_to
 	}
 }
 
+function reinitWord() {
+	word_to_find_list.splice(0, 1);
+	if (word_to_find_list.length == 0) {
+		if (always_ask == true) {
+			WordListAddRowRandom(always_ask_length);
+		} else {
+			console.log("Aucun mot dans la liste");
+
+			var prompt_new_word = Number(window.prompt("Plus aucun mot n'est prédéfini dans les paramètres, veuillez entrer le nombre de lettres (compris entre 5 et 10) du prochain mot tiré au hasard:", "8"));
+			if (prompt_new_word >= 5 && prompt_new_word <= 10 ) {
+				WordListAddRowRandom(prompt_new_word);
+			}
+		}
+	}
+	
+	document.getElementById("new_line_button").disabled = false;
+	document.getElementById("delete_line_button").disabled = false;
+	document.getElementById("bonus_letter_button").disabled = false;
+	document.getElementById("display_word_button").disabled = false;
+
+	document.getElementById("proposed_word_information_select").disabled = true;
+	document.getElementById("proposed_word_information_button").disabled = true;
+	document.getElementById("found_word_information_button").disabled = true;
+			
+	createLetterGrid();
+	wordInitialization();
+	newWordLine();
+}
+
 function breakDownWord() {
 	// Mise dans le tableau word_composed_letter le word_to_find
 	// word_composed_letter convertit "ELEVE" en "ELV"
@@ -108,7 +130,7 @@ function breakDownWord() {
 	}
 }
 
-function submitWord() {
+function submitWord() {	
 	if (try_count_index < try_number_max) {
 		if (word_proposed.length == 0 && keyboardInput.value.length == word_length) {
 			word_proposed = keyboardInput.value.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toUpperCase();
@@ -119,12 +141,15 @@ function submitWord() {
 			}
 		}
 		
+		
 		if (check_word_length == true) {
 			checkLength();
 		} else {
 			verifPresence();
 		}
-	
+		
+		updateProposedWordList();
+
 		keyboardInput.value = "";
 	} else if (try_count_index == try_number_max && word_displayed == false) {
 		affichageSolution();
@@ -133,16 +158,14 @@ function submitWord() {
 	}
 }
 
-function nouvelleLigne() {		// Ajoute une nouvelle ligne avec les bonnes lettres proposées
+function newWordLine() {		// Ajoute une nouvelle ligne avec les bonnes lettres proposées
 	if (try_count_index < try_number_max-1) {
 		try_count_index++;
 
 		for (var i = 0; i < word_length; i++) {
 			document.getElementById(try_count_index + '_' + i).innerHTML = ".";
-			innerHTMLDisplayWindow((try_count_index + '_' + i), ".");
 			if (placing[i] == 1) {
 				document.getElementById(try_count_index + '_' + i).innerHTML = word_to_find_tab[i];
-				innerHTMLDisplayWindow((try_count_index + '_' + i), word_to_find_tab[i]);
 			}
 		}
 		
@@ -159,10 +182,8 @@ function suppressionLigne() {		// Supprime la ligne
 		}
 		for (var i = 0; i < word_length; i++) {
 			document.getElementById(try_count_index + '_' + i).innerHTML = "";
-			innerHTMLDisplayWindow((try_count_index + '_' + i), "");
 	
 			document.getElementById(try_count_index + '_' + i).className = 'background';
-			classNameDisplayWindow((try_count_index + '_' + i),'background');
 		}
 		for (var i = 0; i < word_length; i++) { 
 			lettre_ok.push('');
@@ -177,14 +198,12 @@ function letterAddFromKeyboard(letter) {
 		if (letter == word_to_find_tab[0]) {
 			word_proposed_tab.push(letter);
 			document.getElementById(try_count_index + '_' + (word_proposed_tab.length - 1)).innerHTML = word_proposed_tab[word_proposed_tab.length-1];
-			innerHTMLDisplayWindow((try_count_index + '_' + (word_proposed_tab.length - 1)), word_proposed_tab[word_proposed_tab.length-1]);
 		} else {
 			playsound("error");
 		}	
 	} else {
 		word_proposed_tab.push(letter);
 		document.getElementById(try_count_index + '_' + (word_proposed_tab.length - 1)).innerHTML = word_proposed_tab[word_proposed_tab.length-1];
-		innerHTMLDisplayWindow((try_count_index + '_' + (word_proposed_tab.length - 1)), word_proposed_tab[word_proposed_tab.length-1]);
 		
 	}
 }
@@ -192,21 +211,17 @@ function letterAddFromKeyboard(letter) {
 function suppressionLettre() {		// Supprime les lettre de droite à gauche
 	if (word_proposed_tab.length >= 1) {
 		document.getElementById(try_count_index + '_' + (word_proposed_tab.length - 1)).innerHTML = ".";
-		innerHTMLDisplayWindow((try_count_index + '_' + (word_proposed_tab.length - 1)), ".");
 		word_proposed_tab.pop();
 	}
 }
 
 function affichageSolution() {		// Affiche la solution à la dérnière ligne, necessite une boucle en amont
-
 	if (animationIntervalID_1 == undefined) { animationIntervalID_1 = setInterval(function() {animationAfficheSolution()}, timer); }
 }
 
 function animationAfficheSolution() {
 	document.getElementById(try_number_max-1 + '_' + verification_index).innerHTML = word_to_find_tab[verification_index];
-	innerHTMLDisplayWindow((try_number_max-1 + '_' + verification_index), word_to_find_tab[verification_index]);
 	document.getElementById(try_number_max-1 + '_' + verification_index).className = 'correct';
-	classNameDisplayWindow((try_number_max-1 + '_' + verification_index),'correct');
 	playsound("letter_ok");
 	verification_index++;
 
@@ -219,6 +234,12 @@ function animationAfficheSolution() {
 		if (word_found == false) {
 			playsound("loose");
 		}
+		
+        document.getElementById("new_line_button").disabled = true;
+        document.getElementById("delete_line_button").disabled = true;
+        document.getElementById("bonus_letter_button").disabled = true;
+        document.getElementById("display_word_button").disabled = true;
+        document.getElementById("found_word_information_button").disabled = false;
 
 		if (team_enabled == true) {
 			switchTeamFocus(); // Change l'équipe de main
@@ -234,7 +255,6 @@ function ajoutLettreBonus() {		// Ajoute une lettre bonnus dans les emplacement 
 		for (var i = 0; i < word_length; i++) {
 			if (placing[i] != 1) {
 				document.getElementById(try_count_index + '_' + i).innerHTML = word_to_find_tab[i];
-				innerHTMLDisplayWindow((try_count_index + '_' + i), word_to_find_tab[i]);
 				placing[i] = 1;
 				playsound("letter_bonus");
 
@@ -254,10 +274,8 @@ function ajoutLettreBonus() {		// Ajoute une lettre bonnus dans les emplacement 
 function animationLettreBonus() {
 	if ((j%2) == 1) {
 		document.getElementById(try_count_index + '_' + letter_bonus_placement).className = 'background';
-		classNameDisplayWindow((try_count_index + '_' + letter_bonus_placement),'background');
 	} else {
 		document.getElementById(try_count_index + '_' + letter_bonus_placement).className = 'correct';
-		classNameDisplayWindow((try_count_index + '_' + letter_bonus_placement),'correct');
 	}
 	j++;
 
@@ -265,6 +283,14 @@ function animationLettreBonus() {
 		clearInterval(animationIntervalID_2);
 		animationIntervalID_2 = undefined;
 	}
+}
+
+function updateProposedWordList() {
+	document.getElementById("proposed_word_information_select").disabled = false;
+	document.getElementById("proposed_word_information_button").disabled = false;
+
+	word_proposed_tab_list.push(word_proposed);
+	document.getElementById("proposed_word_information_select").innerHTML += "<option>" + word_proposed_tab_list[word_proposed_tab_list.length-1] + "</option>"
 }
 
 function checkLength() {
@@ -305,8 +331,6 @@ function verifDuplication() {		// Vérification de la présence du word_to_find 
 				already_proposed = false;
 			}
 		}
-		word_proposed_tab_list.push(word_proposed);
-		console.log(word_proposed)
 	
 		if (already_proposed == true) {
 			errorHandler(3, true); //Mot déjà proposé
@@ -374,11 +398,9 @@ function animationVerificationProposition() {		//Fonction nécéssitant une bouc
 	} else if (placing_dup[verification_index] == 1) {
 		playsound("letter_ok");
 		document.getElementById(try_count_index + '_' + verification_index).className = 'correct';
-		classNameDisplayWindow((try_count_index + '_' + verification_index),'correct');
 	} else if (placing_dup[verification_index] == 2) {
 		playsound("letter_bad");
 		document.getElementById(try_count_index + '_' + verification_index).innerHTML = "<div class=\"not_in_place\">" + document.getElementById(try_count_index + '_' + verification_index).innerHTML + "</div>" //ajout d'un div dans la cellule
-		if (other_window_display == true) { innerHTMLDisplayWindow((try_count_index + '_' + verification_index), ("<div class=\"not_in_place\">" + displayWindow.document.getElementById(try_count_index + '_' + verification_index).innerHTML + "</div>"))};
 	}
 	verification_index++;
 
@@ -394,15 +416,18 @@ function animationVerificationProposition() {		//Fonction nécéssitant une bouc
 		if (word_proposed == word_to_find) { // Mot trouvé
 				word_found = true;
 				word_displayed = true;
+				document.getElementById("new_line_button").disabled = true;
+				document.getElementById("delete_line_button").disabled = true;
+				document.getElementById("bonus_letter_button").disabled = true;
+				document.getElementById("display_word_button").disabled = true;
+				document.getElementById("proposed_word_information_button").disabled = false;
+				document.getElementById("found_word_information_button").disabled = false;
 				playsound("victory");
 
-
 				document.getElementById("line_" + try_count_index).className = 'victory_line';
-				classNameDisplayWindow(("line_" + try_count_index),'victory_line');
 
 				for (i=0 ; i<word_length ; i++) {
 					document.getElementById(try_count_index + '_' + i).className += ' victory_line';
-					classNameDisplayWindow((try_count_index + '_' + i),' victory_line', "+=");
 				}
 
 				setTimeout(function() { 
@@ -420,7 +445,7 @@ function animationVerificationProposition() {		//Fonction nécéssitant une bouc
 				}
 				
 		} else {
-			nouvelleLigne();
+			newWordLine();
 
 			if (team_enabled == true && change_turn_mode == "by_proposition") {
 				switchTeamFocus();

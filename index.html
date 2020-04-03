@@ -19,9 +19,7 @@
   <script type="text/javascript" src="./src/js/dictionary/dictionary_10.js"></script>
   <script type="text/javascript" src="./src/js/letter/letter_grid.js"></script>
   <script type="text/javascript" src="./src/js/number/number_grid.js"></script>
-  <script type="text/javascript" src="./src/js/number/grid_yellow_team.js"></script>
-  <script type="text/javascript" src="./src/js/number/grid_blue_team.js"></script>
-  <script type="text/javascript" src="./src/js/number/grid_placement.js"></script>
+  <script type="text/javascript" src="./src/js/number/grid_data.js"></script>
   <script type="text/javascript" src="./src/js/game/game.js"></script>
   <script type="text/javascript" src="./src/js/game/init.js"></script>
   <script type="text/javascript" src="./src/js/game/keyinput.js"></script>
@@ -96,17 +94,6 @@
               <option value="1990">Années 1990</option>
             </select>
           </div>
-
-          <table id="other_display_settings">
-            <tbody>
-              <tr>
-                <th> <label name="other_window_display">Afficher la grille de lettre dans une autre fenêtre: </label>
-                </th>
-                <th> <input class="input-checkbox" type="checkbox" name="other_window_display_checkbox"
-                    onchange="other_window_display = this.checked"> </th>
-              </tr>
-            </tbody>
-          </table>
         </div>
       </div>
 
@@ -118,7 +105,7 @@
             <table>
               <tbody>
                 <tr>
-                  <th> <label>Verifications des mots proposés:</label> </th>
+                  <th> <label>Vérifications des mots proposés:</label> </th>
                   <th> </th>
                 </tr>
                 <tr>
@@ -173,7 +160,7 @@
               <table>
                 <tbody>
                   <tr>
-                    <th><label name="always_ask">Longeur des mots</label></th>
+                    <th><label name="always_ask">Longueur des mots</label></th>
                     <th></th>
                   </tr>
                   <tr>
@@ -185,7 +172,7 @@
                 </tbody>
               </table>
   
-              <select id="always_ask_length_dropdown" style="height: 0; opacity: 0;" onchange="always_ask_length = this.value;">
+              <select id="always_ask_length_dropdown" disabled onchange="always_ask_length = this.value;">
                 <option value=8>8 lettres</option>
                 <option value=5>5 lettres</option>
                 <option value=6>6 lettres</option>
@@ -217,7 +204,7 @@
               <tr>
                 <th> <label name="use_saving_ball">Utiliser la "boule magique"</label> </th>
                 <th> <input class="input-checkbox" type="checkbox" name="use_saving_ball" checked
-                    id="use_saving_ball_checkbox" onchange="UpdateSavingBallettings(this.checked)"> </th>
+                    id="use_saving_ball_checkbox" onchange="UpdateSavingBallSettings(this.checked)"> </th>
               </tr>
               <tr>
                 <th> <label name="limiting_saving_ball">Limiter les "boules magiques" aux première grilles</label> </th>
@@ -239,7 +226,7 @@
             <tbody>
               <tr>
                 <th> <label name="use_number_grid">Mode de séléctions des boules</label> </th>
-                <th>  <select id="sort_mode_select" onchange="UpdateNulberSelectMode(this.value);">
+                <th>  <select id="sort_mode_select" onchange="UpdateNumberSelectMode(this.value);">
                         <option value="random">par hasard</option>
                         <option value="input_touch">par clique (n'inclut pas les boules noires)</option>
                         <option value="input_keyboard">par clavier (n'inclut pas les boules noires))</option>
@@ -267,10 +254,10 @@
                   <th> <input class="input-checkbox" type="checkbox" name="team_enabled_checkbox"
                       onchange="UpdateTeamSettings(this.checked)"> </th>
                 </tr>
-                <tr id="settings_section_team" style="height: 0; opacity: 0;">
+                <tr>
                   <th><label name="score_addition">Passer la main:</label></th>
                   <th>
-                    <select onchange="change_turn_mode = this.value;">
+                    <select id="settings_section_team" onchange="change_turn_mode = this.value;" disabled>
                       <option value=by_error>À chaque erreur</option>
                       <option value=by_proposition>À chaque proposition</option>
                     </select>
@@ -292,7 +279,7 @@
 
 
       <div class="settings_input">
-        <p>Gameplay & Sons</p>
+        <p>Gameplay</p>
 
         <div class="section_flex">
             <table>
@@ -305,7 +292,7 @@
                 <tr>
                   <th>  <label name="check_automatic_behaviour_line_start">Ligne au commencement</label> 
                         <br>
-                        <code>desactivé si le double affichage est présent</th>
+                        <code>désactivé si le double affichage est présent</th>
                   <th> <input id="check_automatic_behaviour_line_start" class="input-checkbox" type="checkbox" name="check_automatic_behaviour_line_start" checked
                       onchange="automatic_behaviour_line_start = this.checked"> </th>
                 </tr>
@@ -354,9 +341,9 @@
                 <th> <input class="input-checkbox" type="checkbox" name="check_word" checked
                     onchange="UpdateSoundSettings(this.checked)"> </th>
               </tr>
-              <tr id="play_jingle_settings" style="opacity: 100;">
+              <tr>
                 <th> <label name="play_jingle">Activer le jingle</label> </th>
-                <th> <input class="input-checkbox" type="checkbox" name="play_jingle"
+                <th> <input id="play_jingle_settings" class="input-checkbox" type="checkbox" name="play_jingle"
                     onchange="play_jingle = this.checked"> </th>
               </tr>
             </tbody>
@@ -436,12 +423,17 @@
 
     <div id="bottom_section">
       <div class="flex_section">
-        <button class="flex_button" id="new_line_button" onclick="nouvelleLigne();">Nouvelle Ligne</button>
+        <button class="flex_button" id="new_line_button" onclick="newWordLine();">Nouvelle Ligne</button>
         <button class="flex_button" id="delete_line_button" onclick="suppressionLigne();">Supprimer la ligne</button>
-      </div>
-      <div class="flex_section">
         <button class="flex_button" id="bonus_letter_button" onclick="ajoutLettreBonus();">Lettre bonus</button>
-        <button class="flex_button" id="word_information_button" onclick="wordInformation()">Informations sur le mot</button>
+      </div>
+
+      <div class="flex_section">
+        <select class="flex_button" id="proposed_word_information_select" disabled>
+          <option value=undefined>Mot proposés</option>
+        </select>
+        <button class="flex_button" id="proposed_word_information_button" onclick="wordInformation(document.getElementById('proposed_word_information_select').value)" disabled >Informations sur le mot proposé</button>
+        <button class="flex_button" id="found_word_information_button" onclick="wordFoundInformation()" disabled >Informations sur le mot trouvé</button>
       </div>
 
       <div class="flex_section">
@@ -460,15 +452,15 @@
 
       <div class="protip">
         <h3>Touches Clavier</h3>
-        <p>Supprime la lettre: <kbd>erase</kbd> ou <kbd>flèche gauche</kbd></p>
-        <p>Nouvelle ligne: <kbd>1</kbd> ou <kbd>&</kbd></p>
-        <p>Lettre Bonus: <kbd>2</kbd> ou <kbd>é</kbd></p>
-        <p>Supprime la ligne: <kbd>3</kbd> ou <kbd>é</kbd></p>
-        <p>Remplacer la ligne: <kbd>4</kbd> ou <kbd>'</kbd></p>
-        <p>Changement de main d'équipe: <kbd>5</kbd> ou <kbd>(</kbd></p>
+        <p>Supprime la lettre: <keyboardKey>erase</keyboardKey> ou <keyboardKey>flèche gauche</keyboardKey></p>
+        <p>Nouvelle ligne: <keyboardKey>1</keyboardKey> ou <keyboardKey>&</keyboardKey></p>
+        <p>Lettre Bonus: <keyboardKey>2</keyboardKey> ou <keyboardKey>é</keyboardKey></p>
+        <p>Supprime la ligne: <keyboardKey>3</keyboardKey> ou <keyboardKey>é</keyboardKey></p>
+        <p>Remplacer la ligne: <keyboardKey>4</keyboardKey> ou <keyboardKey>'</keyboardKey></p>
+        <p>Changement de main d'équipe: <keyboardKey>5</keyboardKey> ou <keyboardKey>(</keyboardKey></p>
         <br>
-        <p>Reinitialiser le mot en cours: <kbd>9</kbd> ou <kbd>ç</kbd></p>
-        <p>Affichage de la solution: <kbd>0</kbd> ou <kbd>à</kbd></p>
+        <p>Reinitialiser le mot en cours: <keyboardKey>9</keyboardKey> ou <keyboardKey>ç</keyboardKey></p>
+        <p>Affichage de la solution: <keyboardKey>0</keyboardKey> ou <keyboardKey>à</keyboardKey></p>
       </div>
     </div>
   </div>
@@ -479,7 +471,7 @@
   <div class="page style_2010" id="number_grid_page" style="display:none;">
 
     <div class="flex_section" style="position: fixed; display: flex;">
-      <button class="flex_button" onclick="displayPage('letter_grid_page');" id="button_return_letter_grid">Retour</button>
+      <button class="flex_button" onclick="goLetterGrid()" id="button_return_letter_grid">Retour</button>
       <input class="flex_button" id="keyboard_number_grid_input" type="text" style="display:none">
       <button class="flex_button" onclick="pickBall()" id="button_pick_number" style="display:none">Piocher</button>
     </div>
@@ -527,8 +519,7 @@
           </tbody>
         </table>
 
-        <table id="yellow_purgatory" class="purgatory">
-        </table>
+        <table id="yellow_purgatory" class="purgatory"></table>
       </div>
 
       <div id="number_grid_placeolder_blue" style="display:none;">
@@ -572,8 +563,9 @@
           </tbody>
         </table>
 
-        <table id="blue_purgatory" class="purgatory">
-        </table>
+        <table id="blue_purgatory" class="purgatory"></table>
+
+        <canvas id="ball_bowl" width="750" height="750"></canvas>
       </div>
     </div>
 
@@ -588,7 +580,7 @@
       </div>
       <div class="section">
         <h2>Motus</h2>
-        <p>Motus est une marque déposé par FranceTélévision.</p>
+        <p>Le jeu Motus est une propriété de FranceTélévision.</p>
         <p>L’ensemble des éléments (logos, marques et autres éléments reproduits) sont réservés et protégés par le droit
           de la propriété intellectuelle, notamment les droits d’auteur, droits voisins, droits des marques, tous
           reviennent à <a href="https://www.francetelevisions.fr/cgu">francetelevisions</a></p>
@@ -624,41 +616,46 @@
       <button onclick="displayPage('main_menu')">Retour</button>
     </div>
 
-    <div class="flex_section">
-      <button class="nostyle_button" onclick="playsound('grille_creation')">grille_creation</button>
-      <button class="nostyle_button" onclick="playsound('grille_numero')">grille_numero</button>
-      <button class="nostyle_button" onclick="playsound('grille_boule_noire')">grille_boule_noire</button>
-      <button class="nostyle_button" onclick="playsound('grille_numero_tire')">grille_numero_tire</button>
-      <button class="nostyle_button" onclick="playsound('motus')">motus</button>
-      <button class="nostyle_button" onclick="playsound('boule_magique')">boule_magique</button>
-    </div>
-    <hr>
+    
+    <button class="flex_button" onclick="playsound('grille_creation');playsound('grille_numero');playsound('grille_boule_noire');
+    playsound('grille_numero_tire');playsound('motus');playsound('boule_magique');playsound('letter_ok');
+    playsound('letter_bad');playsound('letter_missing');playsound('letter_bonus');playsound('wrong');playsound('victory');
+    playsound('temps_ecoule');playsound('loose');playsound('jingle');">Jouer tous les sons</button>
 
     <div class="flex_section">
-      <button class="nostyle_button" onclick="playsound('letter_ok')">letter_ok</button>
-      <button class="nostyle_button" onclick="playsound('letter_bad')">letter_bad</button>
-      <button class="nostyle_button" onclick="playsound('letter_missing')">letter_missing</button>
-      <button class="nostyle_button" onclick="playsound('letter_bonus')">letter_bonus</button>
-      <button class="nostyle_button" onclick="playsound('wrong')">wrong</button>
+      <button class="nostyle_button" onclick="playsound('grille_creation');">grille_creation</button>
+      <button class="nostyle_button" onclick="playsound('grille_numero');">grille_numero</button>
+      <button class="nostyle_button" onclick="playsound('grille_boule_noire');">grille_boule_noire</button>
+      <button class="nostyle_button" onclick="playsound('grille_numero_tire');">grille_numero_tire</button>
+      <button class="nostyle_button" onclick="playsound('motus');">motus</button>
+      <button class="nostyle_button" onclick="playsound('boule_magique');">boule_magique</button>
+    </div>
+    <br>
+
+    <div class="flex_section">
+      <button class="nostyle_button" onclick="playsound('letter_ok');">letter_ok</button>
+      <button class="nostyle_button" onclick="playsound('letter_bad');">letter_bad</button>
+      <button class="nostyle_button" onclick="playsound('letter_missing');">letter_missing</button>
+      <button class="nostyle_button" onclick="playsound('letter_bonus');">letter_bonus</button>
+      <button class="nostyle_button" onclick="playsound('wrong');">wrong</button>
       <div>
-        <hr>
+        <br>
       </div>
 
     </div class="flex_section">
-    <button class="nostyle_button" onclick="playsound('victory')">victory</button>
+    <button class="nostyle_button" onclick="playsound('victory');">victory</button>
     <div>
-      <hr>
+      <br>
 
       <div class="flex_section">
-        <button class="nostyle_button" onclick="playsound('temps_ecoule')">temps_ecoule</button>
-        <button class="nostyle_button" onclick="playsound('loose')">loose</button>
-        <button class="nostyle_button" onclick="playsound('jingle')">jingle</button>
+        <button class="nostyle_button" onclick="playsound('temps_ecoule');">temps_ecoule</button>
+        <button class="nostyle_button" onclick="playsound('loose');">loose</button>
+        <button class="nostyle_button" onclick="playsound('jingle');">jingle</button>
       </div>
     </div>
   </div>
   </div>
   </div>
-
 </body>
 
 </html>
