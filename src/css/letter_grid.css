@@ -55,7 +55,7 @@ div#top_section { margin-bottom: 7.5%; }
 div#bottom_section { height: 12%;width: 100%; }  
 div#letter_grid_page { display: block; }
 
-button.flex_button, #keyboard_number_grid_input, select.flex_button {
+button.flex_button, #keyboard_number_grid_input {
   width: 47.75%;
   font-size: 3vw;
   height: 8.5vw;
@@ -317,10 +317,11 @@ a.score, a.active_score {
 
   div.flex_section { display: flex; }
 
-  button.flex_button, #keyboard_number_grid_input, select.flex_button {
+  button.flex_button, #keyboard_number_grid_input {
       width: 100%;
       font-size: 1.5em;
       height: 4vw;
       margin: 0.5vw;
   }
 }
+

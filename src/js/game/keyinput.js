@@ -19,7 +19,7 @@ document.addEventListener("keydown", function (event) {
 			affichageSolution();
 		} else if (event.keyCode == 49 || event.keyCode == 97 ) { // &
 			console.log('Key 1');
-			newWordLine();
+			nouvelleLigne();
 		} else if (event.keyCode == 50 || event.keyCode == 98 ) { // é
 			console.log('Key 2');
 			ajoutLettreBonus();
@@ -29,7 +29,7 @@ document.addEventListener("keydown", function (event) {
 		} else if (event.keyCode == 52 || event.keyCode == 100 ) { // '
 			console.log("Key 4");
 			suppressionLigne();
-			newWordLine();
+			nouvelleLigne();
 		} else if (event.keyCode == 53 || event.keyCode == 101 ) { // (
 			console.log("Key 5");
 			switchTeamFocus();

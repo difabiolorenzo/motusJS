@@ -151,7 +151,7 @@ table.purgatory {
 div#number_grid_placeolder_yellow { /* display: flex; */ padding-top: 0%; }
 
 /* Desktop: */
-@media only screen and (min-width: 1024px) {
+@media only screen and (min-width: 1025px) {
   .cell_team_yellow, .cell_team_blue, .cell_purgatory {
     text-align: center;
     width: 10%;
@@ -161,9 +161,9 @@ div#number_grid_placeolder_yellow { /* display: flex; */ padding-top: 0%; }
   }
 
   table.table_number, table.purgatory {
-    width: 61%;
+    width: 80%;
     height: 82.5%;
-    margin-left: 19.25%;
+    margin-left: 9.5%;
     padding: 0;
     margin-top: 0vw;
     margin-bottom: 0vw;
@@ -180,7 +180,7 @@ div#number_grid_placeolder_yellow { /* display: flex; */ padding-top: 0%; }
     width: 8.0vw;
     border-radius: 100%;
     box-shadow: 2px 2px 5px 0px #0000006b;
-    /* margin-left: 25%; */
+    margin-left: 25%;
     margin-right: 0vw;
     padding-top: 1.45vw;
   }

@@ -474,6 +474,14 @@ function pickBall(picked_ball, picked_ball_random_index) {							// Tire au hasa
 			}
 		}
 	}
+
+	function goNumberPicking() {
+		try_picking_ball_left = try_picking_ball;
+
+		document.getElementById("button_pick_number").style = "display:block";	//affichage du bouton piocher
+		document.getElementById("button_return_letter_grid").style = "display:block";	//affichage du bouton piocher
+		displayPage('number_grid_page');
+	}
 	
 	function manuallyPickBall(number) {
 		if (sort_mode == "input_touch") {
