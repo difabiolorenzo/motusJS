@@ -56,7 +56,7 @@ function initVariables() {
 
     // DEBUG
     debug_index = 0;
-    const version_name = "2.2 - Pre-release 11"; document.getElementById("version").innerHTML = version_name;
+    const version_name = "Release 2.2"; document.getElementById("version").innerHTML = version_name;
     const regularCharExpression  = /^[a-zA-Z\u00C0-\u00ff]+$/;
     godmod = false
 
