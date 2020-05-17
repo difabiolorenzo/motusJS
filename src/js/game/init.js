@@ -67,7 +67,7 @@ team_focus = "yellow"; // ("yellow" || "blue")
 
 // DEBUG
 debug_index = 0;
-var version_name = "2.3 Pre-release 1"; 
+var version_name = "2.3 Pre-release 2"; 
 document.getElementById("version").innerHTML = version_name;
 regularCharExpression = /^[a-zA-Z\u00C0-\u00ff]+$/;
 godmod = false

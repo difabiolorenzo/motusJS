@@ -248,9 +248,8 @@ function goNumberPicking() {
 }
 
 function goLetterGrid() {
-    if (word_found == true) { reinitWord();
+    if (word_found == true) { reinitWord(); }
     displayPage('letter_grid_page');
-	}
 }
 
 function timesUp() {
