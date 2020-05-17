@@ -1,149 +1,111 @@
-function initVariables() {
+function changeSettingsGroupDisplay() {
+    var navpanel_dropdown = document.getElementById("navpanel_dropdown")
 
-    // SETTINGS
+    if (settings_group_displayed == true) {
+        settings_group_displayed = false;
+        navpanel_dropdown.className = "navpanel_dropdown_hidden"
+    } else {
+        settings_group_displayed = true;
+        navpanel_dropdown.className = "navpanel_dropdown_visible"
+    }
+}
 
-    playsound_enabled = true;
-    play_jingle = false;
+function displaySettingsGroup(settings_section) {
+    editHTML("settings_section_visual", "style", "display:none");
+    editHTML("settings_section_number_grid", "style", "display:none");
+    editHTML("settings_section_team_scores", "style", "display:none");
+    editHTML("settings_section_gameplay", "style", "display:none");
+    editHTML("settings_section_sounds", "style", "display:none");
+    editHTML("settings_section_words", "style", "display:none");
+    editHTML("settings_section_gamemode", "style", "display:none");
+    editHTML("settings_section_github", "style", "display:none");
 
-    displayed_page = "main_menu";
+    editHTML(settings_section, "style", "display:block");
 
-    //GAME
-    check_word_length = true;
-    check_word_presence = true;
-    check_word_duplication = true;
-    check_word_first_letter = true;
+    var navpanel_title = document.getElementById("navpanel_title")
 
-    try_number_max = 6;
-    lettre_plus_amount = 1;
-    word_found = undefined;
-    word_displayed = false;
-    dictionary_list = [dictionary_5, dictionary_6, dictionary_7, dictionary_8, dictionary_9, dictionary_10];
+    if (navpanel_title != null) { // when display: none
+        switch (settings_section) {
+            case "settings_section_visual":
+                navpanel_title.innerHTML = "Visuels";
+                break;
+            case "settings_section_number_grid":
+                navpanel_title.innerHTML = "Grilles numérotées";
+                break;
+            case "settings_section_team_scores":
+                navpanel_title.innerHTML = "Équipes et Scores";
+                break;
+            case "settings_section_gameplay":
+                navpanel_title.innerHTML = "Gameplay";
+                break;
+            case "settings_section_sounds":
+                navpanel_title.innerHTML = "Sons";
+                break;
+            case "settings_section_words":
+                navpanel_title.innerHTML = "Mots";
+                break;
+            case "settings_section_gamemode":
+                navpanel_title.innerHTML = "Modes de jeu";
+                break;
+            case "settings_section_github":
+                navpanel_title.innerHTML = "GitHub";
+                break;
+            default:
+                break;
+        }
+    }
 
-    word_to_find_list = [];
-
-    always_ask = false;
-    always_ask_length = 8;
-            
-    keyboardInput = document.getElementById("word_proposition_input");
-
-    timer = 225;
-    game_started = false;
-    game_paused = false;
-
-    animationIntervalID_1 = undefined;
-    animationIntervalID_2 = undefined;
-    animationIntervalID_3 = undefined;
-    animationIntervalID_4 = undefined;
-    animationIntervalID_5 = undefined;
-
-    automatic_behaviour = true
-    automatic_behaviour_line_start = true;
-    automatic_behaviour_new_line_error = "replace_bonus"; //"replace_bonus" "replace_only" "add_bonus" "add_only" "none"
-    automatic_behaviour_redirect_number_grid = true;
-    automatic_behaviour_redirect_letter_grid = false;
-    automatic_behaviour_ask_new_word = true;
-
-    //SCORE
-    score_addition = 50;
-
-    score_yellow = 0;
-    score_blue = 0;
-
-    //TEAM
-    team_enabled = false;
-    change_turn_mode = "by_error"; // ("by_error" || "by_proposition")
-    team_focus = "yellow"; // ("yellow" || "blue")
-
-    // DEBUG
-    debug_index = 0;
-    const version_name = "Release 2.2"; document.getElementById("version").innerHTML = version_name;
-    const regularCharExpression  = /^[a-zA-Z\u00C0-\u00ff]+$/;
-    godmod = false
-
-    //NUMBERGRID
-    use_number_grid = true;
-    use_saving_ball = true; // Boule magique
-    limiting_saving_ball = true // limiting magic ball for first grid
-
-    black_ball_amount = 3;
-    try_picking_ball = 2;
-    try_picking_ball_left = try_picking_ball;
-
-    sort_mode = "random"; // ("random" || "input_keyboard" || "input_touch")
-    grid_index = -1;
-    grid_j_index = 0;
-    grid_i_index = 0;
-    team_color_grid = [];
-
-    motus_engaged = false; // MOTUS done or not, there is no more than 1 motus
-
-    yellow_grid_raw = [];
-    blue_grid_raw = [];
-    hided_number_spot = [];
-
-    motus_animation_index = 0;
-    picked_ball_animation = 0;
-    
-	number_proposed_tab = [];
-	number_proposed = undefined;
-
-    yellow_purgatory = document.getElementById("yellow_purgatory");
-    blue_purgatory = document.getElementById("blue_purgatory");
-
-    yellow_saving_ball = undefined;
-    blue_saving_ball = undefined;
-    yellow_saving_ball_picked = false;
-    blue_saving_ball_picked = false;
+    changeSettingsGroupDisplay() //close panel
 }
 
 function lockNumberGridSettings() {    
-    document.getElementById("use_number_grid_checkbox").disabled = true;;
+    editHTML("use_number_grid_checkbox", "disabled", true);
     document.getElementById("use_number_grid_checkbox").setAttribute("title", "La partie est lancée.");            
-    document.getElementById("use_saving_ball_checkbox").disabled = true;
+    editHTML("use_saving_ball_checkbox", "disabled", true);
     document.getElementById("use_saving_ball_checkbox").setAttribute("title", "La partie est lancée.");
-    document.getElementById("limiting_saving_ball_checkbox").disabled = true;
+    editHTML("limiting_saving_ball_checkbox", "disabled", true);
     document.getElementById("limiting_saving_ball_checkbox").setAttribute("title", "La partie est lancée.");
-    document.getElementById("black_ball_amount_input").disabled = true;
+    editHTML("black_ball_amount_input", "disabled", true);
     document.getElementById("black_ball_amount_input").setAttribute("title", "La partie est lancée.");
-    document.getElementById("try_picking_ball_input").disabled = true;
+    editHTML("try_picking_ball_input", "disabled", true);
     document.getElementById("try_picking_ball_input").setAttribute("title", "La partie est lancée.");
-    document.getElementById("sort_mode_select").disabled = true;
+    editHTML("sort_mode_select", "disabled", true);
     document.getElementById("sort_mode_select").setAttribute("title", "La partie est lancée.");
 }
 
 function UpdateAutomaticBehaviourSettings(value) {
     automatic_behaviour = value;
     if (value == true) {
-        document.getElementById("check_automatic_behaviour_line_start").disabled = false
-        document.getElementById("check_automatic_behaviour_new_line_error").disabled = false
-        document.getElementById("check_automatic_behaviour_redirect_number_grid").disabled = false
-        document.getElementById("check_automatic_behaviour_redirect_letter_grid").disabled = false
-        document.getElementById("check_automatic_behaviour_new_word").disabled = false
+        editHTML("check_automatic_behaviour_line_start", "disabled", false);
+        editHTML("check_automatic_behaviour_new_line_error", "disabled", false);
+        editHTML("check_automatic_behaviour_redirect_number_grid", "disabled", false);
+        editHTML("check_automatic_behaviour_redirect_letter_grid", "disabled", false);
+        editHTML("check_automatic_behaviour_new_word", "disabled", false);
     } else {
-        document.getElementById("check_automatic_behaviour_line_start").disabled = true
-        document.getElementById("check_automatic_behaviour_new_line_error").disabled = true
-        document.getElementById("check_automatic_behaviour_redirect_number_grid").disabled = true
-        document.getElementById("check_automatic_behaviour_redirect_letter_grid").disabled = true
-        document.getElementById("check_automatic_behaviour_new_word").disabled = true
+        editHTML("check_automatic_behaviour_line_start", "disabled", true);
+        editHTML("check_automatic_behaviour_new_line_error", "disabled", true);
+        editHTML("check_automatic_behaviour_redirect_number_grid", "disabled", true);
+        editHTML("check_automatic_behaviour_redirect_letter_grid", "disabled", true);
+        editHTML("check_automatic_behaviour_new_word", "disabled", true);
     }
 }
 
 function UpdateScoreSettings(value) {
     score_enabled = value;
-    if (value == true) { document.getElementById("score_placeolder").style = "display:flex" }
+    if (value == true) { editHTML("score_placeolder", "style", "display:flex"); }
 }
 
 function UpdateAlwaysAskSettings(value) {
     always_ask = value;
-    if (value == true) { document.getElementById("always_ask_length_dropdown").disabled = false; } else {
-        document.getElementById("always_ask_length_dropdown").disabled = true;
+    if (value == true) { editHTML("always_ask_length_dropdown", "disabled", false); } else {
+        editHTML("always_ask_length_dropdown", "disabled", true);
     }
 }
 
 function UpdateSoundSettings(value) {
     playsound_enabled = value;
-    if (value == true) { document.getElementById("play_jingle_settings").disabled = false; } else {
-        document.getElementById("play_jingle_settings").disabled = true;
+    if (value == true) { editHTML("play_jingle_settings", "disabled", false); } else {
+        editHTML("play_jingle_settings", "disabled", true);
     }
 }
 
@@ -151,16 +113,16 @@ function UpdateTeamSettings(value) {
     team_enabled = value;
     if (value == true) {
         // team activated
-        document.getElementById("settings_section_team").disabled = false;
-        document.getElementById("score_1_panel").style = "display:block" // Le score de la seconde équipe s'affiche
-        document.getElementById("change_team_letter_grid_button").style = "display:block" // Le bouton de changement d'équipe s'affiche
+        editHTML("settings_section_team", "disabled", false);
+        editHTML("score_1_panel", "style", "display:block"); // Le score de la seconde équipe s'affiche
+        editHTML("change_team_letter_grid_button", "style", "display:block"); // Le bouton de changement d'équipe s'affiche
     } else {
-        document.getElementById("settings_section_team").disabled = true;
-        document.getElementById("change_team_letter_grid_button").style = "display:none" // Le bouton de changement d'équipe ne s'affiche pas
-        document.getElementById("score_1_panel").style = "display:none" // Le score de la seconde équipe ne s'affiche pas
-        document.getElementById("score_0_panel").className = "active_score" // Reinitialisation de l'ordre
-        document.getElementById("score_1_panel").className = "score"
-        document.getElementById("number_grid_placeolder_blue").style = "display:none";
+        editHTML("settings_section_team", "disabled", true);
+        editHTML("change_team_letter_grid_button", "style", "display:none"); // Le bouton de changement d'équipe ne s'affiche pas
+        editHTML("score_1_panel", "style", "display:none"); // Le score de la seconde équipe ne s'affiche pas
+        editHTML("score_0_panel", "className", "active_score"); // Reinitialisation de l'ordre
+        editHTML("score_1_panel", "className", "score");
+        editHTML("number_grid_placeolder_blue", "style", "display:none");
         team_focus = "yellow";
     }
 }
@@ -168,39 +130,39 @@ function UpdateTeamSettings(value) {
 function UpdateNumberGridSettings(value) {
     use_number_grid = value;
     if (value == true) {
-        document.getElementById("number_grid_button").style = "display:block"
-        document.getElementById("use_saving_ball_checkbox").disabled = false
-        document.getElementById("black_ball_amount_input").disabled = false
-        document.getElementById("try_picking_ball_input").disabled = false
+        editHTML("number_grid_button", "style", "display: block");
+        editHTML("use_saving_ball_checkbox", "disabled", false);
+        editHTML("black_ball_amount_input", "disabled", false);
+        editHTML("try_picking_ball_input", "disabled", false);
         if (use_saving_ball == true) {
-            document.getElementById("limiting_saving_ball_checkbox").disabled = false
+            editHTML("limiting_saving_ball_checkbox", "disabled", false);
         }
-        document.getElementById("sort_mode_select").disabled = false
+        editHTML("sort_mode_select", "disabled", false);
     } else {
-        document.getElementById("number_grid_button").style = "display:none"
-        document.getElementById("use_saving_ball_checkbox").disabled = true
-        document.getElementById("limiting_saving_ball_checkbox").disabled = true
-        document.getElementById("black_ball_amount_input").disabled = true
-        document.getElementById("try_picking_ball_input").disabled = true
-        document.getElementById("sort_mode_select").disabled = true
+        editHTML("number_grid_button", "style", "display:none");
+        editHTML("use_saving_ball_checkbox", "disabled", true);
+        editHTML("limiting_saving_ball_checkbox", "disabled", true);
+        editHTML("black_ball_amount_input", "disabled", true);
+        editHTML("try_picking_ball_input", "disabled", true);
+        editHTML("sort_mode_select", "disabled", true);
     }
 }
 
 function UpdateSavingBallSettings(value) {
     use_saving_ball = value;
     if (value == true) {
-        document.getElementById("limiting_saving_ball_checkbox").disabled = false
+        editHTML("limiting_saving_ball_checkbox", "disabled", false);
     } else {
-        document.getElementById("limiting_saving_ball_checkbox").disabled = true
+        editHTML("limiting_saving_ball_checkbox", "disabled", true);
     }
 }
 
 function UpdateNumberSelectMode(mode) {
     sort_mode = mode;
     if (mode == "input_keyboard") {
-        document.getElementById("keyboard_number_grid_input").style = "display:block";
+        editHTML("keyboard_number_grid_input", "style", "display:block");
     } else {
-        document.getElementById("keyboard_number_grid_input").style = "display:none";
+        editHTML("keyboard_number_grid_input", "style", "display:none");
     }
 }
 
@@ -213,8 +175,8 @@ function WordListAddRow(word_list_selected_word) {
     var word_list_row = word_list_table.insertRow(word_list_rowCount);
 
     word_list_row.insertCell(0).innerHTML = word_list_selected_word;
-    word_list_row.insertCell(1).innerHTML = '<input type="button" value = "❌" onClick="Javascript:WordListDeleteRow(this)">';
-    word_list_row.insertCell(2).innerHTML = '<input type="button" value = "Information sur ce mot" onClick="Javascript:SearchWordInformations(this)">';
+    word_list_row.insertCell(1).innerHTML = '<input type="button" class="button" value = "❌" onClick="Javascript:WordListDeleteRow(this)">';
+    word_list_row.insertCell(2).innerHTML = '<input type="button" class="button" value = "Information sur ce mot" onClick="Javascript:SearchWordInformations(this)">';
 
     document.getElementById('word_list_selected_word').value = "";
 
@@ -223,16 +185,15 @@ function WordListAddRow(word_list_selected_word) {
 }
 
 function WordListAddRowRandom(letter_count) {
-    if (dictionary_list[letter_count - 5] != undefined) {
-        var word_list_random_word_index = Math.floor(Math.random() * dictionary_list[letter_count - 5].length);
-        var word_list_random_word = dictionary_list[letter_count - 5][word_list_random_word_index];
+    var dictionary_index = letter_count - 5; // 5 letters word is dict_0, 6 is dict_1
+    var word_list_random_word_index = Math.floor(Math.random() * dictionary_list[dictionary_index].length);
+    var word_list_random_word = dictionary_list[dictionary_index][word_list_random_word_index];
 
-        WordListAddRow(word_list_random_word);
-    }
+    WordListAddRow(word_list_random_word);
 }
 
 function WordAddCustom() {
-    wordInput = document.getElementById('word_list_selected_word').value
+    var wordInput = document.getElementById('word_list_selected_word').value
     if (wordInput.length >= 5 && wordInput.length <= 10 && regularCharExpression.test(wordInput) == true) {
         WordListAddRow(wordInput)
     }
@@ -248,7 +209,7 @@ function WordListDeleteRow(word) {
 }
 
 function SearchWordInformations(word) {
-    word_list_index = word.parentNode.parentNode.rowIndex;
+    var word_list_index = word.parentNode.parentNode.rowIndex;
     console.log(word_to_find_list[word_list_index - 1])
 
     if (confirm("Voulez-vous ouvrir une page wiktionary.org sur le mot " + word_to_find_list[word_list_index - 1].toLowerCase() + "?")) {

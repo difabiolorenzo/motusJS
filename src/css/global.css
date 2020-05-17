@@ -3,6 +3,16 @@
   src: url('../font/Gotham\ Medium.ttf');
 }
 
+@keyframes sliding_div {
+  0% {
+    opacity:0;
+    
+  }
+  100% {
+    opacity:100;
+  }
+}
+
 :root {
   --motus_red: #A52A2E;
   --motus_blue: #A6D5FF;
@@ -10,13 +20,16 @@
   --team_yellow: #FBC800;
   --team_blue: #1681C7;
   --motus_dark: #2d2d2d;
-}
 
+  --system_color_base_low: #333;
+  --system_color_base_medium_low: #666;
+  --system_color_base_medium: #999;
+  --system_color_base_medium_high: #ccc;
+}
 
 h1 {
   font-size: 1.75em;
-  margin-block-start: 0.5em;
-  width: 100%;
+  height: 55%;
 }
 
 h3 { font-size: 2.12em; }
@@ -38,27 +51,21 @@ th {
   text-align: center;
 }
 
-button#nav_button {
+.button#nav_button {
   font-size: 2em;
   padding-left: 2vw;
   padding-right: 2vw;
 }
 
 keyboardkey {
-  padding: 1vw 1vw;
-  font: 11px monospace;
-  line-height: 10px;
-  color: #444d56;
+  color: var(--system_color_base_low);
   vertical-align: middle;
-  background-color: #fafbfc;
-  border: 1px solid #d1d5da;
-  border-radius: 3px;
-  box-shadow: inset 0 -1px 0 #d1d5da;
+  background-color: ffffff;
 }
 
 
-button, input, select {
-  background-color: rgba(0, 0, 0, 0.20);
+.button, .input, .select {
+  background-color: #00000020;
   transition: all 0.25s;
   border: none;
   color: white;
@@ -70,46 +77,19 @@ button, input, select {
   cursor: pointer;
 }
 
-select:disabled, input:disabled, button:disabled {
+.select:disabled, .input:disabled, .button:disabled {
     opacity: 0.33;
    cursor:default
 }
-select:disabled:hover, input:disabled:hover, button:disabled:hover {
-    opacity: 0.175;
+.select:disabled:hover, .input:disabled:hover, .button:disabled:hover {
+    /* opacity: 0.175; */
 }
 
-.nostyle_button {
-  -webkit-appearance: button;
-  /* -webkit-writing-mode: horizontal-tb !important; */
-  text-rendering: auto;
-  color: buttontext;
-  letter-spacing: normal;
-  word-spacing: normal;
-  text-transform: none;
-  text-indent: 0px;
-  text-shadow: none;
-  display: inline-block;
-  text-align: center;
-  align-items: flex-start;
-  cursor: default;
-  background-color: rgb(239, 239, 239);
-  box-sizing: border-box;
-  margin: 0em;
-  height: 22px;
-  font: 400 13.3333px Arial;
-  padding: 1px 6px;
-  border-width: 2px;
-  border-style: outset;
-  border-color: rgb(118, 118, 118);
-  border-image: initial;
-  border-radius: 2px;
-}
+.button:hover, .input:hover, .select:hover {background-color: #00000040;}
+.settings_page>.button, input, .select {background-color: var(--system_color_base_medium_low);}
+.settings_page>.button:hover, .input:hover, .select:hover {background-color: var(--motus_dark);}
 
-button:hover, input:hover, select:hover {   background-color: #0005; }
-.settings_page>button, input, select { background-color: #00000040; }
-.settings_page>button:hover, input:hover, select:hover { background-color: #00000080; }
-
-input[type="checkbox"i] {
+.input[type="checkbox"i] {
   width: 5vw;
   height: 5vh;
 }
@@ -144,8 +124,9 @@ div#main_menu {background-color: var(--motus_red);}
 .style_2000#main_menu  { background-color: #b1161b;}
 .style_1990#main_menu  {background-color: #002761;}
 div#main_menu_content { padding-left: 20%; }
-div#settings_page { background-color: #ffffff; }
+div#settings_page {overflow: hidden;background-color: var(--system_color_base_medium_high);}
 div#letter_grid_page {background-color: var(--motus_blue);}
+div#letter_grid_page.finale {background-color: var(--motus_red);}
 div#number_grid_page {background-color: var(--motus_blue);}
 div#debug_page { background-color: #3e2792; }
 
@@ -165,44 +146,51 @@ img#logo {
   margin-bottom: 17vh;
 }
 
-button.big_button {
+.button.menu_button {
   width: 60vw;
   height: 7.5vh;
   font-size: 1.5em;
   margin-bottom: 1vh;
+  background-color: #0003;
 }
 
-div#settings {
-  margin-left: 1vw;
-  margin-right: 1vw;
+.button.menu_button:hover {
+  background-color: #0005;
 }
 
 .section_flex {
-  display: flex;
+  display: inline-table;
   overflow-y: scroll;
 }
 
 .section_flex>input { width: 100% }
-div#settings-top, div#credit-top { padding-top: 1vh; }
+div#settings-top, div#credit-top {display: inline-flex;padding-left: 1vw;height: 75px;text-align: center;width: 100%;background-color: #fff;}
 div#settings-up, div#credit-up { padding-left: 1vw; }
 .settings_input.settings_disabled { display: none; }
 a#version {position:absolute;left:0;bottom:0;padding: 3%;}
 a#game {position:absolute;right:0;bottom:0;padding: 3%;}
 
 .settings_input {
-  background-color: #0000001a;
+  background-color: var(--system_color_base_medium_high);
   padding: 0.5vw;
-  margin-top: 1vw;
+  margin-bottom: 1vw;
+  height: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+.settings_input {
+  animation: sliding_div 0.5s ease-in-out;
 }
 
-input#settings_input_yellow_team_name {
+
+.input#settings_input_yellow_team_name {
   background-color: var(--team_yellow);
   border: 1px solid rgba(0, 0, 0, 0.25);
   text-transform: uppercase;
   font-weight: bold;
 }
 
-input#settings_input_blue_team_name {
+.input#settings_input_blue_team_name {
   background-color: var(--team_blue);
   border: 1px solid #00000040;
   text-transform: uppercase;
@@ -215,6 +203,82 @@ input#settings_input_blue_team_name {
 }
 
 
+div#navsection {
+  height: 83.9%;
+}
+
+div#navpanel {
+  width: 100%;
+  height: 5%;
+  padding-top: 1vh;
+  padding-bottom: 1vh;
+  background-color: #9b9b9b;
+  text-align:center;
+  font-size: 1.25em;
+  font-weight: bold;
+  cursor: pointer;
+  user-select: none;
+}
+
+div#navcontent {
+  width: 100%;
+  height: 94.9%;
+  overflow: visible;
+}
+
+h1.link {
+    width: 3.33em;
+    text-align: center;
+    margin-right: 5%;
+    margin-left: 2.5%;
+    border-radius: 0.1em;
+    background-color: var(--system_color_base_medium_high);
+}
+
+h1.link:hover {
+    background-color: var(--system_color_base_medium);
+    color: var(--system_color_base_low);
+    cursor:pointer;
+}
+
+div#navpanel_dropdown {
+  position:absolute;
+}
+
+div#navpanel_dropdown p {
+  text-decoration:none;
+  text-align:left;
+  padding-left: 5vw;
+  font-size:1.25em;
+  padding-bottom:0;
+  cursor: pointer;
+}
+div#navpanel_dropdown p:hover {
+  color: black;
+}
+
+div#navpanel_dropdown.navpanel_dropdown_visible {
+    background-color: #cbcbcb80;
+    height: 100%;
+    width: 100%;
+    display: list-item;
+    -webkit-backdrop-filter: blur(0.25em);
+    backdrop-filter: blur(0.25em);
+}
+
+
+div#navpanel_dropdown.navpanel_dropdown_hidden {
+  height:0;
+  opacity: 0;
+  display: none;
+}
+
+
+
+.settings_input p {
+    display: none;
+}
+
 /* Desktop: */
 @media only screen and (min-width: 1024px) {
   img#logo {
@@ -223,14 +287,13 @@ input#settings_input_blue_team_name {
     margin-bottom: 7.5vh;
     margin-top: 15vh;
   }
-  h1 { margin-block-start: 0.75em; }
-  button.big_button {
+  .button.menu_button {
     width: 60vw;
     height: 7.5vh;
     font-size: 1.5em;
     margin-bottom: 0.25vh;
   }
-  button, input, select {
+  .button, .input, .select {
     height: 6vh;
     padding-right: 5vw;
     padding-left: 5vw;
@@ -240,7 +303,7 @@ input#settings_input_blue_team_name {
   table#word_list { padding:2vw;width: 100%;  }
   #settings_page p {  text-align: left !important;margin-left: 2.5vw; }
 
-  input[type="checkbox"i] {
+  .input[type="checkbox"i] {
     height:2vw;
     width:2vw;
   }
@@ -256,32 +319,104 @@ input#settings_input_blue_team_name {
     padding: 0.5vw 0.5vw;
     font: 1em monospace;
     border-radius: 0.25vw;
-    box-shadow: inset 0 -0.125vw 0 #d1d5da;
+    box-shadow: inset 0 -0.125vw 0 var(--system_color_base_medium_low);
   }
+  
+  div#settings-top, div#credit-top {
+    height: 8%;
+    margin-left: 0;
+  }
+  div#settings_main {
+    display:flex;
+    height: 92%;
+  }
+  div#settings_content {
+    width: 100%;
+  }
+  div#navpanel {
+    display:none;
+  }
+  div#nav_section, div#navpanel_dropdown, div#navpanel_dropdown.navpanel_dropdown_visible{
+    width: 25%;
+  }
+  div#navpanel_dropdown p {
+  text-decoration:none;
+  text-align:left;
+  padding-left: 0vw;
+  font-size:1.25em;
+  padding-bottom:0;
+}
+
+div#navpanel_dropdown.navpanel_dropdown_visible, div#navpanel_dropdown.navpanel_dropdown_hidden {
+    background-color: var(--system_color_base_medium);
+    height: 90%;
+    width: 20%;
+    display: list-item;
+    -webkit-backdrop-filter: blur(0);
+    backdrop-filter: blur(0);
+    padding-top: 1vw;
+    opacity: 100;
+}
+.settings_input p {
+    display: block;
+}
 }
 
 @media (prefers-color-scheme: dark) {
 
-  .page, div#settings_page {
-    background-color: #3c3c3c;
+  .settings_input {
+    background-color: var(--system_color_base_low);
   }
-  div#letter_grid_page {background-color: var(--motus_dark);}
+
+  table#word_list {
+    background-color: #4f4f4f;
+  }
+  .page, div#settings_page, div#letter_grid_page {
+  background-color: var(--system_color_base_low);
+  }
+  div#navpanel, div#navsection{
+    background-color: #252525;
+  }
+  div#settings-top, div#credit-top {
+    background-color: black;
+  }
+  div#letter_grid_page,  {background-color: var(--motus_dark);}
   div#number_grid_page {background-color: var(--motus_dark);}
   code, h1, h2, h3 {
     color: #efefef;
   }
-  a:-webkit-any-link, p, label {
+  a:-webkit-any-link, p, label, td, div#navpanel {
     color: #d4d4d4;
   }
-  table#word_list {
-    background-color: #4f4f4f;
-  }
-  input[type="checkbox" i] {
+  .input[type="checkbox" i] {
     background-color: blue;
   }
-  button, input { background-color: #ffffff1a;}
-  button:hover, input:hover { background-color: rgba(255, 255, 255, 0.25);}
-  .big_button {   background-color: #0003; }
-  .big_button:hover {   background-color: #0005; }
+  .button, .input {background-color: #0000001a;}
+  .button:hover, .input:hover { background-color: rgba(255, 255, 255, 0.25);}
+  .menu_button {   background-color: #0003; }
+  .menu_button:hover {   background-color: #0005; }
+
+  div#navpanel_dropdown.navpanel_dropdown_visible, div#navpanel_dropdown.navpanel_dropdown_hidden {
+    background-color: var(--motus_dark);
+    -webkit-backdrop-filter: blur(0.25em);
+    backdrop-filter: blur(0.25em);
   }
+
+  div#navpanel_dropdown p:hover {
+    color: #fff;
+  }
+  
+h1.link {
+    background-color: var(--system_color_base_medium_low);
+    color: black;
+}
+
+h1.link:hover {
+    background-color: var(--system_color_base_low);
+    color: black;
+}
+}
+
+
+.menu_button {
 }

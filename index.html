@@ -1,7 +1,8 @@
 <html>
 
 <head>
-  <title>MotusJS</title>
+  <title>MotusJS - Motus en javascript</title>
+  <meta name="description" lang="fr" content="Le fameux ancien jeu télévisé de mot quotidien Motus de FranceTélévision en JavaScript">
   <meta charset="utf-8">
   <link rel="stylesheet" type="text/css" title="css" href="src/css/global.css">
   <link rel="stylesheet" type="text/css" title="css" href="src/css/letter_grid.css">
@@ -17,13 +18,15 @@
   <script type="text/javascript" src="./src/js/dictionary/dictionary_8.js"></script>
   <script type="text/javascript" src="./src/js/dictionary/dictionary_9.js"></script>
   <script type="text/javascript" src="./src/js/dictionary/dictionary_10.js"></script>
-  <script type="text/javascript" src="./src/js/letter/letter_grid.js"></script>
-  <script type="text/javascript" src="./src/js/number/number_grid.js"></script>
-  <script type="text/javascript" src="./src/js/number/grid_data.js"></script>
   <script type="text/javascript" src="./src/js/game/game.js"></script>
   <script type="text/javascript" src="./src/js/game/init.js"></script>
   <script type="text/javascript" src="./src/js/game/keyinput.js"></script>
+  <script type="text/javascript" src="./src/js/dictionary/dico_tri.js"></script>
+  <script type="text/javascript" src="./src/js/letter/letter_grid.js"></script>
+  <script type="text/javascript" src="./src/js/number/number_grid.js"></script>
+  <script type="text/javascript" src="./src/js/number/grid_data.js"></script>
   <script type="text/javascript" src="./src/js/settings/settings.js"></script>
+  <script type="text/javascript" src="./src/js/settings/settings.json"></script>
 
   <script type="text/javascript" src="./src/js/sounds/jquery-2.2.0.min.js"></script>
   <script type="text/javascript" src="./src/js/sounds/jquery.playSound.js"></script>
@@ -33,369 +36,405 @@
   <div class="page" id="main_menu" style="display:block;">
     <!-- Contenu du menu principal -->
     <div id="main_menu_topbar">
-      <img src="./src/img/motus_logo_2010.png" onclick="previewMode()" id="logo"></img>
+      <img src="./src/img/motus_logo_2010.png" id="logo"></img>
     </div>
 
     <div id="main_menu_content">
-      <button class="big_button" onclick="initGame()" autofocus=true>Jouer</button>
-      <button class="big_button" onclick="displayPage('settings_page')">Paramètres</button>
-      <button class="big_button" onclick="window.location.href = 'https://github.com/difabiolorenzo/motusJS'">GitHub</button>
-      <button class="big_button" onclick="displayPage('credit_page')">Credits</button>
-      <button class="big_button" id="debug_menu_button" onclick="displayPage('debug_page')"
+      <button class="button menu_button" onclick="initGame()" autofocus=true>Jouer</button>
+      <button class="button menu_button" onclick="gamemode = 'finale'; initGame()" autofocus=true>Super Partie</button>
+      <button class="button menu_button" onclick="displayPage('settings_page')">Paramètres</button>
+      <button class="button menu_button" onclick="window.location.href = 'https://github.com/difabiolorenzo/motusJS'">GitHub</button>
+      <button class="button menu_button" onclick="displayPage('credit_page')">Credits</button>
+      <button class="button menu_button" id="debug_menu_button" onclick="displayPage('debug_page')"
         style="display: none;">Debug</button>
     </div>
     <div id="version_placeolder">
-      <a id="version">JavaScript Not Enambled :'(</a>
-      <a id="game">motusJS</a>
+      <a id="version">JavaScript desactivé :'(</a>
+      <a id="game" onclick="previewMode()">motusJS</a>
     </div>
 
   </div>
 
   <!-- Page: Paramètres -->
   <div class="page" id="settings_page" style="display:none;">
+    <div id="settings-top">
+      <h1 class="link" onclick="displayPage('main_menu')">🡰</h1>
+      <h1>Paramètres</h1>
+    </div>
 
-    <div id="settings">
-      <div id="settings-up">
-        <div class="section_flex" id="settings-top">
-          <h1>Paramètres</h1>
-          <button onclick="displayPage('main_menu')">Retour</button>
-          <button onclick="window.location.href = 'https://github.com/difabiolorenzo/motusJS/issues/new?'">Signaler un
-            bug</button>
-          <button onclick="initGame()">Jouer</button>
+    <div id="settings_main">
+      <div id="nav_section">
+        <div id="navpanel" onclick="changeSettingsGroupDisplay()">
+          <a id="navpanel_title">Visuels</a>
+        </div>
+        <div id="navpanel_dropdown" class="navpanel_dropdown_hidden">
+          <p href="#" onclick="displaySettingsGroup('settings_section_visual')">Visuels</p>
+          <p href="#" onclick="displaySettingsGroup('settings_section_number_grid')">Grilles numérotées</p>
+          <p href="#" onclick="displaySettingsGroup('settings_section_team_scores')">Équipes et Scores</p>
+          <p href="#" onclick="displaySettingsGroup('settings_section_gameplay')">Gameplay</p>
+          <p href="#" onclick="displaySettingsGroup('settings_section_sounds')">Sons</p>
+          <p href="#" onclick="displaySettingsGroup('settings_section_words')">Mots</p>
+          <p href="#" onclick="displaySettingsGroup('settings_section_gamemode')">Modes de jeu (test)</p>
+          <p href="#" onclick="displaySettingsGroup('settings_section_github')">GitHub</p>
         </div>
       </div>
-
-
-      <div class="settings_input">
-        <p>Visuels</p>
-
-        <div class="section_flex">
-          <div>
-            <label name="grid_style">Temps de vérification</label>
-            <select onchange="timer = this.value;">
-              <option value=225>Normal</option>
-              <option value=1000>1 seconde de latence</option>
-              <option value=600>Extrêmement lent</option>
-              <option value=500>Très très lent</option>
-              <option value=400>Très lent</option>
-              <option value=300>Lent</option>
-              <option value=200>Rapide</option>
-              <option value=100>Très rapide</option>
-              <option value=0>Instantané</option>
-            </select>
-          </div>
-
-          <div>
-            <label name="grid_style" >Style de la grille</label>
-            <select onchange="UpdateStyle(this.value);">
-              <option value="2010">Années 2010</option>
-              <option value="2019">Années 2019</option>
-              <option value="2000">Années 2000</option>
-              <option value="1990">Années 1990</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <div class="settings_input">
-        <p>Mots</p>
-        <div class="section_flex">
-
-          <div>
-            <table>
-              <tbody>
-                <tr>
-                  <th> <label>Vérifications des mots proposés:</label> </th>
-                  <th> </th>
-                </tr>
-                <tr>
-                  <th> <label name="check_word">Existe dans le dictionnaire</label>
-                  </th>
-                  <th> <input class="input-checkbox" type="checkbox" name="check_word_presence_checkbox" checked
-                      onchange="check_word_presence = this.checked"> </th>
-                </tr>
-                <tr>
-                  <th> <label name="check_word">Déja proposé</label> </th>
-                  <th> <input class="input-checkbox" type="checkbox" name="check_word_duplication_checkbox" checked
-                      onchange="check_word_duplication = this.checked"> </th>
-                </tr>
-                <tr>
-                  <th> <label name="check_word">Longueur du mot</label> </th>
-                  <th> <input class="input-checkbox" type="checkbox" name="check_word_length_checkbox" checked
-                      onchange="check_word_length = this.checked"> </th>
-                </tr>
-                <tr>
-                  <th> <label name="check_word">Première lettre correspondante</label>
-                  </th>
-                  <th> <input class="input-checkbox" type="checkbox" name="check_first_letter_checkbox" checked
-                      onchange="check_word_first_letter = this.checked"> </th>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div>
-            <label name="grid_style"></label>
-            <table>
-              <tbody>
-                <tr>
-                  <th> <label>Possibilité de lettres bonus</label> </th>
-                </tr>
-                <tr>
-                  <th>
-                    <select onchange="lettre_plus_amount = this.value;">
-                      <option value=1>1</option>
-                      <option value=0>0</option>
-                      <option value=2>2</option>
-                      <option value=3>3</option>
-                    </select>
-                    </th>
-                </tr>
-              </tbody>
-            </table>
-          </div>
   
-          <div>
-            <th>
+      <div id="settings_content">
+        <div id="settings_section_visual" class="settings_input" style="display: block;">
+          <p>Visuels</p>
+    
+          <div class="section_flex">
+            
+            <table>
+              <tbody>
+                <tr>
+                  <th> <label name="grid_style">Temps de vérification en fonction du nombre de lettre</label> </th>
+                  <th> <select class="select" onchange="timer = this.value;">
+                    <option value=1>Normal</option>
+                    <option value=0.5>Très lent</option>
+                    <option value=0.25>Lent</option>
+                    <option value=0.115>Rapide</option>
+                    <option value=0>Instantané</option>
+                  </select> </th>
+                </tr>
+                <tr>
+                  <th> <label name="grid_style" >Style de la grille</label> </th>
+                  <th> <select class="select" onchange="UpdateStyle(this.value);">
+                    <option value="2010">Années 2010</option>
+                    <option value="2019">Années 2019</option>
+                    <option value="2000">Années 2000</option>
+                    <option value="1990">Années 1990</option>
+                  </select></th>
+                </tr>
+                <!-- <tr>
+                  <th> <label name="grid_style" >Affichage en mode plein écran</label> </th>
+                  <th> <input class="input" type="checkbox" name="fullscreen" checked disabled
+                    id="fullscreen" onchange="UpdateFullscreenSettings(this.value)"></th>
+                </tr> -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+    
+        <div id="settings_section_number_grid" class="settings_input" style="display: none;">
+          <p>Grilles numérotées</p>
+    
+          <div class=" section_flex">
+            <table>
+              <tbody>
+                <tr>
+                  <th> <label name="use_number_grid">Utiliser la grille numérotée</label> </th>
+                  <th> <input class="input" type="checkbox" name="use_number_grid" checked
+                      id="use_number_grid_checkbox" onchange="UpdateNumberGridSettings(this.checked)"> </th>
+                </tr>
+                <tr>
+                  <th> <label name="try_picking_ball">Nombre de balles tirées</label> </th>
+                  <th> <input class="input" type="number" id="try_picking_ball_input" name="try_picking_ball"
+                      step="1" value="2" onchange="try_picking_ball = this.value"></th>
+                </tr>
+                <tr>
+                  <th> <label name="use_saving_ball">Utiliser la "boule magique"</label> </th>
+                  <th> <input class="input" type="checkbox" name="use_saving_ball" checked
+                      id="use_saving_ball_checkbox" onchange="UpdateSavingBallSettings(this.checked)"> </th>
+                </tr>
+                <tr>
+                  <th> <label name="limiting_saving_ball">Limiter les "boules magiques" aux première grilles</label> </th>
+                  <th> <input class="input" type="checkbox" name="limiting_saving_ball" checked
+                      id="limiting_saving_ball_checkbox" onchange="limiting_saving_ball = this.checked"> </th>
+                </tr>
+                <tr>
+                  <th> <label name="black_ball_amount">Nombre de boules noires</label> </th>
+                  <th> <input class="input" type="number" id="black_ball_amount_input" name="black_ball_amount"
+                      step="1" value="3" onchange="black_ball_amount = this.value"></th>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+    
+          <div class=" section_flex">
+            <table>
+              <tbody>
+                <tr>
+                  <th> <label name="use_number_grid">Mode de séléctions des boules</label> </th>
+                  <th>  <select class="select" id="sort_mode_select" onchange="UpdateNumberSelectMode(this.value);">
+                          <option value="random">par hasard</option>
+                          <option value="input_touch">par clique (n'inclut pas les boules noires)</option>
+                          <option value="input_keyboard">par clavier (n'inclut pas les boules noires))</option>
+                        </select>
+                  </th>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+    
+          
+    
+          
+        </div>
+    
+        <div id="settings_section_team_scores" class="settings_input" style="display: none;">
+          <p>Équipes et Scores</p>
+    
+          <div class="section_flex">
+            <div>
               <table>
                 <tbody>
                   <tr>
-                    <th><label name="always_ask">Longueur des mots</label></th>
-                    <th></th>
+                    <th> <label name="check_word">Activer les équipes</label> </th>
+                    <th> <input class="input" type="checkbox" name="team_enabled_checkbox"
+                        onchange="UpdateTeamSettings(this.checked)"> </th>
                   </tr>
                   <tr>
-                    <th> <label name="always_ask">Toujours utiliser des mots de</label>
+                    <th><label name="score_addition">Passer la main:</label></th>
+                    <th>
+                      <select class="select" id="settings_section_team" onchange="change_turn_mode = this.value;" disabled>
+                        <option value=by_error>À chaque erreur</option>
+                        <option value=by_proposition>À chaque proposition</option>
+                      </select>
                     </th>
-                    <th> <input class="input-checkbox" type="checkbox" name="always_ask"
-                        onchange="UpdateAlwaysAskSettings(this.checked);"> </th>
                   </tr>
                 </tbody>
               </table>
-  
-              <select id="always_ask_length_dropdown" disabled onchange="always_ask_length = this.value;">
-                <option value=8>8 lettres</option>
-                <option value=5>5 lettres</option>
-                <option value=6>6 lettres</option>
-                <option value=7>7 lettres</option>
-                <option value=9>9 lettres</option>
-                <option value=10>10 lettres</option>
+            </div>
+    
+            <div id="settings_section_score_addiction">
+              <label name="score_addition">Nombre de points ajoutés</label>
+              <select class="select" onchange="score_addition = Math.floor(this.value);">
+                <option value=50>50 Points</option>
+                <option value=1>1 Point</option>
               </select>
-          </div>
-
-        </div>
-      </div>
-
-      <div id="number_grid_settings" class="settings_input">
-        <p>Grilles numérotées</p>
-
-        <div class=" section_flex">
-          <table>
-            <tbody>
-              <tr>
-                <th> <label name="use_number_grid">Utiliser la grille numérotée</label> </th>
-                <th> <input class="input-checkbox" type="checkbox" name="use_number_grid" checked
-                    id="use_number_grid_checkbox" onchange="UpdateNumberGridSettings(this.checked)"> </th>
-              </tr>
-              <tr>
-                <th> <label name="try_picking_ball">Nombre de balles tirées</label> </th>
-                <th> <input class="input-checkbox" type="number" id="try_picking_ball_input" name="try_picking_ball"
-                    step="1" value="2" onchange="try_picking_ball = this.value"></th>
-              </tr>
-              <tr>
-                <th> <label name="use_saving_ball">Utiliser la "boule magique"</label> </th>
-                <th> <input class="input-checkbox" type="checkbox" name="use_saving_ball" checked
-                    id="use_saving_ball_checkbox" onchange="UpdateSavingBallSettings(this.checked)"> </th>
-              </tr>
-              <tr>
-                <th> <label name="limiting_saving_ball">Limiter les "boules magiques" aux première grilles</label> </th>
-                <th> <input class="input-checkbox" type="checkbox" name="limiting_saving_ball" checked
-                    id="limiting_saving_ball_checkbox" onchange="limiting_saving_ball = this.checked"> </th>
-              </tr>
-              <tr>
-                <th> <label name="black_ball_amount">Nombre de boules noires</label> </th>
-                <th> <input class="input-checkbox" type="number" id="black_ball_amount_input" name="black_ball_amount"
-                    step="1" value="3" onchange="black_ball_amount = this.value"></th>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        
-
-        <div class=" section_flex">
-          <table>
-            <tbody>
-              <tr>
-                <th> <label name="use_number_grid">Mode de séléctions des boules</label> </th>
-                <th>  <select id="sort_mode_select" onchange="UpdateNumberSelectMode(this.value);">
-                        <option value="random">par hasard</option>
-                        <option value="input_touch">par clique (n'inclut pas les boules noires)</option>
-                        <option value="input_keyboard">par clavier (n'inclut pas les boules noires))</option>
-                      </select>
-                </th>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        
-  
-        
-      </div>
-
-      <div class="settings_input">
-        <p>Équipes & Score</p>
-
-        <div class="section_flex">
-          <div>
-            <table>
-              <tbody>
-                <tr>
-                  <th> <label name="check_word">Activer les équipes</label> </th>
-                  <th> <input class="input-checkbox" type="checkbox" name="team_enabled_checkbox"
-                      onchange="UpdateTeamSettings(this.checked)"> </th>
-                </tr>
-                <tr>
-                  <th><label name="score_addition">Passer la main:</label></th>
-                  <th>
-                    <select id="settings_section_team" onchange="change_turn_mode = this.value;" disabled>
-                      <option value=by_error>À chaque erreur</option>
-                      <option value=by_proposition>À chaque proposition</option>
-                    </select>
-                  </th>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div id="settings_section_score_addiction">
-            <label name="score_addition">Nombre de points ajoutés</label>
-            <select onchange="score_addition = Math.floor(this.value);">
-              <option value=50>50 Points</option>
-              <option value=1>1 Point</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-
-      <div class="settings_input">
-        <p>Gameplay</p>
-
-        <div class="section_flex">
-            <table>
-              <tbody>
-                <tr>
-                  <th> <label name="check_automatic_behaviour">Activer les automatismes</label> </th>
-                  <th> <input class="input-checkbox" type="checkbox" name="check_automatic_behaviour" checked
-                      onchange="UpdateAutomaticBehaviourSettings(this.checked)"> </th>
-                </tr>
-                <tr>
-                  <th>  <label name="check_automatic_behaviour_line_start">Ligne au commencement</label> 
-                        <br>
-                        <code>désactivé si le double affichage est présent</th>
-                  <th> <input id="check_automatic_behaviour_line_start" class="input-checkbox" type="checkbox" name="check_automatic_behaviour_line_start" checked
-                      onchange="automatic_behaviour_line_start = this.checked"> </th>
-                </tr>
-                <tr>
-                  <th> <label name="check_automatic_behaviour_new_line_error">Nouvelle ligne après erreur</label> </th>
-                  <th> 
-                    <select id="check_automatic_behaviour_new_line_error" onchange="automatic_behaviour_new_line_error = this.value;">
-                      <option value="replace_bonus">Replacer + lettre bonus</option>
-                      <option value="replace_only">Replacer</option>
-                      <option value="add_bonus">Ajouter + lettre bonus</option>
-                      <option value="add_only">Ajouter</option>
-                      <option value="none">Ne rien faire</option>
-                    </select>
-                  </th>
-                </tr>
-                <tr>
-                  <th> <label name="check_automatic_behaviour_redirect_number_grid">Redirection vers grille numérotée</label> </th>
-                  <th> <input id="check_automatic_behaviour_redirect_number_grid" class="input-checkbox" type="checkbox" name="check_automatic_behaviour_redirect_number_grid" checked
-                      onchange="automatic_behaviour_redirect_number_grid = this.checked"> </th>
-                </tr>
-                <tr>
-                  <th> <label name="check_automatic_behaviour_redirect_letter_grid">Redirection vers grille de mot</label> </th>
-                  <th> <input id="check_automatic_behaviour_redirect_letter_grid" class="input-checkbox" type="checkbox" name="check_automatic_behaviour_redirect_letter_grid"
-                      onchange="automatic_behaviour_redirect_letter_grid = this.checked"> </th>
-                </tr>
-                <tr>
-                  <th> <label name="check_automatic_behaviour_new_word">Propose un nouveau mot</label> </th>
-                  <th> <input id="check_automatic_behaviour_new_word" class="input-checkbox" type="checkbox" name="check_automatic_behaviour_ask_new_word" checked
-                      onchange="automatic_behaviour_ask_new_word = this.checked"> </th>
-                </tr>
-              </tbody>
-            </table>
-        </div>
-
-      </div>
-
-
-      <div class="settings_input">
-        <p>Sons</p>
-
-        <div class="section_flex">
-          <table>
-            <tbody>
-              <tr>
-                <th> <label name="check_word">Activer les bruitages</label> </th>
-                <th> <input class="input-checkbox" type="checkbox" name="check_word" checked
-                    onchange="UpdateSoundSettings(this.checked)"> </th>
-              </tr>
-              <tr>
-                <th> <label name="play_jingle">Activer le jingle</label> </th>
-                <th> <input id="play_jingle_settings" class="input-checkbox" type="checkbox" name="play_jingle"
-                    onchange="play_jingle = this.checked"> </th>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-      </div>
-      
-      <div class="settings_input">
-        <p>Mots</p>
-        
-          <div class="word_list_section" id="word_list_section_text">
-            <label>Ajouter un mot manuellement:</label>
-            <input type="text" id="word_list_selected_word" style="text-transform:uppercase">
-            <input type="button" id="add" value="Ajouter" onclick="WordAddCustom()">
-            <br><code>(Un mot ayant entre 5 et 10 lettres)</code>
-          </div>
-        
-          <div>
-            <label>Ajouter au hasard un mot de:</label>
-            <div class="section_flex">
-              <input type="button" id="word_list_button_random" value="5 lettres"
-                onclick="Javascript:WordListAddRowRandom(5)">
-              <input type="button" id="word_list_button_random" value="6 lettres"
-                onclick="Javascript:WordListAddRowRandom(6)">
-              <input type="button" id="word_list_button_random" value="7 lettres"
-                onclick="Javascript:WordListAddRowRandom(7)">
-              <input type="button" id="word_list_button_random" value="8 lettres"
-                onclick="Javascript:WordListAddRowRandom(8)">
-              <input type="button" id="word_list_button_random" value="9 lettres"
-                onclick="Javascript:WordListAddRowRandom(9)">
-              <input type="button" id="word_list_button_random" value="10 lettres"
-                onclick="Javascript:WordListAddRowRandom(10)">
             </div>
           </div>
-      </div>
+        </div>
+    
+        <div id="settings_section_gameplay" class="settings_input" style="display: none;">
+          <p>Gameplay</p>
+    
+          <div class="section_flex">
+              <table>
+                <tbody>
+                  <tr>
+                    <th> <label name="check_automatic_behaviour">Activer les automatismes</label> </th>
+                    <th> <input class="input" type="checkbox" name="check_automatic_behaviour" checked
+                        onchange="UpdateAutomaticBehaviourSettings(this.checked)"> </th>
+                  </tr>
+                  <tr>
+                    <th>  <label name="check_automatic_behaviour_line_start">Ligne au commencement</label> 
+                          <br>
+                          <code>désactivé si le double affichage est présent</th>
+                    <th> <input class="input" id="check_automatic_behaviour_line_start" type="checkbox" name="check_automatic_behaviour_line_start" checked
+                        onchange="automatic_behaviour_line_start = this.checked"> </th>
+                  </tr>
+                  <tr>
+                    <th> <label name="check_automatic_behaviour_new_line_error">Nouvelle ligne après erreur</label> </th>
+                    <th> 
+                      <select class="select" id="check_automatic_behaviour_new_line_error" onchange="automatic_behaviour_new_line_error = this.value;">
+                        <option value="replace_bonus">Replacer + lettre bonus</option>
+                        <option value="replace_only">Replacer</option>
+                        <option value="add_bonus">Ajouter + lettre bonus</option>
+                        <option value="add_only">Ajouter</option>
+                        <option value="none">Ne rien faire</option>
+                      </select>
+                    </th>
+                  </tr>
+                  <tr>
+                    <th> <label name="check_automatic_behaviour_redirect_number_grid">Redirection vers grille numérotée</label> </th>
+                    <th> <input class="input" id="check_automatic_behaviour_redirect_number_grid" type="checkbox" name="check_automatic_behaviour_redirect_number_grid" checked
+                        onchange="automatic_behaviour_redirect_number_grid = this.checked"> </th>
+                  </tr>
+                  <tr>
+                    <th> <label name="check_automatic_behaviour_redirect_letter_grid">Redirection vers grille de mot</label> </th>
+                    <th> <input class="input" id="check_automatic_behaviour_redirect_letter_grid" type="checkbox" name="check_automatic_behaviour_redirect_letter_grid"
+                        onchange="automatic_behaviour_redirect_letter_grid = this.checked"> </th>
+                  </tr>
+                  <tr>
+                    <th> <label name="check_automatic_behaviour_new_word">Propose un nouveau mot</label> </th>
+                    <th> <input  class="input" id="check_automatic_behaviour_new_word" type="checkbox" name="check_automatic_behaviour_ask_new_word" checked
+                        onchange="automatic_behaviour_ask_new_word = this.checked"> </th>
+                  </tr>
+                </tbody>
+              </table>
+          </div>
+    
+        </div>
+    
+        <div id="settings_section_sounds" class="settings_input" style="display: none;">
+          <p>Sons</p>
+    
+          <div class="section_flex">
+            <table>
+              <tbody>
+                <tr>
+                  <th> <label name="check_word">Activer les bruitages</label> </th>
+                  <th> <input class="input" type="checkbox" name="check_word" checked
+                      onchange="UpdateSoundSettings(this.checked)"> </th>
+                </tr>
+                <tr>
+                  <th> <label name="play_jingle">Activer le jingle</label> </th>
+                  <th> <input class="input"  id="play_jingle_settings" type="checkbox" name="play_jingle"
+                      onchange="play_jingle = this.checked"> </th>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+    
+        </div>
+        
+        <div id="settings_section_words" class="settings_input" style="display: none;">
+          <p>Mots</p>
+            <div>
+              <table>
+                <tbody>
+                  <tr>
+                    <th> <label>Vérifications des mots proposés:</label> </th>
+                    <th> </th>
+                  </tr>
+                  <tr>
+                    <th> <label name="check_word">Existe dans le dictionnaire</label>
+                    </th>
+                    <th> <input class="input" type="checkbox" name="check_word_presence_checkbox" checked
+                        onchange="check_word_presence = this.checked"> </th>
+                  </tr>
+                  <tr>
+                    <th> <label name="check_word">Déja proposé</label> </th>
+                    <th> <input class="input" type="checkbox" name="check_word_duplication_checkbox" checked
+                        onchange="check_word_duplication = this.checked"> </th>
+                  </tr>
+                  <tr>
+                    <th> <label name="check_word">Longueur du mot</label> </th>
+                    <th> <input class="input" type="checkbox" name="check_word_length_checkbox" checked
+                        onchange="check_word_length = this.checked"> </th>
+                  </tr>
+                  <tr>
+                    <th> <label name="check_word">Première lettre correspondante</label>
+                    </th>
+                    <th> <input class="input" type="checkbox" name="check_first_letter_checkbox" checked
+                        onchange="check_word_first_letter = this.checked"> </th>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+    
+            <div>
+              <label name="grid_style"></label>
+              <table>
+                <tbody>
+                  <tr>
+                    <th> <label>Possibilité de lettres bonus</label> </th>
+                  </tr>
+                  <tr>
+                    <th>
+                      <select class="select" onchange="lettre_plus_amount = this.value;">
+                        <option value=1>1</option>
+                        <option value=0>0</option>
+                        <option value=2>2</option>
+                        <option value=3>3</option>
+                      </select>
+                      </th>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+    
+            <div>
+              <th>
+                <table>
+                  <tbody>
+                    <tr>
+                      <th><label name="always_ask">Longueur des mots</label></th>
+                      <th></th>
+                    </tr>
+                    <tr>
+                      <th> <label name="always_ask">Toujours utiliser des mots de</label>
+                      </th>
+                      <th> <input class="input" type="checkbox" name="always_ask"
+                          onchange="UpdateAlwaysAskSettings(this.checked);"> </th>
+                    </tr>
+                  </tbody>
+                </table>
+    
+                <select class="select" id="always_ask_length_dropdown" disabled onchange="always_ask_length = this.value;">
+                  <option value=8>8 lettres</option>
+                  <option value=5>5 lettres</option>
+                  <option value=6>6 lettres</option>
+                  <option value=7>7 lettres</option>
+                  <option value=9>9 lettres</option>
+                  <option value=10>10 lettres</option>
+                </select>
+            </div>
+
+          
+            <div class="word_list_section" id="word_list_section_text">
+              <label>Ajouter un mot manuellement:</label>
+              <input class="input" type="text" id="word_list_selected_word" style="text-transform:uppercase">
+              <input class="input" type="button" id="add" value="Ajouter" onclick="WordAddCustom()">
+              <br><code>(Un mot ayant entre 5 et 10 lettres)</code>
+            </div>
+          
+            <div>
+              <label>Ajouter au hasard un mot de:</label>
+              <div class="section_flex">
+                <input class="input" type="button" id="word_list_button_random" value="5 lettres" onclick="Javascript:WordListAddRowRandom(5)">
+                <input class="input" type="button" id="word_list_button_random" value="6 lettres" onclick="Javascript:WordListAddRowRandom(6)">
+                <input class="input" type="button" id="word_list_button_random" value="7 lettres" onclick="Javascript:WordListAddRowRandom(7)">
+                <input class="input" type="button" id="word_list_button_random" value="8 lettres" onclick="Javascript:WordListAddRowRandom(8)">
+                <input class="input" type="button" id="word_list_button_random" value="9 lettres" onclick="Javascript:WordListAddRowRandom(9)">
+                <input class="input" type="button" id="word_list_button_random" value="10 lettres" onclick="Javascript:WordListAddRowRandom(10)">
+              </div>
+            </div>
+        
+            <div>
+              <table id="word_list" cellpadding="2">
+                <tr>
+                </tr>
+              </table>
+            </div>
+        </div>
 
         
-
- 
-      
-
-      <div id="settings-left">
-        <div>
-          <table id="word_list" cellpadding="2">
-            <tr>
-            </tr>
-          </table>
+    
+        <div id="settings_section_gamemode" class="settings_input" style="display: none;">
+          <p>Modes de jeu</p>
+    
+          <div class="section_flex">
+            <div>
+              <table>
+                <tbody>
+                  <tr>
+                    <th><label name="score_addition">Mode:</label></th>
+                    <th>
+                      <select class="select" onchange="gamemode = this.value;">
+                        <option value=normal>Normal</option>
+                        <option value=one_word>Entrainement (dev)</option>
+                        <option value=finale>Super Partie</option>
+                      </select>
+                    </th>
+                  </tr>
+                </tbody>
+              </table>
+              <a>Les autres paramètres sont ignorés si le mode de jeu "Super Partie est choisi."</a>
+            </div>
+          </div>
         </div>
-      </div>
+        </div>
 
+        
+    
+        <div id="settings_section_github" class="settings_input" style="display: none;">
+          <p>GitHub</p>
+    
+          <div class="section_flex">
+            <div>
+              <button class="button" onclick="window.location.href = 'https://github.com/difabiolorenzo/motusJS/issues/new?'">Signaler un bug</button>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
+      
   </div>
 
   </div>
@@ -406,12 +445,18 @@
 
 
     <div id="top_section">
+
+      <div id="finale_info_section">
+        <a class="finale_info" id="finale_timer">TIMER</a>
+        <a class="finale_info" id="word_found_count">0</a>
+      </div>
+
       <div id="letter_grid_placeolder">
         <!-- emplacement pour la grille de mot -->
       </div>
 
       <div class="input_section">
-        <input type="text" id="word_proposition_input" size="30" value="" maxlength="8">
+        <input class="input" type="text" id="word_proposition_input" size="30" value="" maxlength="8">
         <button class="flex_button" id="validate_button" onclick="submitWord()">❯</button>
       </div>
 
@@ -423,31 +468,31 @@
 
     <div id="bottom_section">
       <div class="flex_section">
-        <button class="flex_button" id="new_line_button" onclick="newWordLine();">Nouvelle Ligne</button>
-        <button class="flex_button" id="delete_line_button" onclick="suppressionLigne();">Supprimer la ligne</button>
-        <button class="flex_button" id="bonus_letter_button" onclick="ajoutLettreBonus();">Lettre bonus</button>
+        <button class="button flex_button" id="new_line_button" onclick="newWordLine();">Nouvelle Ligne</button>
+        <button class="button flex_button" id="delete_line_button" onclick="suppressionLigne();">Supprimer la ligne</button>
+        <button class="button flex_button" id="bonus_letter_button" onclick="ajoutLettreBonus();">Lettre bonus</button>
       </div>
 
       <div class="flex_section">
-        <select class="flex_button" id="proposed_word_information_select" disabled>
+        <select class="button flex_button" id="proposed_word_information_select" style="width: auto;" disabled>
           <option value=undefined>Mot proposés</option>
         </select>
-        <button class="flex_button" id="proposed_word_information_button" onclick="wordInformation(document.getElementById('proposed_word_information_select').value)" disabled >Informations sur le mot proposé</button>
-        <button class="flex_button" id="found_word_information_button" onclick="wordFoundInformation()" disabled >Informations sur le mot trouvé</button>
+        <button class="button flex_button" id="proposed_word_information_button" onclick="wordInformation(editHTML('proposed_word_information_select').value)" disabled >Informations sur le mot proposé</button>
+        <button class="button flex_button" id="found_word_information_button" onclick="wordFoundInformation()" disabled >Informations sur le mot trouvé</button>
       </div>
 
       <div class="flex_section">
-        <button class="flex_button" id="number_grid_button" onclick="goNumberPicking();" style="display:block">Grilles numérotés</button>
-        <button class="flex_button" id="change_team_letter_grid_button" onclick="switchTeamFocus()" style="display:none;">Changer d'équipe</button>
+        <button class="button flex_button" id="number_grid_button" onclick="goNumberPicking();" style="display:block">Grilles numérotés</button>
+        <button class="button flex_button" id="change_team_letter_grid_button" onclick="switchTeamFocus()" style="display:none;">Changer d'équipe</button>
       </div>
 
       <div class="flex_section">
-        <button class="flex_button" id="display_word_button" onclick="affichageSolution();">Afficher la réponse</button>
-        <button class="flex_button" id="new_word_button" onclick="reinitWord()">Nouveau Mot</button>
+        <button class="button flex_button" id="display_word_button" onclick="displaySolution();">Afficher la réponse</button>
+        <button class="button flex_button" id="new_word_button" onclick="reinitWord()">Nouveau Mot</button>
       </div>
       <div class="flex_section">
-        <button class="flex_button" onclick="displayPage('settings_page')">Paramètres</button>
-        <button class="flex_button" onclick="displayPage('main_menu')">Retour</button>
+        <button class="button flex_button" onclick="displayPage('settings_page')">Paramètres</button>
+        <button class="button flex_button" onclick="displayPage('main_menu')">Retour</button>
       </div>
 
       <div class="protip">
@@ -471,9 +516,9 @@
   <div class="page style_2010" id="number_grid_page" style="display:none;">
 
     <div class="flex_section" style="position: fixed; display: flex;">
-      <button class="flex_button" onclick="goLetterGrid()" id="button_return_letter_grid">Retour</button>
-      <input class="flex_button" id="keyboard_number_grid_input" type="text" style="display:none">
-      <button class="flex_button" onclick="pickBall()" id="button_pick_number" style="display:none">Piocher</button>
+      <button class="button flex_button" onclick="goLetterGrid()" id="button_return_letter_grid">Retour</button>
+      <input class="input" class="button flex_button" id="keyboard_number_grid_input" type="text" style="display:none">
+      <button class="button flex_button" onclick="pickBall()" id="button_pick_number" style="display:none">Piocher</button>
     </div>
 
 
@@ -576,24 +621,25 @@
     <div id="credit-up">
       <div class="section_flex" id="credit-top">
         <h1>Credits</h1>
-        <button onclick="displayPage('main_menu')">Retour</button>
+        <button class="button" onclick="displayPage('main_menu')">Retour</button>
       </div>
       <div class="section">
         <h2>Motus</h2>
-        <p>Le jeu Motus est une propriété de FranceTélévision.</p>
+        <p>Le jeu Motus est une propriété de France Télévisions / IDTV.</p>
+        <p>Lingo 1990 conception Ralph Andrews</p>
+        <p>ALL 3 MEDIA International</p>
         <p>L’ensemble des éléments (logos, marques et autres éléments reproduits) sont réservés et protégés par le droit
           de la propriété intellectuelle, notamment les droits d’auteur, droits voisins, droits des marques, tous
-          reviennent à <a href="https://www.francetelevisions.fr/cgu">francetelevisions</a></p>
+          reviennent à <a href="https://www.francetelevisions.fr/cgu">francetelevisions.</a></p>
         <p></p>
       </div>
       <div class="section">
         <h2>jQuery</h2>
-        <p>l'utilisation de jQuery dans motusJS est limitée à l'audio</p>
-        <p>Le code de jQuery est sous licence <a
+        <p>jQuery est sous licence <a
             href="https://tldrlegal.com/license/creative-commons-cc0-1.0-universal">CC0</a></p>
       </div>
       <div class="section">
-        <h2>Code</h2>
+        <h2>Code Javascript, HTML</h2>
         <p>motusJS est construit sur les base du code de <b>sogroo</b> avec son site <a
             href="http://www.anagrammeur.com/jeux/motus/motus.php">anagrammeur.com</a></p>
         <p>le code ayant été remanié du tout au tout, et ne ressamblant plus du tout au sien, je tiens tout de même à
@@ -614,6 +660,7 @@
     <div>
       <h1>Debug</h1>
       <button onclick="displayPage('main_menu')">Retour</button>
+      <button onclick="displayPage('word_panel')">list</button>
     </div>
 
     
@@ -623,39 +670,57 @@
     playsound('temps_ecoule');playsound('loose');playsound('jingle');">Jouer tous les sons</button>
 
     <div class="flex_section">
-      <button class="nostyle_button" onclick="playsound('grille_creation');">grille_creation</button>
-      <button class="nostyle_button" onclick="playsound('grille_numero');">grille_numero</button>
-      <button class="nostyle_button" onclick="playsound('grille_boule_noire');">grille_boule_noire</button>
-      <button class="nostyle_button" onclick="playsound('grille_numero_tire');">grille_numero_tire</button>
-      <button class="nostyle_button" onclick="playsound('motus');">motus</button>
-      <button class="nostyle_button" onclick="playsound('boule_magique');">boule_magique</button>
+      <button onclick="playsound('grille_creation');">grille_creation</button>
+      <button onclick="playsound('grille_numero');">grille_numero</button>
+      <button onclick="playsound('grille_boule_noire');">grille_boule_noire</button>
+      <button onclick="playsound('grille_numero_tire');">grille_numero_tire</button>
+      <button onclick="playsound('motus');">motus</button>
+      <button onclick="playsound('boule_magique');">boule_magique</button>
     </div>
     <br>
 
     <div class="flex_section">
-      <button class="nostyle_button" onclick="playsound('letter_ok');">letter_ok</button>
-      <button class="nostyle_button" onclick="playsound('letter_bad');">letter_bad</button>
-      <button class="nostyle_button" onclick="playsound('letter_missing');">letter_missing</button>
-      <button class="nostyle_button" onclick="playsound('letter_bonus');">letter_bonus</button>
-      <button class="nostyle_button" onclick="playsound('wrong');">wrong</button>
+      <button onclick="playsound('letter_ok');">letter_ok</button>
+      <button onclick="playsound('letter_bad');">letter_bad</button>
+      <button onclick="playsound('letter_missing');">letter_missing</button>
+      <button onclick="playsound('letter_bonus');">letter_bonus</button>
+      <button onclick="playsound('wrong');">wrong</button>
       <div>
         <br>
       </div>
 
     </div class="flex_section">
-    <button class="nostyle_button" onclick="playsound('victory');">victory</button>
+    <button onclick="playsound('victory');">victory</button>
     <div>
       <br>
 
       <div class="flex_section">
-        <button class="nostyle_button" onclick="playsound('temps_ecoule');">temps_ecoule</button>
-        <button class="nostyle_button" onclick="playsound('loose');">loose</button>
-        <button class="nostyle_button" onclick="playsound('jingle');">jingle</button>
+        <button onclick="playsound('temps_ecoule');">temps_ecoule</button>
+        <button onclick="playsound('loose');">loose</button>
+        <button onclick="playsound('jingle');">jingle</button>
       </div>
     </div>
   </div>
+
+  
+
+  <!-- Page: Debug -->
+  <div class="page" id="word_panel" style="display:none; color:white;">
+    <div>
+      <h1>Debug</h1>
+      <button onclick="displayPage('main_menu')">Retour</button>
+      <button onclick="startDico()">Lancer</button>
+    </div>
+
+    <div class="flex_section">
+      <table id="debug_word_list" cellpadding="2">
+        <tr><td>Supprimer tous les mots</td><td><input type="button" value="❌" onclick="Javascript:DebugWordListDeleteRow(this)"></td></tr>
+    </table>
+    </div>
+
   </div>
-  </div>
+
+
 </body>
 
 </html>
