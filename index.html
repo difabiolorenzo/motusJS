@@ -12,12 +12,7 @@
 </head>
 
 <body id="body" onLoad="initVariables()">
-  <script type="text/javascript" src="./src/js/dictionary/dictionary_5.js"></script>
-  <script type="text/javascript" src="./src/js/dictionary/dictionary_6.js"></script>
-  <script type="text/javascript" src="./src/js/dictionary/dictionary_7.js"></script>
-  <script type="text/javascript" src="./src/js/dictionary/dictionary_8.js"></script>
-  <script type="text/javascript" src="./src/js/dictionary/dictionary_9.js"></script>
-  <script type="text/javascript" src="./src/js/dictionary/dictionary_10.js"></script>
+  <script type="text/javascript" src="./src/js/dictionary/words.js"></script>
   <script type="text/javascript" src="./src/js/game/game.js"></script>
   <script type="text/javascript" src="./src/js/game/init.js"></script>
   <script type="text/javascript" src="./src/js/game/keyinput.js"></script>
@@ -26,7 +21,7 @@
   <script type="text/javascript" src="./src/js/number/number_grid.js"></script>
   <script type="text/javascript" src="./src/js/number/grid_data.js"></script>
   <script type="text/javascript" src="./src/js/settings/settings.js"></script>
-  <script type="text/javascript" src="./src/js/settings/settings.json"></script>
+  <!-- <script type="module" src="./src/js/settings/settings.json"></script> -->
 
   <script type="text/javascript" src="./src/js/sounds/jquery-2.2.0.min.js"></script>
   <script type="text/javascript" src="./src/js/sounds/jquery.playSound.js"></script>
@@ -45,8 +40,7 @@
       <button class="button menu_button" onclick="displayPage('settings_page')">Paramètres</button>
       <button class="button menu_button" onclick="window.location.href = 'https://github.com/difabiolorenzo/motusJS'">GitHub</button>
       <button class="button menu_button" onclick="displayPage('credit_page')">Credits</button>
-      <button class="button menu_button" id="debug_menu_button" onclick="displayPage('debug_page')"
-        style="display: none;">Debug</button>
+      <button class="button menu_button" id="debug_menu_button" onclick="displayPage('debug_page')" style="display: none;">Debug</button>
     </div>
     <div id="version_placeolder">
       <a id="version">JavaScript desactivé :'(</a>
@@ -283,6 +277,42 @@
         
         <div id="settings_section_words" class="settings_input" style="display: none;">
           <p>Mots</p>
+          <div>
+            <script type="text/javascript">
+              var baseURL = 'http://fr.wiktionary.org';
+              function showPage(page,text) {
+                var sourceurl = baseURL + '/wiki/' + page;
+                $('#pagetitle').text(page);
+                $('#wikiInfo').html(text);
+                $('#sourceurl').attr('href',sourceurl);
+          
+                // now you can modify content of #wikiInfo as you like
+                $('#wikiInfo').find('a:not(.references a):not(.extiw):not([href^="#"])').attr('href',
+                  function() { return baseURL + $(this).attr('href');
+                });
+                // ...
+              }
+              $(document).ready(function() {
+                $('#pagetitle').hide();
+                $('#word').change(function() {
+                  var page = this.value;
+                  $('#wikiInfo').html('...please wait...');
+                  $.getJSON(baseURL+'/w/api.php?action=parse&format=json&prop=text|revid|displaytitle&callback=?&page='+page,
+                  function(json) {
+                    if(json.parse.revid > 0) {
+                      console.log(json.parse);
+                      showPage(page,json.parse.text['*']);
+                    } else {
+                      $('#wikiInfo').html('word not found');
+                    }
+                  });
+                });
+              });
+            </script>
+            Page Wiktionary du mot: <input type="text" id="word" />
+            <h1 id='pagetitle'></h1>
+            <div id="wikiInfo"></div>
+          </div>
             <div>
               <table>
                 <tbody>

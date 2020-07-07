@@ -296,9 +296,7 @@ a#word_found_count {
     padding-left: 2vw;
 }
 
-div#finale_info_section {
-    display: none;
-}
+div#finale_info_section { display: none; }
 
 .finale div#finale_info_section {
     background: var(--team_blue);
@@ -314,22 +312,28 @@ div#finale_info_section {
     margin-left: 25%;
 }
 
-
-.finale div#score_placeolder {
-  display:none;
-}
+ 
+.finale div#score_placeolder { display:none; }
 
 .style_1990 a#finale_timer , .style_1990 a#word_found_count {
-  border-color: #4e5652;
+  border: 2px solid #fff;
   background-color: black;
   color: yellow;
   font-family: monospace;
+  border-bottom-left-radius: 0.75vw;
+  border-bottom-right-radius: 0.75vw;
+  border-top-left-radius: 0.75vw;
+  border-top-right-radius: 0.75vw;
+  box-shadow: inset 0.2vw 0.2vw 0.5vw #ffffff40, inset -0.2vw -0.2vw 0.5vw #ffffff40;
   }
 
 .style_2000 a#finale_timer, .style_2000 a#word_found_count {
   border-color: #00000040;
   background-color: #5198e7;
-  border-radius: 50%;
+  border-bottom-left-radius: 2.5vw;
+  border-bottom-right-radius: 2.5vw;
+  border-top-left-radius: 2.5vw;
+  border-top-right-radius: 2.5vw;
   font-family: fantasy;
   color: white;
   }
@@ -339,12 +343,14 @@ div#finale_info_section {
   background-image: linear-gradient(-140deg, #11A7FF, #0065CF);
   font-family: Helvetica;
   font-weight: bold;
+  box-shadow: 0.2vw 0.2vw 0.25vw #ffffff60 inset, -0.2vw -0.2vw 0.25vw #00000060 inset;
   }
 .style_2010 a#word_found_count {
   border:0;
   background-image: linear-gradient(-45deg, #a9a9a9, #b6cedc);
   font-family: Helvetica;
   font-weight: bold;
+  box-shadow: 0.2vw 0.2vw 0.4vw #ffffff inset, -0.2vw -0.2vw 0.4vw #00000080 inset;
   }
 .style_2019 a#finale_timer {border-color: #00000010;background-color: #0092f1;border-top-right-radius: 4vw;border-bottom-right-radius: 4vw;}
 .style_2019 a#word_found_count {border-color: #00000010;background-color: #bdbdbd;border-top-left-radius: 4vw;border-bottom-left-radius: 4vw;}
@@ -353,7 +359,6 @@ div#finale_info_section {
 @media only screen and (min-width: 1025px) {
 
   .style_2010 .correct, button#validate_button {background-image: linear-gradient(#f3927e, #9c341b);box-shadow: 0.25vw 0.25vw 0.25vw #ffae9d inset, -0.25vw -0.25vw 0.25vw #883733 inset !important;}
-
   a.score, a.active_score {
     height: 3.5vw;
     width: 100%;
@@ -368,9 +373,7 @@ div#finale_info_section {
     margin-right: 1vw;
   }
 
-  div#top_section {
-      margin-bottom: 1%;
-  }
+  div#top_section { margin-bottom: 1%; }
 
 
   #table_letter td {
@@ -408,59 +411,52 @@ div#finale_info_section {
 
 
   .finale_info {
-  font-size: 4vw;
-  padding: 1.25vw;
-}
-a#finale_timer {
-  border: 1px solid #fff;
-}
-
-a#word_found_count {
-    background: var(--system_color_base_medium_high);
-    border: 1px solid #fff;
-}
-
-div#finale_info_section {
-    display: none;
-}
-
-.finale #letter_grid_placeolder {
-      height: 100%;
-      width: 100%;
-}
-
-
-.finale div#finale_info_section {
-    background: var(--team_blue);
-    position: relative;
-    display: block;
-    top: 85vh;
-    left: 1vw;
-    height: 0;
-}
-
-.finale input#word_proposition_input {
-    width: 75%;
-    margin-left: 25%;
-}
-
-.finale #table_letter {
-      margin-left: 19.5%;
-      margin-top: 0.5%;
-      height: 98%;
-      width: 80%;
-      border-top: 2px solid;
-      border-right: 2px solid;
+    font-size: 4vw;
+    padding: 1.25vw;
+  }
+  a#finale_timer { border: 1px solid #fff; }
+  a#word_found_count {
+      background: var(--system_color_base_medium_high);
+      border: 2px solid #fff;
   }
 
-  .finale .not_in_place {
-    margin-left: 1vw;
-}
+  div#finale_info_section { display: none; }
 
-.finale .not_in_place.word_length_5 {  margin-left: 4vw; }
-.finale .not_in_place.word_length_6 {  margin-left: 2.75vw; }
-.finale .not_in_place.word_length_7 {  margin-left: 1.75vw; }
-.finale .not_in_place.word_length_8 {  margin-left: 1vw; }
-.finale .not_in_place.word_length_9 {  margin-left: 0.4vw; }
-.finale .not_in_place.word_length_10 {  margin-left: 0vw; }
+  .finale #letter_grid_placeolder {
+        height: 100%;
+        width: 100%;
+  }
+  .finale div#finale_info_section {
+      position: relative;
+      display: block;
+      top: 85vh;
+      left: 1vw;
+      height: 0;
+  }
+
+  .style_1990.finale div#finale_info_section { left: 0.5vw;}
+  .style_2019.finale div#finale_info_section { left: 0;}
+  .style_2019 div#finale_info_section { background: var(--team_blue); }
+
+  .finale input#word_proposition_input {
+      width: 75%;
+      margin-left: 25%;
+  }
+
+  .finale #table_letter {
+        margin-left: 19.5%;
+        margin-top: 0.5%;
+        height: 98%;
+        width: 80%;
+        border-top: 2px solid;
+        border-right: 2px solid;
+  }
+
+  .finale .not_in_place {margin-left: 1vw;}
+  .finale .not_in_place.word_length_5 {  margin-left: 4vw; }
+  .finale .not_in_place.word_length_6 {  margin-left: 2.75vw; }
+  .finale .not_in_place.word_length_7 {  margin-left: 1.75vw; }
+  .finale .not_in_place.word_length_8 {  margin-left: 1vw; }
+  .finale .not_in_place.word_length_9 {  margin-left: 0.4vw; }
+  .finale .not_in_place.word_length_10 {  margin-left: 0vw; }
 }

@@ -1,5 +1,4 @@
 function initVariables() {
-
 // displayPage('settings_page');
 
 // SETTINGS
@@ -23,7 +22,6 @@ try_count_index = -1;
 lettre_plus_amount = 1;
 word_found = undefined;
 word_displayed = false;
-dictionary_list = [dictionary_5, dictionary_6, dictionary_7, dictionary_8, dictionary_9, dictionary_10];
 
 word_to_find_list = [];
 
