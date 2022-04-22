@@ -1,12 +1,11 @@
 <html>
 
 <head>
-  <title>MotusJS - Motus en javascript</title>
+  <title>MotusJS</title>
   <meta name="description" lang="fr" content="Le fameux ancien jeu télévisé de mot quotidien Motus de FranceTélévision en JavaScript">
   <meta charset="utf-8">
   <link rel="stylesheet" type="text/css" title="css" href="src/css/global.css">
-  <link rel="stylesheet" type="text/css" title="css" href="src/css/letter_grid.css">
-  <link rel="stylesheet" type="text/css" title="css" href="src/css/number_grid.css">
+  <link rel="stylesheet" type="text/css" title="css" href="src/css/grid.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="shortcut icon" type="image/x-icon" href="src/img/favicon.png">
 </head>
@@ -15,12 +14,11 @@
   <script type="text/javascript" src="./src/js/dictionary/words.js"></script>
   <script type="text/javascript" src="./src/js/game/game.js"></script>
   <script type="text/javascript" src="./src/js/game/init.js"></script>
-  <script type="text/javascript" src="./src/js/game/keyinput.js"></script>
-  <script type="text/javascript" src="./src/js/dictionary/dico_tri.js"></script>
   <script type="text/javascript" src="./src/js/letter/letter_grid.js"></script>
   <script type="text/javascript" src="./src/js/number/number_grid.js"></script>
   <script type="text/javascript" src="./src/js/number/grid_data.js"></script>
   <script type="text/javascript" src="./src/js/settings/settings.js"></script>
+  <script type="text/javascript" src="./src/js/game/keyinput.js"></script>
   <!-- <script type="module" src="./src/js/settings/settings.json"></script> -->
 
   <script type="text/javascript" src="./src/js/sounds/jquery-2.2.0.min.js"></script>
@@ -35,19 +33,131 @@
     </div>
 
     <div id="main_menu_content">
-      <button class="button menu_button" onclick="initGame()" autofocus=true>Jouer</button>
-      <button class="button menu_button" onclick="gamemode = 'finale'; initGame()" autofocus=true>Super Partie</button>
+        <button class="button menu_button" onclick="initGame()" autofocus=true>Jouer</button>
       <button class="button menu_button" onclick="displayPage('settings_page')">Paramètres</button>
-      <button class="button menu_button" onclick="window.location.href = 'https://github.com/difabiolorenzo/motusJS'">GitHub</button>
       <button class="button menu_button" onclick="displayPage('credit_page')">Credits</button>
-      <button class="button menu_button" id="debug_menu_button" onclick="displayPage('debug_page')" style="display: none;">Debug</button>
+      <button class="button menu_button" id="debug_menu_button" onclick="displayPage('debug_page')">Debug</button>
     </div>
     <div id="version_placeolder">
-      <a id="version">JavaScript desactivé :'(</a>
-      <a id="game" onclick="previewMode()">motusJS</a>
+      <a id="game">motusJS</a><a id="version">JavaScript desactivé.</a>
     </div>
 
   </div>
+
+  <!-- Page: Game -->
+  <div class="page style_2010 visible_keyboard" id="letter_grid_page" style="display:none;">
+    <div id="topbar">
+      <img src="./src/img/left_arrow.svg" alt="menu" onclick="displayPage('main_menu')"/>
+      <img src="./src/img/sparkles.svg" alt="bonus-letter" id="bonus-letter-icon" onclick="addBonusLetter()"/>
+      <img src="./src/img/refresh.svg" alt="new-word" id="refresh-word-icon" onclick="displaySolution(true)"/>
+      <img src="./src/img/dice_20.svg" alt="switch_panel" id="switch-panel-icon"  onclick="switchGridType()"/>
+      <!-- <img src="./src/img/stats.svg" alt="stats" id="stats-icon"  onclick="alert('wip stats')"/> -->
+      <img src="./src/img/settings.png" alt="settings" id="settings-icon"  onclick="displayPage('settings_page')"/>
+      <!-- <button class="button flex_button" id="new_line_button" onclick="newWordLine();">Nouvelle Ligne</button>
+      <button class="button flex_button" id="delete_line_button" onclick="removeWordLine();">Supprimer la ligne</button>
+      </div>
+
+      <div class="flex_section">
+        <select class="button flex_button" id="proposed_word_information_select" style="width: auto;" disabled>
+          <option value=undefined>Mot proposés</option>
+        </select>
+        <button class="button flex_button" id="proposed_word_information_button" onclick="wordInformation(editHTML('proposed_word_information_select').value)" disabled >Informations sur le mot proposé</button>
+        <button class="button flex_button" id="found_word_information_button" onclick="wordFoundInformation()" disabled >Informations sur le mot trouvé</button>
+      </div>
+
+      <div class="flex_section">
+        <button class="button flex_button" id="change_team_letter_grid_button" onclick="switchTeamFocus()" style="display:none;">Changer d'équipe</button>
+      </div>
+
+      <div class="flex_section">
+        <button class="button flex_button" id="display_word_button" onclick="displaySolution();">Afficher la réponse</button>
+      </div>
+      <div class="flex_section"> -->
+    </div>
+    <div id="game">
+      <div id="top_game_content"></div>
+      <div id="game_grid">
+        <div id="letter_grid_placeolder"></div>
+        <div id="number_grid_placeolder"></div>
+      </div>
+      <div id="score_placeolder">
+        <div class='score active_score' id='score_0_panel' style='display: block;'>0</div>
+        <div class='score' id='score_1_panel' style='display: none;'>0</div>
+      </div>
+      <div id="user_actions">
+        <div id="keyboard"></div>
+        <div id="number_grid_interactions">
+          <div id="purgatory">
+          </div>
+          <div id="number_grid_actions">
+            <div class="pick_ball" onclick="pickBall()">?</div>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <div class="protip">
+        <h3>Touches Clavier</h3>
+        <p>Supprime la lettre: <keyboardKey>erase</keyboardKey> ou <keyboardKey>flèche gauche</keyboardKey></p>
+        <p>Nouvelle ligne: <keyboardKey>1</keyboardKey> ou <keyboardKey>&</keyboardKey></p>
+        <p>Lettre Bonus: <keyboardKey>2</keyboardKey> ou <keyboardKey>é</keyboardKey></p>
+        <p>Supprime la ligne: <keyboardKey>3</keyboardKey> ou <keyboardKey>é</keyboardKey></p>
+        <p>Remplacer la ligne: <keyboardKey>4</keyboardKey> ou <keyboardKey>'</keyboardKey></p>
+        <p>Changement de main d'équipe: <keyboardKey>5</keyboardKey> ou <keyboardKey>(</keyboardKey></p>
+        <br>
+        <p>Reinitialiser le mot en cours: <keyboardKey>9</keyboardKey> ou <keyboardKey>ç</keyboardKey></p>
+        <p>Affichage de la solution: <keyboardKey>0</keyboardKey> ou <keyboardKey>à</keyboardKey></p>
+      </div>
+    </div>
+
+      
+
+  </div>
+
+  <!-- Page: Credits / Licences -->
+  <div class="page" id="credit_page" style="display:none;">
+    <div id="credit-up">
+      <div class="section_flex" id="credit-top">
+        <h1>Credits</h1>
+        <button class="button" onclick="displayPage('main_menu')">Retour</button>
+      </div>
+      <div class="section">
+        <h2>GitHub</h2>
+        <button class="button menu_button" onclick="window.location.href = 'https://github.com/difabiolorenzo/motusJS'">GitHub</button>
+      </div>
+      <div class="section">
+        <h2>Motus</h2>
+        <p>Le jeu Motus est une propriété de France Télévisions / IDTV.</p>
+        <p>Lingo 1990 conception Ralph Andrews</p>
+        <p>ALL 3 MEDIA International</p>
+        <p>L’ensemble des éléments (logos, marques et autres éléments reproduits) sont réservés et protégés par le droit
+          de la propriété intellectuelle, notamment les droits d’auteur, droits voisins, droits des marques, tous
+          reviennent à <a href="https://www.francetelevisions.fr/cgu">francetelevisions.</a></p>
+      </div>
+      <div class="section">
+        <h2>jQuery</h2>
+        <p>jQuery est sous licence <a
+            href="https://tldrlegal.com/license/creative-commons-cc0-1.0-universal">CC0</a></p>
+      </div>
+      <div class="section">
+        <h2>Idée d'origine</h2>
+        <p>motusJS est construit sur les base du code de <b>sogroo</b> avec l'ancienne version de son site <a
+            href="https://web.archive.org/web/20200814003927/http://www.anagrammeur.com/jeux/motus/motus.php">anagrammeur.com</a></p>
+      </div>
+      <div class="section">
+        <h2>Dictionnaires</h2>
+        <p>Les dictionnaires des mots proviennent du jeu <a
+            href="ftp://ftp.ac-grenoble.fr/ge/educational_games">XScrabble.</a></p>
+      </div>
+      </div>
+      <div class="section">
+        <h2>Icônes</h2>
+        <p>Icônes par <a href="https://www.flaticon.com/uicons">Flaticon</a></p>
+      </div>
+    </div>
+  </div>
+
+  
 
   <!-- Page: Paramètres -->
   <div class="page" id="settings_page" style="display:none;">
@@ -58,59 +168,18 @@
 
     <div id="settings_main">
       <div id="nav_section">
-        <div id="navpanel" onclick="changeSettingsGroupDisplay()">
-          <a id="navpanel_title">Visuels</a>
-        </div>
         <div id="navpanel_dropdown" class="navpanel_dropdown_hidden">
-          <p href="#" onclick="displaySettingsGroup('settings_section_visual')">Visuels</p>
           <p href="#" onclick="displaySettingsGroup('settings_section_number_grid')">Grilles numérotées</p>
           <p href="#" onclick="displaySettingsGroup('settings_section_team_scores')">Équipes et Scores</p>
           <p href="#" onclick="displaySettingsGroup('settings_section_gameplay')">Gameplay</p>
           <p href="#" onclick="displaySettingsGroup('settings_section_sounds')">Sons</p>
           <p href="#" onclick="displaySettingsGroup('settings_section_words')">Mots</p>
-          <p href="#" onclick="displaySettingsGroup('settings_section_gamemode')">Modes de jeu (test)</p>
           <p href="#" onclick="displaySettingsGroup('settings_section_github')">GitHub</p>
         </div>
       </div>
   
-      <div id="settings_content">
-        <div id="settings_section_visual" class="settings_input" style="display: block;">
-          <p>Visuels</p>
-    
-          <div class="section_flex">
-            
-            <table>
-              <tbody>
-                <tr>
-                  <th> <label name="grid_style">Temps de vérification en fonction du nombre de lettre</label> </th>
-                  <th> <select class="select" onchange="timer = this.value;">
-                    <option value=1>Normal</option>
-                    <option value=0.5>Très lent</option>
-                    <option value=0.25>Lent</option>
-                    <option value=0.115>Rapide</option>
-                    <option value=0>Instantané</option>
-                  </select> </th>
-                </tr>
-                <tr>
-                  <th> <label name="grid_style" >Style de la grille</label> </th>
-                  <th> <select class="select" onchange="UpdateStyle(this.value);">
-                    <option value="2010">Années 2010</option>
-                    <option value="2019">Années 2019</option>
-                    <option value="2000">Années 2000</option>
-                    <option value="1990">Années 1990</option>
-                  </select></th>
-                </tr>
-                <!-- <tr>
-                  <th> <label name="grid_style" >Affichage en mode plein écran</label> </th>
-                  <th> <input class="input" type="checkbox" name="fullscreen" checked disabled
-                    id="fullscreen" onchange="UpdateFullscreenSettings(this.value)"></th>
-                </tr> -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-    
-        <div id="settings_section_number_grid" class="settings_input" style="display: none;">
+      <div id="settings_content">    
+        <div id="settings_section_number_grid" class="settings_input">
           <p>Grilles numérotées</p>
     
           <div class=" section_flex">
@@ -132,7 +201,7 @@
                       id="use_saving_ball_checkbox" onchange="UpdateSavingBallSettings(this.checked)"> </th>
                 </tr>
                 <tr>
-                  <th> <label name="limiting_saving_ball">Limiter les "boules magiques" aux première grilles</label> </th>
+                  <th> <label name="limiting_saving_ball">Limiter les "boules magiques" aux premières grilles</label> </th>
                   <th> <input class="input" type="checkbox" name="limiting_saving_ball" checked
                       id="limiting_saving_ball_checkbox" onchange="limiting_saving_ball = this.checked"> </th>
                 </tr>
@@ -167,7 +236,7 @@
           
         </div>
     
-        <div id="settings_section_team_scores" class="settings_input" style="display: none;">
+        <div id="settings_section_team_scores" class="settings_input">
           <p>Équipes et Scores</p>
     
           <div class="section_flex">
@@ -202,28 +271,45 @@
           </div>
         </div>
     
-        <div id="settings_section_gameplay" class="settings_input" style="display: none;">
+        <div id="settings_section_gameplay" class="settings_input">
           <p>Gameplay</p>
     
           <div class="section_flex">
-              <table>
-                <tbody>
+            <table>
+              <tbody>
+                <tr>
+                  <th> <label name="grid_style">Temps de vérification en fonction du nombre de lettre</label> </th>
+                  <th> <select class="select" onchange="timer = this.value;">
+                    <option value=1>Normal</option>
+                    <option value=0.5>Très lent</option>
+                    <option value=0.25>Lent</option>
+                    <option value=0.115>Rapide</option>
+                    <option value=0>Instantané</option>
+                  </select> </th>
+                </tr>
+                <tr>
+                  <th> <label name="grid_style" >Style de la grille</label> </th>
+                  <th> <select class="select" onchange="UpdateStyle(this.value);">
+                    <option value="2010">Années 2010</option>
+                    <option value="2019">Années 2019</option>
+                    <option value="2000">Années 2000</option>
+                    <option value="1990">Années 1990</option>
+                  </select></th>
+                </tr>
+                <!-- <tr>
+                  <th> <label name="grid_style" >Affichage en mode plein écran</label> </th>
+                  <th> <input class="input" type="checkbox" name="fullscreen" checked disabled
+                    id="fullscreen" onchange="UpdateFullscreenSettings(this.value)"></th>
+                </tr> -->
                   <tr>
                     <th> <label name="check_automatic_behaviour">Activer les automatismes</label> </th>
                     <th> <input class="input" type="checkbox" name="check_automatic_behaviour" checked
                         onchange="UpdateAutomaticBehaviourSettings(this.checked)"> </th>
                   </tr>
                   <tr>
-                    <th>  <label name="check_automatic_behaviour_line_start">Ligne au commencement</label> 
-                          <br>
-                          <code>désactivé si le double affichage est présent</th>
-                    <th> <input class="input" id="check_automatic_behaviour_line_start" type="checkbox" name="check_automatic_behaviour_line_start" checked
-                        onchange="automatic_behaviour_line_start = this.checked"> </th>
-                  </tr>
-                  <tr>
                     <th> <label name="check_automatic_behaviour_new_line_error">Nouvelle ligne après erreur</label> </th>
                     <th> 
-                      <select class="select" id="check_automatic_behaviour_new_line_error" onchange="automatic_behaviour_new_line_error = this.value;">
+                      <select class="select" id="check_automatic_behaviour_new_line_error" onchange="settings.automatic_behaviour_new_line_error = this.value;">
                         <option value="replace_bonus">Replacer + lettre bonus</option>
                         <option value="replace_only">Replacer</option>
                         <option value="add_bonus">Ajouter + lettre bonus</option>
@@ -253,7 +339,7 @@
     
         </div>
     
-        <div id="settings_section_sounds" class="settings_input" style="display: none;">
+        <div id="settings_section_sounds" class="settings_input">
           <p>Sons</p>
     
           <div class="section_flex">
@@ -262,12 +348,7 @@
                 <tr>
                   <th> <label name="check_word">Activer les bruitages</label> </th>
                   <th> <input class="input" type="checkbox" name="check_word" checked
-                      onchange="UpdateSoundSettings(this.checked)"> </th>
-                </tr>
-                <tr>
-                  <th> <label name="play_jingle">Activer le jingle</label> </th>
-                  <th> <input class="input"  id="play_jingle_settings" type="checkbox" name="play_jingle"
-                      onchange="play_jingle = this.checked"> </th>
+                      onchange="settings.playsound_enabled = this.checked"> </th>
                 </tr>
               </tbody>
             </table>
@@ -275,44 +356,8 @@
     
         </div>
         
-        <div id="settings_section_words" class="settings_input" style="display: none;">
+        <div id="settings_section_words" class="settings_input">
           <p>Mots</p>
-          <div>
-            <script type="text/javascript">
-              var baseURL = 'http://fr.wiktionary.org';
-              function showPage(page,text) {
-                var sourceurl = baseURL + '/wiki/' + page;
-                $('#pagetitle').text(page);
-                $('#wikiInfo').html(text);
-                $('#sourceurl').attr('href',sourceurl);
-          
-                // now you can modify content of #wikiInfo as you like
-                $('#wikiInfo').find('a:not(.references a):not(.extiw):not([href^="#"])').attr('href',
-                  function() { return baseURL + $(this).attr('href');
-                });
-                // ...
-              }
-              $(document).ready(function() {
-                $('#pagetitle').hide();
-                $('#word').change(function() {
-                  var page = this.value;
-                  $('#wikiInfo').html('...please wait...');
-                  $.getJSON(baseURL+'/w/api.php?action=parse&format=json&prop=text|revid|displaytitle&callback=?&page='+page,
-                  function(json) {
-                    if(json.parse.revid > 0) {
-                      console.log(json.parse);
-                      showPage(page,json.parse.text['*']);
-                    } else {
-                      $('#wikiInfo').html('word not found');
-                    }
-                  });
-                });
-              });
-            </script>
-            Page Wiktionary du mot: <input type="text" id="word" />
-            <h1 id='pagetitle'></h1>
-            <div id="wikiInfo"></div>
-          </div>
             <div>
               <table>
                 <tbody>
@@ -324,23 +369,23 @@
                     <th> <label name="check_word">Existe dans le dictionnaire</label>
                     </th>
                     <th> <input class="input" type="checkbox" name="check_word_presence_checkbox" checked
-                        onchange="check_word_presence = this.checked"> </th>
+                        onchange="game.check_word_presence = this.checked"> </th>
                   </tr>
                   <tr>
                     <th> <label name="check_word">Déja proposé</label> </th>
                     <th> <input class="input" type="checkbox" name="check_word_duplication_checkbox" checked
-                        onchange="check_word_duplication = this.checked"> </th>
+                        onchange="game.check_word_duplication = this.checked"> </th>
                   </tr>
                   <tr>
                     <th> <label name="check_word">Longueur du mot</label> </th>
                     <th> <input class="input" type="checkbox" name="check_word_length_checkbox" checked
-                        onchange="check_word_length = this.checked"> </th>
+                        onchange="game.check_word_length = this.checked"> </th>
                   </tr>
                   <tr>
                     <th> <label name="check_word">Première lettre correspondante</label>
                     </th>
                     <th> <input class="input" type="checkbox" name="check_first_letter_checkbox" checked
-                        onchange="check_word_first_letter = this.checked"> </th>
+                        onchange="game.check_word_first_letter = this.checked"> </th>
                   </tr>
                 </tbody>
               </table>
@@ -403,6 +448,42 @@
             </div>
           
             <div>
+              <script type="text/javascript">
+                var baseURL = 'http://fr.wiktionary.org';
+                function showPage(page,text) {
+                  var sourceurl = baseURL + '/wiki/' + page;
+                  $('#pagetitle').text(page);
+                  $('#wikiInfo').html(text);
+                  $('#sourceurl').attr('href',sourceurl);
+            
+                  // now you can modify content of #wikiInfo as you like
+                  $('#wikiInfo').find('a:not(.references a):not(.extiw):not([href^="#"])').attr('href',
+                    function() { return baseURL + $(this).attr('href');
+                  });
+                  // ...
+                }
+                $(document).ready(function() {
+                  $('#pagetitle').hide();
+                  $('#word').change(function() {
+                    var page = this.value;
+                    $('#wikiInfo').html('...please wait...');
+                    $.getJSON(baseURL+'/w/api.php?action=parse&format=json&prop=text|revid|displaytitle&callback=?&page='+page,
+                    function(json) {
+                      if(json.parse.revid > 0) {
+                        console.log(json.parse);
+                        showPage(page,json.parse.text['*']);
+                      } else {
+                        $('#wikiInfo').html('word not found');
+                      }
+                    });
+                  });
+                });
+              </script>
+              Page Wiktionary du mot: <input type="text" id="word" />
+              <h1 id='pagetitle'></h1>
+              <div id="wikiInfo"></div>
+            </div>
+            <div>
               <label>Ajouter au hasard un mot de:</label>
               <div class="section_flex">
                 <input class="input" type="button" id="word_list_button_random" value="5 lettres" onclick="Javascript:WordListAddRowRandom(5)">
@@ -420,38 +501,9 @@
                 </tr>
               </table>
             </div>
-        </div>
-
-        
+        </div>       
     
-        <div id="settings_section_gamemode" class="settings_input" style="display: none;">
-          <p>Modes de jeu</p>
-    
-          <div class="section_flex">
-            <div>
-              <table>
-                <tbody>
-                  <tr>
-                    <th><label name="score_addition">Mode:</label></th>
-                    <th>
-                      <select class="select" onchange="gamemode = this.value;">
-                        <option value=normal>Normal</option>
-                        <option value=one_word>Entrainement (dev)</option>
-                        <option value=finale>Super Partie</option>
-                      </select>
-                    </th>
-                  </tr>
-                </tbody>
-              </table>
-              <a>Les autres paramètres sont ignorés si le mode de jeu "Super Partie est choisi."</a>
-            </div>
-          </div>
-        </div>
-        </div>
-
-        
-    
-        <div id="settings_section_github" class="settings_input" style="display: none;">
+        <div id="settings_section_github" class="settings_input">
           <p>GitHub</p>
     
           <div class="section_flex">
@@ -467,239 +519,14 @@
       
   </div>
 
-  </div>
-
-  <!-- Page: Grille de mot -->
-  <div class="page style_2010" id="letter_grid_page" style="display:none;">
-
-
-
-    <div id="top_section">
-
-      <div id="finale_info_section">
-        <a class="finale_info" id="finale_timer">TIMER</a>
-        <a class="finale_info" id="word_found_count">0</a>
-      </div>
-
-      <div id="letter_grid_placeolder">
-        <!-- emplacement pour la grille de mot -->
-      </div>
-
-      <div class="input_section">
-        <input class="input" type="text" id="word_proposition_input" size="30" value="" maxlength="8">
-        <button class="flex_button" id="validate_button" onclick="submitWord()">❯</button>
-      </div>
-
-      <div id="score_placeolder">
-        <a class="active_score" id="score_0_panel" style="display: block;">0</a>
-        <a class="score" id="score_1_panel" style="display: none;">0</a>
-      </div>
-    </div>
-
-    <div id="bottom_section">
-      <div class="flex_section">
-        <button class="button flex_button" id="new_line_button" onclick="newWordLine();">Nouvelle Ligne</button>
-        <button class="button flex_button" id="delete_line_button" onclick="suppressionLigne();">Supprimer la ligne</button>
-        <button class="button flex_button" id="bonus_letter_button" onclick="ajoutLettreBonus();">Lettre bonus</button>
-      </div>
-
-      <div class="flex_section">
-        <select class="button flex_button" id="proposed_word_information_select" style="width: auto;" disabled>
-          <option value=undefined>Mot proposés</option>
-        </select>
-        <button class="button flex_button" id="proposed_word_information_button" onclick="wordInformation(editHTML('proposed_word_information_select').value)" disabled >Informations sur le mot proposé</button>
-        <button class="button flex_button" id="found_word_information_button" onclick="wordFoundInformation()" disabled >Informations sur le mot trouvé</button>
-      </div>
-
-      <div class="flex_section">
-        <button class="button flex_button" id="number_grid_button" onclick="goNumberPicking();" style="display:block">Grilles numérotés</button>
-        <button class="button flex_button" id="change_team_letter_grid_button" onclick="switchTeamFocus()" style="display:none;">Changer d'équipe</button>
-      </div>
-
-      <div class="flex_section">
-        <button class="button flex_button" id="display_word_button" onclick="displaySolution();">Afficher la réponse</button>
-        <button class="button flex_button" id="new_word_button" onclick="reinitWord()">Nouveau Mot</button>
-      </div>
-      <div class="flex_section">
-        <button class="button flex_button" onclick="displayPage('settings_page')">Paramètres</button>
-        <button class="button flex_button" onclick="displayPage('main_menu')">Retour</button>
-      </div>
-
-      <div class="protip">
-        <h3>Touches Clavier</h3>
-        <p>Supprime la lettre: <keyboardKey>erase</keyboardKey> ou <keyboardKey>flèche gauche</keyboardKey></p>
-        <p>Nouvelle ligne: <keyboardKey>1</keyboardKey> ou <keyboardKey>&</keyboardKey></p>
-        <p>Lettre Bonus: <keyboardKey>2</keyboardKey> ou <keyboardKey>é</keyboardKey></p>
-        <p>Supprime la ligne: <keyboardKey>3</keyboardKey> ou <keyboardKey>é</keyboardKey></p>
-        <p>Remplacer la ligne: <keyboardKey>4</keyboardKey> ou <keyboardKey>'</keyboardKey></p>
-        <p>Changement de main d'équipe: <keyboardKey>5</keyboardKey> ou <keyboardKey>(</keyboardKey></p>
-        <br>
-        <p>Reinitialiser le mot en cours: <keyboardKey>9</keyboardKey> ou <keyboardKey>ç</keyboardKey></p>
-        <p>Affichage de la solution: <keyboardKey>0</keyboardKey> ou <keyboardKey>à</keyboardKey></p>
-      </div>
-    </div>
-  </div>
-
-  </div>
-
-  <!-- Page: Grille des numéros -->
-  <div class="page style_2010" id="number_grid_page" style="display:none;">
-
-    <div class="flex_section" style="position: fixed; display: flex;">
-      <button class="button flex_button" onclick="goLetterGrid()" id="button_return_letter_grid">Retour</button>
-      <input class="input" class="button flex_button" id="keyboard_number_grid_input" type="text" style="display:none">
-      <button class="button flex_button" onclick="pickBall()" id="button_pick_number" style="display:none">Piocher</button>
-    </div>
-
-
-    <div class="number_grid_placeolder">
-      <div id="number_grid_placeolder_yellow">
-        <table class="table_number" id="number_grid_yellow">
-          <tbody>
-            <tr>
-              <td id="yellow_cell_0_0" class="cell_team_yellow"></td>
-              <td id="yellow_cell_0_1" class="cell_team_yellow"></td>
-              <td id="yellow_cell_0_2" class="cell_team_yellow"></td>
-              <td id="yellow_cell_0_3" class="cell_team_yellow"></td>
-              <td id="yellow_cell_0_4" class="cell_team_yellow"></td>
-            </tr>
-            <tr>
-              <td id="yellow_cell_1_0" class="cell_team_yellow"></td>
-              <td id="yellow_cell_1_1" class="cell_team_yellow"></td>
-              <td id="yellow_cell_1_2" class="cell_team_yellow"></td>
-              <td id="yellow_cell_1_3" class="cell_team_yellow"></td>
-              <td id="yellow_cell_1_4" class="cell_team_yellow"></td>
-            </tr>
-            <tr>
-              <td id="yellow_cell_2_0" class="cell_team_yellow"></td>
-              <td id="yellow_cell_2_1" class="cell_team_yellow"></td>
-              <td id="yellow_cell_2_2" class="cell_team_yellow"></td>
-              <td id="yellow_cell_2_3" class="cell_team_yellow"></td>
-              <td id="yellow_cell_2_4" class="cell_team_yellow"></td>
-            </tr>
-            <tr>
-              <td id="yellow_cell_3_0" class="cell_team_yellow"></td>
-              <td id="yellow_cell_3_1" class="cell_team_yellow"></td>
-              <td id="yellow_cell_3_2" class="cell_team_yellow"></td>
-              <td id="yellow_cell_3_3" class="cell_team_yellow"></td>
-              <td id="yellow_cell_3_4" class="cell_team_yellow"></td>
-            </tr>
-            <tr>
-              <td id="yellow_cell_4_0" class="cell_team_yellow"></td>
-              <td id="yellow_cell_4_1" class="cell_team_yellow"></td>
-              <td id="yellow_cell_4_2" class="cell_team_yellow"></td>
-              <td id="yellow_cell_4_3" class="cell_team_yellow"></td>
-              <td id="yellow_cell_4_4" class="cell_team_yellow"></td>
-            </tr>
-          </tbody>
-        </table>
-
-        <table id="yellow_purgatory" class="purgatory"></table>
-      </div>
-
-      <div id="number_grid_placeolder_blue" style="display:none;">
-        <table class="table_number" id="number_grid_blue">
-          <tbody>
-            <tr>
-              <td id="blue_cell_0_0" class="cell_team_blue"></td>
-              <td id="blue_cell_0_1" class="cell_team_blue"></td>
-              <td id="blue_cell_0_2" class="cell_team_blue"></td>
-              <td id="blue_cell_0_3" class="cell_team_blue"></td>
-              <td id="blue_cell_0_4" class="cell_team_blue"></td>
-            </tr>
-            <tr>
-              <td id="blue_cell_1_0" class="cell_team_blue"></td>
-              <td id="blue_cell_1_1" class="cell_team_blue"></td>
-              <td id="blue_cell_1_2" class="cell_team_blue"></td>
-              <td id="blue_cell_1_3" class="cell_team_blue"></td>
-              <td id="blue_cell_1_4" class="cell_team_blue"></td>
-            </tr>
-            <tr>
-              <td id="blue_cell_2_0" class="cell_team_blue"></td>
-              <td id="blue_cell_2_1" class="cell_team_blue"></td>
-              <td id="blue_cell_2_2" class="cell_team_blue"></td>
-              <td id="blue_cell_2_3" class="cell_team_blue"></td>
-              <td id="blue_cell_2_4" class="cell_team_blue"></td>
-            </tr>
-            <tr>
-              <td id="blue_cell_3_0" class="cell_team_blue"></td>
-              <td id="blue_cell_3_1" class="cell_team_blue"></td>
-              <td id="blue_cell_3_2" class="cell_team_blue"></td>
-              <td id="blue_cell_3_3" class="cell_team_blue"></td>
-              <td id="blue_cell_3_4" class="cell_team_blue"></td>
-            </tr>
-            <tr>
-              <td id="blue_cell_4_0" class="cell_team_blue"></td>
-              <td id="blue_cell_4_1" class="cell_team_blue"></td>
-              <td id="blue_cell_4_2" class="cell_team_blue"></td>
-              <td id="blue_cell_4_3" class="cell_team_blue"></td>
-              <td id="blue_cell_4_4" class="cell_team_blue"></td>
-            </tr>
-          </tbody>
-        </table>
-
-        <table id="blue_purgatory" class="purgatory"></table>
-
-        <canvas id="ball_bowl" width="750" height="750"></canvas>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- Page: Credits / Licences -->
-  <div class="page" id="credit_page" style="display:none;">
-    <div id="credit-up">
-      <div class="section_flex" id="credit-top">
-        <h1>Credits</h1>
-        <button class="button" onclick="displayPage('main_menu')">Retour</button>
-      </div>
-      <div class="section">
-        <h2>Motus</h2>
-        <p>Le jeu Motus est une propriété de France Télévisions / IDTV.</p>
-        <p>Lingo 1990 conception Ralph Andrews</p>
-        <p>ALL 3 MEDIA International</p>
-        <p>L’ensemble des éléments (logos, marques et autres éléments reproduits) sont réservés et protégés par le droit
-          de la propriété intellectuelle, notamment les droits d’auteur, droits voisins, droits des marques, tous
-          reviennent à <a href="https://www.francetelevisions.fr/cgu">francetelevisions.</a></p>
-        <p></p>
-      </div>
-      <div class="section">
-        <h2>jQuery</h2>
-        <p>jQuery est sous licence <a
-            href="https://tldrlegal.com/license/creative-commons-cc0-1.0-universal">CC0</a></p>
-      </div>
-      <div class="section">
-        <h2>Code Javascript, HTML</h2>
-        <p>motusJS est construit sur les base du code de <b>sogroo</b> avec son site <a
-            href="http://www.anagrammeur.com/jeux/motus/motus.php">anagrammeur.com</a></p>
-        <p>le code ayant été remanié du tout au tout, et ne ressamblant plus du tout au sien, je tiens tout de même à
-          féliciter <b>sogroo</b> pour son travail.</p>
-      </div>
-      <div class="section">
-        <h2>Dictionnaires</h2>
-        <p>Les dictionnaires des mots proviennent du jeu <a
-            href="ftp://ftp.ac-grenoble.fr/ge/educational_games">XScrabble.</a></p>
-      </div>
-    </div>
-  </div>
-
-  
-
   <!-- Page: Debug -->
   <div class="page" id="debug_page" style="display:none; color:white;">
     <div>
       <h1>Debug</h1>
       <button onclick="displayPage('main_menu')">Retour</button>
-      <button onclick="displayPage('word_panel')">list</button>
     </div>
 
-    
-    <button class="flex_button" onclick="playsound('grille_creation');playsound('grille_numero');playsound('grille_boule_noire');
-    playsound('grille_numero_tire');playsound('motus');playsound('boule_magique');playsound('letter_ok');
-    playsound('letter_bad');playsound('letter_missing');playsound('letter_bonus');playsound('wrong');playsound('victory');
-    playsound('temps_ecoule');playsound('loose');playsound('jingle');">Jouer tous les sons</button>
-
-    <div class="flex_section">
+    <div>
       <button onclick="playsound('grille_creation');">grille_creation</button>
       <button onclick="playsound('grille_numero');">grille_numero</button>
       <button onclick="playsound('grille_boule_noire');">grille_boule_noire</button>
@@ -707,50 +534,39 @@
       <button onclick="playsound('motus');">motus</button>
       <button onclick="playsound('boule_magique');">boule_magique</button>
     </div>
-    <br>
 
-    <div class="flex_section">
+    <div>
       <button onclick="playsound('letter_ok');">letter_ok</button>
       <button onclick="playsound('letter_bad');">letter_bad</button>
       <button onclick="playsound('letter_missing');">letter_missing</button>
       <button onclick="playsound('letter_bonus');">letter_bonus</button>
       <button onclick="playsound('wrong');">wrong</button>
-      <div>
-        <br>
-      </div>
+    </div>
 
-    </div class="flex_section">
-    <button onclick="playsound('victory');">victory</button>
     <div>
-      <br>
-
-      <div class="flex_section">
-        <button onclick="playsound('temps_ecoule');">temps_ecoule</button>
-        <button onclick="playsound('loose');">loose</button>
-        <button onclick="playsound('jingle');">jingle</button>
-      </div>
+      <button onclick="playsound('victory');">victory</button>
+      <button onclick="playsound('temps_ecoule');">temps_ecoule</button>
+      <button onclick="playsound('loose');">loose</button>
     </div>
   </div>
-
-  
-
-  <!-- Page: Debug -->
-  <div class="page" id="word_panel" style="display:none; color:white;">
-    <div>
-      <h1>Debug</h1>
-      <button onclick="displayPage('main_menu')">Retour</button>
-      <button onclick="startDico()">Lancer</button>
-    </div>
-
-    <div class="flex_section">
-      <table id="debug_word_list" cellpadding="2">
-        <tr><td>Supprimer tous les mots</td><td><input type="button" value="❌" onclick="Javascript:DebugWordListDeleteRow(this)"></td></tr>
-    </table>
-    </div>
-
-  </div>
-
-
 </body>
+
+<audio controls preload="auto" style="display:none;">
+  <source src="src/sounds/lettre_ok.mp3">
+  <source src="src/sounds/lettre_mauvaise.mp3">
+  <source src="src/sounds/lettre_absente.mp3">
+  <source src="src/sounds/lettre_bonus.mp3">
+  <source src="src/sounds/erreur.mp3">
+  <source src="src/sounds/victory.mp3">
+  <source src="src/sounds/temps_ecoule.mp3">
+  <source src="src/sounds/loose.mp3">
+  <source src="src/sounds/grille_creation.mp3">
+  <source src="src/sounds/grille_numero.mp3">
+  <source src="src/sounds/grille_boule_noire.mp3">
+  <source src="src/sounds/grille_numero_tire.mp3">
+  <source src="src/sounds/motus.mp3">
+  <source src="src/sounds/boule_magique.mp3">
+  <source src="src/sounds/jingle_motus.mp3">
+</audio>
 
 </html>

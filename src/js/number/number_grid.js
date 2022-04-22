@@ -1,510 +1,293 @@
-function getNumberRaw() {		// Ne met que dans un tableau les numéros correspondant à un 1 dans le tableau des placement
-yellow_grid_raw = [];
-blue_grid_raw = [];
-hided_number_spot = [];
-for (var i = 0 ; i < yellow_grid[grid_index].length ; i++ ) {
-	if (grid_placement[grid_index][i] == 1) {
-		yellow_grid_raw.push(yellow_grid[grid_index][i]);
+function createNumberGrid() {
+	if (game.motus_engaged == true) {
+		changeNumberGridIndex()
 	} else {
-		hided_number_spot.push(i);
+		initNumberGrid()
+		changeNumberGrid()
 	}
 }
 
-for (var i = 0 ; i < blue_grid[grid_index].length ; i++ ) {
-	if (grid_placement[grid_index][i] == 1) {
-		blue_grid_raw.push(blue_grid[grid_index][i]);
+function changeNumberGridIndex() {
+	if (game.number_grid_index < 5) {
+		game.number_grid_index++;
+	} else {
+		game.number_grid_index = 0;
 	}
-}
-}
+	
+	game.number_grid_placement_yellow = undefined;
+	game.number_grid_possible_yellow = undefined;
+	game.number_grid_placement_blue = undefined;
+	game.number_grid_possible_blue = undefined;
 
-function getAllBalls() {
-yellow_grid_placement_complete = [];
-blue_grid_placement_complete = [];
-yellow_grid_complete = [];
-blue_grid_complete = [];
+	game.number_grid_yellow_saving_ball = undefined;
+	game.number_grid_blue_saving_ball = undefined;
+	game.number_grid_yellow_saving_ball_picked = undefined;
+	game.number_grid_blue_saving_ball_picked = undefined;
 
-//Copie des numéros de x_grid_raw vers x_grid_complete
+	game.saving_ball_yellow = undefined;
+	game.saving_ball_yellow_engaged = false;
+	game.saving_ball_blue = undefined;
+	game.saving_ball_blue_engaged = false;
+	
+	game.number_grid_yellow_purgatory = undefined;
+	game.number_grid_blue_purgatory = undefined;
 
-for (var i=0; i < yellow_grid_raw.length; i++) {
-	yellow_grid_complete.push(yellow_grid_raw[i]);
-}
-for (var i=0; i < blue_grid_raw.length; i++) {
-	blue_grid_complete.push(blue_grid_raw[i]);
-}
+	game.saving_ball_yellow_engaged = false;
+	game.saving_ball_blue_engaged = false;
 
-yellow_grid_placement_complete = grid_placement[grid_index];
-blue_grid_placement_complete = grid_placement[grid_index];
-for (var i = 0 ; i < black_ball_amount ; i++ ) {	// ajout de 3 boules noires à la fin du tableau
-	yellow_grid_complete.push("X");
-	blue_grid_complete.push("X");
-}
-}
+	game.motus_engaged = undefined;
 
-function createSavingBall() {
-yellow_saving_ball = yellow_grid_raw[Math.floor(Math.random() * yellow_grid_raw.length)];
-blue_saving_ball = blue_grid_raw[Math.floor(Math.random() * blue_grid_raw.length)];
+	createNumberGrid();
 }
 
-function changeNumberGrid() {
-if (grid_index >= 0 && grid_index < 5) {
-	grid_index++
-} else {
-	grid_index = 0;
-}
-console.log("Affichage de la grille numérotée n° " + (grid_index+1));
+function initNumberGrid() {
+	if (game.number_grid_placement_yellow == undefined || game.number_grid_placement_blue == undefined ) {
+		game.number_grid_placement_yellow = [];
+		game.number_grid_possible_yellow = [];
+		game.number_grid_placement_blue = [];
+		game.number_grid_possible_blue = [];
+		game.number_grid_yellow_purgatory = [];
+		game.number_grid_blue_purgatory = [];
 
-numberDisplay()
-}
+		for (var i = 0; i < 25; i++) {
+			if (grid_placement[game.number_grid_index][i] == 1) {
+				game.number_grid_placement_yellow.push(yellow_grid[game.number_grid_index][i]);
+				game.number_grid_possible_yellow.push(yellow_grid[game.number_grid_index][i]);
 
-function numberDisplay() {
-var grid_j_index = 0;
-var grid_i_index = 0;
-
-motus_engaged = false;
-motus_animation_index = 0;
-picked_ball_animation = 0;
-yellow_saving_ball_picked = false;
-blue_saving_ball_picked = false;
-
-getNumberRaw();
-getAllBalls();
-emptyPurgatory();
-createSavingBall();
-
-clearInterval(animationIntervalID_4);
-clearInterval(animationIntervalID_5);
-
-	team_color_grid = yellow_grid;
-	for (var i=0 ; i<25; i++) {
-		if (use_saving_ball == true && team_color_grid[grid_index][grid_i_index*5+grid_j_index] == yellow_saving_ball) {
-			if ( (limiting_saving_ball == true && grid_index == 0) || (limiting_saving_ball == false) ) {
-				editHTML("yellow_cell_" + grid_i_index + "_" + grid_j_index, "innerHTML", "<div class=\"number yellow_number saving_ball\" id=\"" + "yellow_number_" + grid_i_index + "_" + grid_j_index + "\" onclick=\"manuallyPickBall('" + team_color_grid[grid_index][grid_i_index*5+grid_j_index] +"')\">" + team_color_grid[grid_index][grid_i_index*5+grid_j_index] + "</div>");
+				game.number_grid_placement_blue.push(blue_grid[game.number_grid_index][i]);
+				game.number_grid_possible_blue.push(blue_grid[game.number_grid_index][i]);
+			} else {
+				game.number_grid_placement_yellow.push(0);
+				game.number_grid_placement_blue.push(0);
 			}
-		} else {
-			editHTML("yellow_cell_" + grid_i_index + "_" + grid_j_index, "innerHTML", "<div class=\"number yellow_number\" id=\"" + "yellow_number_" + grid_i_index + "_" + grid_j_index + "\" onclick=\"manuallyPickBall('" + team_color_grid[grid_index][grid_i_index*5+grid_j_index] +"')\">" + team_color_grid[grid_index][grid_i_index*5+grid_j_index] + "</div>");
 		}
 
-		if (grid_j_index == 4 && grid_i_index == 4) { //fin de la grille
-			grid_j_index = 0;
-			grid_i_index = 0;
-		} else {
-			grid_j_index++;
+		if (game.use_saving_ball == true && (game.limiting_saving_ball == true && game.number_grid_index == 0)) {
+			game.saving_ball_yellow = game.number_grid_possible_yellow[Math.round(Math.random() * (game.number_grid_possible_yellow.length-1))]
+			game.saving_ball_blue = game.number_grid_possible_blue[Math.round(Math.random() * (game.number_grid_possible_blue.length-1))]
+		}
 
-			if (grid_j_index == 5) { //fin de la ligne
-				grid_j_index = 0;
-				grid_i_index++;
+		for (var i = 0; i < game.black_ball_amount; i++) {
+			game.number_grid_possible_yellow.push("⚫");
+			game.number_grid_possible_blue.push("⚫");
+		}
+	}
+}
+
+function changeNumberGrid() {		
+	createGrid("number_grid_placeolder", 5, 5, "number_cell", "number_grid");
+	if (game.team_focus == "yellow") { 
+		var used_grid = game.number_grid_placement_yellow;
+		var saving_ball = game.saving_ball_yellow
+	} else {
+		var used_grid = game.number_grid_placement_blue;
+		var saving_ball = game.saving_ball_blue
+	}
+	
+	for (var i = 0; i < 5; i++) {
+		for (var j = 0; j < 5; j++) {
+			var number = used_grid[(i*5)+j];
+			var cell_id = i+"_"+j
+			if (number == 0) {
+				document.getElementById("number_cell_"+cell_id).innerHTML = '<div class="number hided_number" id="number_' + cell_id + '"></div>'
+			} else if (number == saving_ball) {
+				document.getElementById("number_cell_"+cell_id).innerHTML = '<div class="number yellow_number saving_ball" id="number_' + cell_id + '">' + number + '</div>'
+			} else {
+				document.getElementById("number_cell_"+cell_id).innerHTML = '<div class="number yellow_number" id="number_' + cell_id + '">' + number + '</div>'
 			}
+		}
+	}
+
+	game.try_picking_ball_left = game.try_picking_ball;
+}
+
+function pickBall(forced_number) {
+	if (game.try_picking_ball_left > 0 && game.motus_engaged == undefined && global.picked_ball_animation == undefined && global.displayed_grid_type == "number_grid") {
+		game.try_picking_ball_left--;
+		if (game.team_focus == "yellow") {
+			var grid_possible = game.number_grid_possible_yellow;
+			var saving_ball = game.saving_ball_yellow;
+			var saving_ball_engaged = game.saving_ball_yellow_engaged;
+			var grid_placement_raw = game.number_grid_placement_yellow;
+		} else {
+			var grid_possible = game.number_grid_possible_blue;
+			var saving_ball = game.saving_ball_blue;
+			var saving_ball_engaged = game.saving_ball_blue_engaged;
+			var grid_placement_raw = game.number_grid_placement_blue;
+		}
+
+		if (forced_number == undefined) {
+			var random_ball = grid_possible[Math.round(Math.random() * (grid_possible.length-1))];
+			console.log('%c' + random_ball, 'background: black; color: gold');
+		} else {
+			var random_ball = forced_number;
+			console.log('%c' + random_ball + " forced", 'background: black; color: gold');
+		}
+
+		if (random_ball == "⚫") {
+			console.log('%cBoule Noire', 'background: black; color: gold');
+			if (saving_ball_engaged == true) {
+				console.log('%cBoule Magique ' + saving_ball, 'background: black; color: gold');
+				saving_ball_engaged = false;
+				setTimeout(function() { playsound("boule_magique"); }, 1750);
+			} else {
+				game.try_picking_ball_left = 0;
+			}
+			playsound('grille_boule_noire');
+			switchTeamFocus()
+		} else  {
+			if (random_ball == saving_ball) {
+				saving_ball_engaged = true;
+				playsound('boule_magique');
+			}
+
+			var placement_id = grid_placement_raw.indexOf(random_ball);
+			var grid_index = "number_" + ((placement_id - (placement_id % 5)) / 5) + "_" + (placement_id % 5);
+		
+			global.animationIntervalID_4 = setInterval(function() {
+				animationNumeroTire(random_ball, grid_index)
+			}, 100);
+			grid_placement_raw[grid_placement_raw.indexOf(random_ball)] = 0;
+			checkMotus()
+		}
+		addNumberPurgatory(random_ball)
+		grid_possible.splice(grid_possible.indexOf(random_ball),1)
+	} else if (game.try_picking_ball_left == 0){
+		switchGridType()
+	}
+}
+
+function animationNumeroTire(number, number_pos) {
+	if (global.picked_ball_animation == undefined) {
+		global.picked_ball_animation = 0;
+	}
+
+	if ((global.picked_ball_animation % 2) == 1) {
+		editHTML(number_pos, "innerHTML", number);
+		editHTML(number_pos, "className", "number");
+	} else {
+		editHTML(number_pos, "innerHTML", "")
+		editHTML(number_pos, "className", "number hided_number");
+	}
+
+	global.picked_ball_animation++;
+	if (global.picked_ball_animation == 11) {
+		clearInterval(global.animationIntervalID_4);
+		global.picked_ball_animation = undefined;
+	}
+}
+
+function checkMotus() {
+	if (game.team_focus == "yellow") {
+		var grid_placement_raw = game.number_grid_placement_yellow;
+	} else {
+		var grid_placement_raw = game.number_grid_placement_blue;
+	}
+	
+	for (var i = 0; i < 5; i++) { //boucle verification grille jaune horizontalement
+		var horizontal_sum = grid_placement_raw[i * 5] + grid_placement_raw[(i * 5) + 1] + grid_placement_raw[(i * 5) + 2] + grid_placement_raw[(i * 5) + 3] + grid_placement_raw[(i * 5) + 4];
+		var vertical_sum = grid_placement_raw[i] + grid_placement_raw[i + 5] + grid_placement_raw[i + (5 * 2)] + grid_placement_raw[i + (5 * 3)] + grid_placement_raw[i + (5 * 4)];
+		var slash_sum = grid_placement_raw[0] + grid_placement_raw[6] + grid_placement_raw[12] + grid_placement_raw[18] + grid_placement_raw[24];
+		var backslash_sum = grid_placement_raw[20] + grid_placement_raw[16] + grid_placement_raw[12] + grid_placement_raw[8] + grid_placement_raw[4];
+		
+		if (horizontal_sum == 0) {
+			var verification_mode = "horizontal_sum";
+			game.motus_engaged = true;
+		} else if (vertical_sum == 0) {
+			var verification_mode = "vertical_sum";
+			game.motus_engaged = true;
+		} else if (slash_sum == 0) {
+			var verification_mode = "slash_sum";
+			game.motus_engaged = true;
+		} else if (backslash_sum == 0) {
+			var verification_mode = "backslash_sum";
+			game.motus_engaged = true;
+		}
+	
+		if (game.motus_engaged == true) {
+			setTimeout(function() { animationIntervalID_5 = setInterval(function() { displayMotusAnimated(verification_mode, i); }, 100) }, 1500);
+			playsound('motus')
+			break;
 		}
 	}
 	
-	team_color_grid = blue_grid;
-	for (var i=0 ; i<25; i++) {
-
-		if (use_saving_ball == true && team_color_grid[grid_index][grid_i_index*5+grid_j_index] == blue_saving_ball) {
-			if ( (limiting_saving_ball == true && grid_index == 0) || (limiting_saving_ball == false) ) {
-				editHTML("blue_cell_" + grid_i_index + "_" + grid_j_index, "innerHTML", "<div class=\"number blue_number saving_ball\" id=\"" + "blue_number_" + grid_i_index + "_" + grid_j_index + "\" onclick=\"manuallyPickBall('" + team_color_grid[grid_index][grid_i_index*5+grid_j_index] +"')\">" + team_color_grid[grid_index][grid_i_index*5+grid_j_index] + "</div>");
-			}
-		} else {
-			editHTML("blue_cell_" + grid_i_index + "_" + grid_j_index, "innerHTML", "<div class=\"number blue_number\" id=\"" + "blue_number_" + grid_i_index + "_" + grid_j_index + "\" onclick=\"manuallyPickBall('" + team_color_grid[grid_index][grid_i_index*5+grid_j_index] +"')\">" + team_color_grid[grid_index][grid_i_index*5+grid_j_index] + "</div>");
-		}
-
-		if (grid_j_index == 4 && grid_i_index == 4) { //fin de la grille
-			grid_j_index = 0;
-			grid_i_index = 0;
-		} else {
-			grid_j_index++;
-
-			if (grid_j_index == 5) { //fin de la ligne
-				grid_j_index = 0;
-				grid_i_index++;
-			}
-		}
-	}
-	hideNumber();
-}
-
-function hideNumber() {
-var grid_j_index = 0;
-var grid_i_index = 0;
-
-for (var i=0; i<8; i++) {
-	grid_i_index = ( (hided_number_spot[0]) - (hided_number_spot[0] % 5) ) / 5;
-	grid_j_index = hided_number_spot[0] % 5;
-
-	editHTML('yellow_number_'+grid_i_index+'_'+grid_j_index, "innerHTML", "");
-	editHTML('yellow_number_'+grid_i_index+'_'+grid_j_index, "className", "number hided_yellow_number");
-	editHTML('blue_number_'+grid_i_index+'_'+grid_j_index, "innerHTML", "");
-	editHTML('blue_number_'+grid_i_index+'_'+grid_j_index, "className", "number hided_blue_number");
-
-	hided_number_spot.shift();
-}
-}
-
-function emptyPurgatory() {
-editHTML("yellow_purgatory", "innerHTML", "<td></td>");
-editHTML("blue_purgatory", "innerHTML", "<td></td>");
-}
-
-function pickBall(picked_ball, picked_ball_random_index) {							// Tire au hasard une boule du tableau grid_complete de l'équipe ayant la main
-	if (motus_engaged == false && picked_ball_animation == 0 && motus_animation_index == 0 && try_picking_ball_left > 0) {
-		try_picking_ball_left--;
-		if (try_picking_ball_left == 0) {
-			editHTML("button_pick_number", "style", "display:none");	//affichage du bouton piocher
-			
-			if (automatic_behaviour == true && automatic_behaviour_redirect_letter_grid == true) {
-				setTimeout(function() { displayPage('letter_grid_page'); reinitWord() } , 2000);
-			}
-		}
-
-		if (picked_ball == undefined) {
-			if (team_focus == "yellow") {
-				var picked_ball_random_index = Math.floor(Math.random() * yellow_grid_complete.length);
-				var picked_ball = yellow_grid_complete[picked_ball_random_index];
-			} else if (team_focus == "blue") {
-				var picked_ball_random_index = Math.floor(Math.random() * blue_grid_complete.length);
-				var picked_ball = blue_grid_complete[picked_ball_random_index]
-			}
-		}
-		console.log("Boule tirée: " + picked_ball);
-
-		if (picked_ball == "X") {
-			console.log("Boule Noire!")
-
-			if (team_focus == "yellow") {
-
-				if (yellow_saving_ball_picked == true) {
-					yellow_saving_ball_picked = false;
-					yellow_saving_ball = undefined;
-					setTimeout(function() { playsound("boule_magique"); } , 970);
-					console.log("Boule Noire déjouée! Vous avez toujours la main");
-
-				} else {
-					if ( team_enabled == true ) {
-						console.log("La main passe!");
-						setTimeout(function() { displayPage('letter_grid_page'); switchTeamFocus(); } , 2000);
-					}
-					
-					try_picking_ball_left = 0;
-						
-					editHTML("button_pick_number", "style", "display:none");	//affichage du bouton piocher
-					
-					if (automatic_behaviour == true && automatic_behaviour_redirect_letter_grid == true) {
-						setTimeout(function() { displayPage('letter_grid_page'); reinitWord() } , 2000);
-					}
-				}
-				yellow_purgatory.rows[0].insertCell().innerHTML += '<td class="cell_purgatory"> <div class="purgatory_number black_number"></div> </td>'
-				yellow_grid_complete.splice(picked_ball_random_index, 1);
-
-			} else if (team_focus == "blue") {
-
-				if (blue_saving_ball_picked == true) {
-					blue_saving_ball_picked = false
-					blue_saving_ball = undefined;
-					setTimeout(function() { playsound("boule_magique"); } , 970);
-					console.log("Boule Noire déjouée! Vous avez toujours la main");
-
-				} else {
-					if ( team_enabled == true ) {
-						console.log("La main passe!");
-						setTimeout(function() { displayPage('letter_grid_page'); switchTeamFocus(); } , 2000);
-					}
-					
-					try_picking_ball_left = 0;
-						
-					editHTML("button_pick_number", "style", "display:none");	//affichage du bouton piocher
-					editHTML("button_return_letter_grid", "style", "display:none");	//affichage du bouton piocher
-
-					if (automatic_behaviour == true && automatic_behaviour_redirect_letter_grid == true) {
-						setTimeout(function() { displayPage('letter_grid_page'); reinitWord() } , 2000);
-					}
-				}
-				blue_purgatory.rows[0].insertCell().innerHTML += '<td class="cell_purgatory"> <div class="purgatory_number black_number"></div> </td>'
-				blue_grid_complete.splice(picked_ball_random_index, 1);
-			}
-
-			playsound('grille_boule_noire');
-		} else {
-			if (team_focus == "yellow") {
-				for (var i = 0 ; i < yellow_grid[grid_index].length ; i++ ) {
-					if (picked_ball == yellow_grid[grid_index][i]) {
-						grid_i_index = (i - ( i % 5 )) / 5;
-						grid_j_index = i % 5;
-						yellow_grid_placement_complete[i] = "0";
-					}
-				}
-				yellow_grid_complete.splice(picked_ball_random_index, 1);
-
-				if (picked_ball == yellow_saving_ball) {
-					console.log("Boule Magique!");
-					playsound("boule_magique");
-					yellow_saving_ball_picked = true;
-
-					yellow_purgatory.rows[0].insertCell().innerHTML += '<td class="cell_purgatory"> <div class="purgatory_number yellow_number saving_ball">' + picked_ball + '</div> </td>';
-				} else {
-					yellow_purgatory.rows[0].insertCell().innerHTML += '<td class="cell_purgatory"> <div class="purgatory_number yellow_number">' + picked_ball + '</div> </td>';
-				}
-			} else if (team_focus == "blue") {
-				for (var i = 0 ; i < blue_grid[grid_index].length ; i++ ) {
-					if (picked_ball == blue_grid[grid_index][i]) {
-						grid_i_index = (i - ( i % 5 )) / 5;
-						grid_j_index = i % 5;
-						blue_grid_placement_complete[i] = "0";
-					}
-				}
-				blue_grid_complete.splice(picked_ball_random_index, 1);
-				if (picked_ball == blue_saving_ball) {
-					console.log("Boule Magique!");
-					playsound("boule_magique");
-					blue_saving_ball_picked = true;
-
-					blue_purgatory.rows[0].insertCell().innerHTML += '<td class="cell_purgatory"> <div class="purgatory_number blue_number saving_ball">' + picked_ball + '</div> </td>';
-				} else {
-					blue_purgatory.rows[0].insertCell().innerHTML += '<td class="cell_purgatory"> <div class="purgatory_number blue_number">' + picked_ball + '</div> </td>';
-				}
-			}
-			
-			animationIntervalID_4 = setInterval(function() {animationNumeroTire()}, 100);	
-			playsound('grille_numero_tire')	;			
-		}
-	} else {
-		playsound('letter_missing');
+	if (game.motus_engaged == undefined) {
+		playsound('grille_numero_tire');
 	}
 }
 
-function animationNumeroTire() {
-	if ((picked_ball_animation % 2) == 1) {
-		if (team_focus = "yellow") {
-			var team_focus_grid = yellow_grid;
-		} else {
-			var team_focus_grid = blue_grid;
-		}
-		editHTML(team_focus + '_number_'+grid_i_index+'_'+grid_j_index, "innerHTML", team_focus_grid[grid_index][grid_i_index*5+grid_j_index]);
-		editHTML(team_focus + '_number_'+grid_i_index+'_'+grid_j_index, "className", "number hided_" + team_focus + "_number");
-	} else {
-		editHTML(team_focus + '_number_'+grid_i_index+'_'+grid_j_index, "innerHTML", "")
-		editHTML(team_focus + '_number_'+grid_i_index+'_'+grid_j_index, "className", "number hided_" + team_focus + "_number");
-	}
-	picked_ball_animation++;
-	if (picked_ball_animation == 11) {
-		clearInterval(animationIntervalID_4);
-		picked_ball_animation = 0;
-		checkMotus();
-	}
-}
-
-function checkMotus() { // Verifie pour les deux grilles si les numéros sont alignés
-	if (team_focus == "yellow") {
-		for (var i=0;i<5;i++) {	//boucle verification grille jaune horizontalement
-			if (yellow_grid_placement_complete[i*5] == "0" && yellow_grid_placement_complete[(i*5)+1] == "0" && yellow_grid_placement_complete[(i*5)+2] == "0" && yellow_grid_placement_complete[(i*5)+3] == "0" && yellow_grid_placement_complete[(i*5)+4] == "0") {
-				console.log ("Motus Horizontal Jaune");
-				playsound('motus')
-				motus_letter_m_placement = i*5;
-				motus_letter_o_placement = (i*5)+1;
-				motus_letter_t_placement = (i*5)+2;
-				motus_letter_u_placement = (i*5)+3;
-				motus_letter_s_placement = (i*5)+4;
-				animationIntervalID_5 = setInterval(function() {displayMotusAnimated();}, 100);
-				break;
-			} else if (yellow_grid_placement_complete[i] == "0" && yellow_grid_placement_complete[i+5] == "0" && yellow_grid_placement_complete[i+(5*2)] == "0" && yellow_grid_placement_complete[i+(5*3)] == "0" && yellow_grid_placement_complete[i+(5*4)] == "0") {
-				console.log ("Motus Vertical Jaune");
-				playsound('motus')
-				motus_letter_m_placement = i;
-				motus_letter_o_placement = i+5;
-				motus_letter_t_placement = i+(5*2);
-				motus_letter_u_placement = i+(5*3);
-				motus_letter_s_placement = i+(5*4);
-				animationIntervalID_5 = setInterval(function() {displayMotusAnimated();}, 100);
-				break;
-			} else if (yellow_grid_placement_complete[0] == "0" && yellow_grid_placement_complete[6] == "0" && yellow_grid_placement_complete[12] == "0" && yellow_grid_placement_complete[18] == "0" && yellow_grid_placement_complete[20] == "0") {
-				console.log ("Motus Diagonale Jaune");
-				playsound('motus')
-				motus_letter_m_placement = 0;
-				motus_letter_o_placement = 6;
-				motus_letter_t_placement = 12;
-				motus_letter_u_placement = 18;
-				motus_letter_s_placement = 24
-				animationIntervalID_5 = setInterval(function() {displayMotusAnimated();}, 100);
-				break;
-			} else if (yellow_grid_placement_complete[4] == "0" && yellow_grid_placement_complete[8] == "0" && yellow_grid_placement_complete[12] == "0" && yellow_grid_placement_complete[16] == "0" && yellow_grid_placement_complete[20] == "0") {
-				console.log ("Motus Diagonale Jaune");
-				playsound('motus')
-				motus_letter_m_placement = 20;
-				motus_letter_o_placement = 16;
-				motus_letter_t_placement = 12;
-				motus_letter_u_placement = 8;
-				motus_letter_s_placement = 4;
-				animationIntervalID_5 = setInterval(function() {displayMotusAnimated();}, 100)
-				break;
+function displayMotusAnimated(mode, index) {
+	if (global.motus_animation_index == undefined) {
+		global.motus_animation_index = 0;
+		global.motus_array = [["M"],["O"],["T"],["U"],["S"]]
+		for (var i=0;i<5;i++) {
+			if (mode == "horizontal_sum") {
+				global.motus_array[i].push((index * 5) + i);
+			} else if (mode == "vertical_sum") {
+				global.motus_array[i].push(index + (5 * i));
+			} else if (mode == "slash_sum") {
+				global.motus_array[i].push((i * 5) + i);
+			} else if (mode == "backslash_sum") {
+				global.motus_array[i].push(24 - (4 * (i + 1)));
 			}
 		}
-	} else if (team_focus == "blue") {
-		for (var i=0;i<5;i++) {	//boucle verification grille jaune horizontalement
-			if (blue_grid_placement_complete[i*5] == "0" && blue_grid_placement_complete[(i*5)+1] == "0" && blue_grid_placement_complete[(i*5)+2] == "0" && blue_grid_placement_complete[(i*5)+3] == "0" && blue_grid_placement_complete[(i*5)+4] == "0") {
-				console.log ("Motus Horizontal Bleu");
-				playsound('motus')
-				motus_letter_m_placement = i*5;
-				motus_letter_o_placement = (i*5)+1;
-				motus_letter_t_placement = (i*5)+2;
-				motus_letter_u_placement = (i*5)+3;
-				motus_letter_s_placement = (i*5)+4;
-				animationIntervalID_5 = setInterval(function() {displayMotusAnimated();}, 100);
-				break;
-			} else if (blue_grid_placement_complete[i] == "0" && blue_grid_placement_complete[i+5] == "0" && blue_grid_placement_complete[i+(5*2)] == "0" && blue_grid_placement_complete[i+(5*3)] == "0" && blue_grid_placement_complete[i+(5*4)] == "0") {
-				console.log ("Motus Vertical Bleu");
-				playsound('motus')
-				motus_letter_m_placement = i;
-				motus_letter_o_placement = i+5;
-				motus_letter_t_placement = i+(5*2);
-				motus_letter_u_placement = i+(5*3);
-				motus_letter_s_placement = i+(5*4);
-				animationIntervalID_5 = setInterval(function() {displayMotusAnimated();}, 100);
-				break;
-			} else if (blue_grid_placement_complete[0] == "0" && blue_grid_placement_complete[6] == "0" && blue_grid_placement_complete[12] == "0" && blue_grid_placement_complete[18] == "0" && blue_grid_placement_complete[20] == "0") {
-				console.log ("Motus Diagonale Bleu");
-				playsound('motus')
-				motus_letter_m_placement = 0;
-				motus_letter_o_placement = 6;
-				motus_letter_t_placement = 12;
-				motus_letter_u_placement = 18;
-				motus_letter_s_placement = 24
-				animationIntervalID_5 = setInterval(function() {displayMotusAnimated();}, 100);
-				break;
-			} else if (blue_grid_placement_complete[4] == "0" && blue_grid_placement_complete[8] == "0" && blue_grid_placement_complete[12] == "0" && blue_grid_placement_complete[16] == "0" && blue_grid_placement_complete[20] == "0") {
-				console.log ("Motus Diagonale Bleu");
-				playsound('motus')
-				motus_letter_m_placement = 20;
-				motus_letter_o_placement = 16;
-				motus_letter_t_placement = 12;
-				motus_letter_u_placement = 8;
-				motus_letter_s_placement = 4;
-				animationIntervalID_5 = setInterval(function() {displayMotusAnimated();}, 100)
-				break;
-			}
-		}		
-	}
-}
-
-function displayMotusAnimated() {
-
-	switch (motus_animation_index) {
-		case 0:
-			var motus_letter_placement = motus_letter_m_placement;
-			var letter = "M";
-			break;
-			
-		case 1:
-			var motus_letter_placement = motus_letter_o_placement;
-			var letter = "O";
-			break;
-			
-		case 2:
-			var motus_letter_placement = motus_letter_t_placement;
-			var letter = "T";
-			break;
-			
-		case 3:
-			var motus_letter_placement = motus_letter_u_placement;
-			var letter = "U";
-			break;
-			
-		case 4:
-			var motus_letter_placement = motus_letter_s_placement;
-			var letter = "S";
-			break;
-		default:
-			break;
 	}
 
-	var grid_i_index = ( (motus_letter_placement) - (motus_letter_placement % 5) ) / 5;
-	var grid_j_index = motus_letter_placement % 5;
+	var cell_index = global.motus_array[global.motus_animation_index][1]
+	var cell_id = "number_" + ((cell_index - (cell_index % 5)) / 5) + "_" + (cell_index % 5);
+	console.log(global.motus_array, global.motus_animation_index, index, cell_id)
 
-	editHTML((team_focus + '_cell_' + grid_i_index + '_' + grid_j_index), "innerHTML", ('<div class="number motus_cell" id="' + team_focus + '_number_' + grid_i_index + '_' + grid_j_index + '">' + letter + '</div>'));
-	motus_animation_index++;
+	editHTML(cell_id, "innerHTML", global.motus_array[global.motus_animation_index][0])
+	editHTML(cell_id, "className", "number motus");
 
-	if (motus_animation_index == 5) {
-		motus_letter_m_placement = 0;
-		motus_letter_o_placement = 0;
-		motus_letter_t_placement = 0;
-		motus_letter_u_placement = 0;
-		motus_letter_s_placement = 0;
-		grid_i_index = 0;
-		grid_j_index = 0;
-		
-		motus_engaged = true;
+	global.motus_animation_index++;
+	if (global.motus_animation_index == 5) {
+		global.motus_animation_index = undefined;
+		global.motus_array = undefined;
 		clearInterval(animationIntervalID_5);
-		addScoreTeamFocus(); addScoreTeamFocus(); // ajoute 100 ou 2 points
-		if (automatic_behaviour == true && automatic_behaviour_redirect_letter_grid == true) {
-			setTimeout(function() { displayPage('letter_grid_page'); reinitWord(); changeNumberGrid();} , 5000);
-		} else {
-			setTimeout(function() { changeNumberGrid(); } , 3000);
-		}
+		addScoreTeamFocus(); addScoreTeamFocus();
 	}
 }
 
-function manuallyPickBall(number) {
-	if (sort_mode == "input_touch") {
-		arbitraryPickBall(number)
-	}
-}
-
-function arbitraryPickBall(number) {
-	for (var i = 0; i<yellow_grid_complete.length; i++) {
-		if ( team_focus == "yellow" && number == yellow_grid_complete[i]) {
-			pickBall(number, i);
-			break;
-		} else if ( team_focus == "blue" && number == blue_grid_complete[i]) {
-			pickBall(number, i);
-			break;
-		}
-
-		//fin de la vérification, aucune boule valide trouvée
-		if ( number != yellow_grid_complete[i] && i == yellow_grid_complete.length-1) {
-			errorHandler(5, false)
-		}
-	}
-}
-
-function numberAddFromKeyboard(number) {
-	if (number_proposed_tab.length < 2 ) {
-		number_proposed_tab.push(number);
-		number_proposed = number_proposed_tab.join('');
+function displayPurgatory() {	//doit être refait pour être similaire au jeu TV
+	if (game.team_focus == "yellow") {
+		var purgatory = game.number_grid_yellow_purgatory;
 	} else {
-		deleteProposedNumberFromKeyboard()
-
-		number_proposed_tab.push(number);
-		number_proposed = number_proposed_tab.join('');
+		var purgatory = game.number_grid_yellow_purgatory;
 	}
-	checkProposedNumberFromKeyboard();
+
+	for (var i=0 ; i<purgatory.length ; i++) {
+		addNumberPurgatoryHTML(purgatory[i])
+	}
+
+	console.log(purgatory)
 }
 
-function checkProposedNumberFromKeyboard() {
-	for (var i=0 ; i<25; i++) {
-		if (number_proposed != yellow_grid[grid_index][i]) {
-			editHTML("yellow_cell_" + ((i)-(i % 5))/5 + "_" + i%5, "className", "cell_team_yellow");
-		} else if (number_proposed == yellow_grid[grid_index][i]) {
-			console.log(i);
-			
-			editHTML("yellow_cell_" + ((i)-(i % 5))/5 + "_" + i%5, "className", "cell_team_yellow selected_cell");
+function addNumberPurgatory(number) {
+	if (game.team_focus == "yellow") {
+		var purgatory = game.number_grid_yellow_purgatory;
+		var saving_ball = game.saving_ball_yellow;
+	} else {
+		var purgatory = game.number_grid_yellow_purgatory;
+		var saving_ball = game.saving_ball_blue;
+	}
+
+	if (number == saving_ball) { var is_saving_ball = true }
+
+	purgatory.push(number);
+	addNumberPurgatoryHTML(number, is_saving_ball);
+}
+
+function addNumberPurgatoryHTML(number, is_saving_ball) {
+	var head = "<div class='purgatory_number"
+	if (number == "⚫") {
+		var end = " black_ball'></div>"
+	} else {
+		if (is_saving_ball == true) {
+			var end = " saving_ball'>" + number + "</div>"
+		} else {
+			var end = "'>" + number + "</div>"
 		}
 	}
-	editHTML("keyboard_number_grid_input").value = number_proposed;
-}
-
-function validateProposedNumberFromKeyboard() {
-	arbitraryPickBall(number_proposed);
-	deleteProposedNumberFromKeyboard();
-}
-
-function eraseProposedNumberFromKeyboard() {
-	number_proposed_tab.pop();
-	number_proposed = number_proposed_tab.join('');
-
-	checkProposedNumberFromKeyboard();
-}
-
-function deleteProposedNumberFromKeyboard() {
-	number_proposed_tab = [];
-	number_proposed = "";
-
-	checkProposedNumberFromKeyboard();
+	purgatory.innerHTML += head + end
 }

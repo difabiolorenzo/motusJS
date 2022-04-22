@@ -1,82 +1,91 @@
 document.addEventListener("keydown", function (event) {
-	if (game_started == true && game_paused == false) {
-		if (event.keyCode == 27) { // escape
-			console.log("Escape");
-			returnMenu();
-
-		} else if (event.keyCode == 8) { // back
-			console.log('Erase');
-			suppressionLettre();
-		} else if (event.keyCode == 13) { // enter
-			console.log('Enter');
-			submitWord();
-		} else if (event.keyCode == 37) { // enter
-			console.log('Flèche gauche');
-			suppressionLettre();
-		} else if (event.keyCode == 48 || event.keyCode == 96 ) { // à
-			console.log('Key 0');
-			displaySolution();
-		} else if (event.keyCode == 49 || event.keyCode == 97 ) { // &
-			console.log('Key 1');
-			newWordLine();
-		} else if (event.keyCode == 50 || event.keyCode == 98 ) { // é
-			console.log('Key 2');
-			ajoutLettreBonus();
-		} else if (event.keyCode == 51 || event.keyCode == 99 ) { // "
-			console.log('Key 3');
-			suppressionLigne();
-		} else if (event.keyCode == 52 || event.keyCode == 100 ) { // '
-			console.log("Key 4");
-			suppressionLigne();
-			newWordLine();
-		} else if (event.keyCode == 53 || event.keyCode == 101 ) { // (
-			console.log("Key 5");
-			switchTeamFocus();
-		} else if (event.keyCode == 54 || event.keyCode == 102 ) { // -
-			console.log("Key 6");
-		} else if (event.keyCode == 55 || event.keyCode == 103 ) { // è
-			console.log('Key 7');
-		} else if (event.keyCode == 56 || event.keyCode == 104 ) { // _
-			console.log('Key 8');
-		} else if (event.keyCode == 57 || event.keyCode == 105 ) { // ç
-			console.log('Key 9');
-			reinitWord();
-		} else if (event.keyCode == 186) { // $ ¤ £
-			console.log('Key $');
-			timesUp();
-		} else if (event.keyCode == 220) { // * µ
-			console.log('Key *')
-			wordInformation();
-			
-		} else if (word_proposed_tab.length < word_length) {
-			if (event.keyCode >= 65 && event.keyCode <= 90 || event.keyCode >= 97 && event.keyCode <= 122) { //if between a & z OR A & Z
-				for (var i = 0; i < 26; i++) {
-					if (i == (event.keyCode - 65) || i == (event.keyCode - 97)) {
-						letterAddFromKeyboard(String.fromCharCode(i + 65));	//convert keyboard input into letter
-						// console.log(event.keyCode + " " + String.fromCharCode(i + 65));
-					}
-				}
-			}
+	switch (event.key) {
+		case 27:	// escape
+			if (game_paused == true) { returnGame() } else { returnMenu(); }
+			break;
+	}
+	if (global.game_started == true && global.game_paused == false) {
+		switch (event.code) {
+			case "Escape":
+				if (global.game_paused == true) { returnGame() } else { returnMenu(); }
+				break;
+			case "Digit6":
+				switchGridType()
+				break;
 		}
-		word_proposed = word_proposed_tab.join('');
-
-	} else if (displayed_page == "number_grid_page" && sort_mode == "input_keyboard") {
-		if (event.keyCode >= 48 && event.keyCode <= 57 <= 105 || event.keyCode >= 96 && event.keyCode) { //if between 0 & 9
-			for (var i = 0; i < 26; i++) {
-				if (i == (event.keyCode - 48) || i == (event.keyCode - 96)) {
-					numberAddFromKeyboard(String.fromCharCode(i + 48));	//convert keyboard input into number
+		if (global.displayed_grid_type == "letter_grid") {
+			switch (event.code) {
+				case "Backspace":
+					removeLetter();
+					break;
+				case "Enter":
+					submitWord();
+					break;
+				case "Digit0":
+					displaySolution();
+					break;
+				case "Digit1":
+					newWordLine();
+					break;
+				case "Digit2":
+					addBonusLetter();
+					break;
+				case "Digit3":
+					removeWordLine();
+					break;
+				case "Digit5":
+					switchTeamFocus();
+					break;
+				case "Digit9":
+					wordReinit();
+					break;
+				case "BracketRight":
+					timesUp();
+					break;
+				case "Backslash":
+					wordFoundInformation();
+					break;
+			}
+			if (game.word_proposed.length < game.word_length) {
+				if ((event.key >= "a" && event.key <= "z" || event.key >= "A" && event.key <= "Z") && event.key != "Backspace" && event.key != "Enter") { //if between a & z OR A & Z
+					addLetter(event.key.toUpperCase());
 				}
 			}
-		} else if (event.keyCode == 8) { // erase
-			console.log('Erase');
-			eraseProposedNumberFromKeyboard();
-		} else if (event.keyCode == 13) { // enter
-			console.log('Enter');
-			validateProposedNumberFromKeyboard();
-		} else if (event.keyCode == 46) { // suppr
-			console.log('Delete');
-			deleteProposedNumberFromKeyboard();
+		} else {
+			if (event.code == "Enter") {
+				pickBall();
+			}
 		}
 	}
+})
+
+
+function createKeyboard() {
+	var keyPlacement = [["A","Z","E","R","T","Y","U","I","O","P","ERASE"],["Q","S","D","F","G","H","J","K","L","M","ENTER"],["W","X","C","V","B","N"]]
+	var keyboard = document.getElementById("keyboard");
+	var keyboard_row_head = "<div class='keyboard_layer'>";
+	var keyboard_row_foot = "</div>";
+
+	for (layer=0;layer<keyPlacement.length;layer++) {
+		var keyboard_row_content = "";
+		for (keyPosition=0;keyPosition<keyPlacement[layer].length;keyPosition++) {
+			var key = keyPlacement[layer][keyPosition];
+			switch (key) {
+				case "ENTER":
+					keyboard_row_content += "<div class='keyboard_key' onclick='submitWord()' data-keyboard='" + key + "'>↲</div>";
+					break;
+				case "ERASE":
+					keyboard_row_content += "<div class='keyboard_key' onclick='removeLetter()' data-keyboard='" + key + "'>🡰</div>";
+					break;
+				default:
+					keyboard_row_content += "<div class='keyboard_key' onclick='keyboardInput(this)' data-keyboard='" + key + "'>" + key + "</div>";
+					break;
+			}
+		}
+		keyboard.innerHTML += keyboard_row_head + keyboard_row_content + keyboard_row_foot;
+	}
 }
-)
+
+function keyboardInput(element) {
+	addLetter(element.getAttribute("data-keyboard"))
+}

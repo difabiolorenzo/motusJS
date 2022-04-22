@@ -1,23 +1,9 @@
-function changeSettingsGroupDisplay() {
-    var navpanel_dropdown = document.getElementById("navpanel_dropdown")
-
-    if (settings_group_displayed == true) {
-        settings_group_displayed = false;
-        navpanel_dropdown.className = "navpanel_dropdown_hidden"
-    } else {
-        settings_group_displayed = true;
-        navpanel_dropdown.className = "navpanel_dropdown_visible"
-    }
-}
-
 function displaySettingsGroup(settings_section) {
-    editHTML("settings_section_visual", "style", "display:none");
     editHTML("settings_section_number_grid", "style", "display:none");
     editHTML("settings_section_team_scores", "style", "display:none");
     editHTML("settings_section_gameplay", "style", "display:none");
     editHTML("settings_section_sounds", "style", "display:none");
     editHTML("settings_section_words", "style", "display:none");
-    editHTML("settings_section_gamemode", "style", "display:none");
     editHTML("settings_section_github", "style", "display:none");
 
     editHTML(settings_section, "style", "display:block");
@@ -26,9 +12,6 @@ function displaySettingsGroup(settings_section) {
 
     if (navpanel_title != null) { // when display: none
         switch (settings_section) {
-            case "settings_section_visual":
-                navpanel_title.innerHTML = "Visuels";
-                break;
             case "settings_section_number_grid":
                 navpanel_title.innerHTML = "Grilles numérotées";
                 break;
@@ -76,13 +59,11 @@ function lockNumberGridSettings() {
 function UpdateAutomaticBehaviourSettings(value) {
     automatic_behaviour = value;
     if (value == true) {
-        editHTML("check_automatic_behaviour_line_start", "disabled", false);
         editHTML("check_automatic_behaviour_new_line_error", "disabled", false);
         editHTML("check_automatic_behaviour_redirect_number_grid", "disabled", false);
         editHTML("check_automatic_behaviour_redirect_letter_grid", "disabled", false);
         editHTML("check_automatic_behaviour_new_word", "disabled", false);
     } else {
-        editHTML("check_automatic_behaviour_line_start", "disabled", true);
         editHTML("check_automatic_behaviour_new_line_error", "disabled", true);
         editHTML("check_automatic_behaviour_redirect_number_grid", "disabled", true);
         editHTML("check_automatic_behaviour_redirect_letter_grid", "disabled", true);
@@ -96,39 +77,29 @@ function UpdateScoreSettings(value) {
 }
 
 function UpdateAlwaysAskSettings(value) {
-    always_ask = value;
+    game.always_ask = value;
     if (value == true) { editHTML("always_ask_length_dropdown", "disabled", false); } else {
         editHTML("always_ask_length_dropdown", "disabled", true);
     }
 }
 
-function UpdateSoundSettings(value) {
-    playsound_enabled = value;
-    if (value == true) { editHTML("play_jingle_settings", "disabled", false); } else {
-        editHTML("play_jingle_settings", "disabled", true);
-    }
-}
-
 function UpdateTeamSettings(value) {
-    team_enabled = value;
+    game.team_enabled = value;
     if (value == true) {
         // team activated
         editHTML("settings_section_team", "disabled", false);
         editHTML("score_1_panel", "style", "display:block"); // Le score de la seconde équipe s'affiche
-        editHTML("change_team_letter_grid_button", "style", "display:block"); // Le bouton de changement d'équipe s'affiche
     } else {
         editHTML("settings_section_team", "disabled", true);
-        editHTML("change_team_letter_grid_button", "style", "display:none"); // Le bouton de changement d'équipe ne s'affiche pas
         editHTML("score_1_panel", "style", "display:none"); // Le score de la seconde équipe ne s'affiche pas
         editHTML("score_0_panel", "className", "active_score"); // Reinitialisation de l'ordre
         editHTML("score_1_panel", "className", "score");
-        editHTML("number_grid_placeolder_blue", "style", "display:none");
-        team_focus = "yellow";
+        game.team_focus = "yellow";
     }
 }
 
 function UpdateNumberGridSettings(value) {
-    use_number_grid = value;
+    global.use_number_grid = value;
     if (value == true) {
         editHTML("number_grid_button", "style", "display: block");
         editHTML("use_saving_ball_checkbox", "disabled", false);
@@ -181,7 +152,7 @@ function WordListAddRow(word_list_selected_word) {
     document.getElementById('word_list_selected_word').value = "";
 
     // Ajout du mot dans la liste de mot à trouver
-    word_to_find_list.push(word_list_selected_word);
+    game.word_to_find_list.push(word_list_selected_word);
 }
 
 function WordListAddRowRandom(letter_count) {
@@ -205,14 +176,14 @@ function WordListDeleteRow(word) {
     word_list_table.deleteRow(word_list_index);
 
     // Suppresion du mot de la liste de mot à trouver
-    word_to_find_list.splice(word_list_index - 1, 1);
+    game.word_to_find_list.splice(word_list_index - 1, 1);
 }
 
 function SearchWordInformations(word) {
     var word_list_index = word.parentNode.parentNode.rowIndex;
-    console.log(word_to_find_list[word_list_index - 1])
+    console.log(game.word_to_find_list[word_list_index - 1])
 
-    if (confirm("Voulez-vous ouvrir une page wiktionary.org sur le mot " + word_to_find_list[word_list_index - 1].toLowerCase() + "?")) {
-        window.open("https://fr.wiktionary.org/w/index.php?search=" + word_to_find_list[word_list_index - 1].toLowerCase(), "_blank");
+    if (confirm("Voulez-vous ouvrir une page wiktionary.org sur le mot " + game.word_to_find_list[word_list_index - 1].toLowerCase() + "?")) {
+        window.open("https://fr.wiktionary.org/w/index.php?search=" + game.word_to_find_list[word_list_index - 1].toLowerCase(), "_blank");
     }
 }
