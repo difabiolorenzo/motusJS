@@ -1,4 +1,4 @@
-@keyframes victory_line_animation {
+@keyframes victory_cell_animation {
   0% {
     background-position: -500%;
   }
@@ -164,19 +164,25 @@ align-content: center;}
 .style_1990 .correct { background-color: #d60063;}
 .style_2000 .correct { background-color: #de562e;}
 .style_2010 .correct { background-image: linear-gradient(#f78972, #95351e);box-shadow: 0.33vw 0.33vw 0.33vw #ffae9d inset, -0.33vw -0.33vw 0.33vw #883733 inset;}
-.style_2019 .correct { background-color: #e6030b; 
-box-shadow: inset -2px -2px 2px 0px #000000c2, inset -4px 2px 2px 0px #ffffffab;text-shadow: -2px -2px 2px #00000099;}
+.style_2019 .correct {background-color: #e6030b;box-shadow: inset -2px -2px 1px 0px #000000a3, inset -4px 1px 2px 0px #ffffffab;text-shadow: -2px -2px 2px #00000099;}
 
 .style_1990 tr.victory_line { background-color: #ec00ad;}
 .style_2000 tr.victory_line { background-color: #de562e;}
 .style_2010 tr.victory_line { background-image: linear-gradient(#f3927e, #9c341b); /* box-shadow: 5px 5px 5px #ffac9e inset, -5px -5px 5px #881b20 inset; */}
-.style_2019 tr.victory_line { background-color: #e6030b;}
+.style_2019 tr.victory_line {background-color: #e6030b;animation: victory_cell_animation 1s ease calc(0.5s * attr(data-animation-offset number 1));}
 
 .style_1990 .not_in_place { background-color: #ffe100;}
 .style_2000 .not_in_place { background-color: #e0d50e;}
 .style_2010 .not_in_place { background-image: linear-gradient(to bottom, #f9f97f, #ffd400);}
-.style_2019 .not_in_place { background-image: linear-gradient(0.85turn, #FFDF00, #FFC000);background-color: red;height: 100%;
-    border-radius: 50%;display: flex;justify-content: space-around;margin-left: 0.5vw;margin-right: 0.5vw;text-shadow: -2px -2px 2px #00000099;}
+.style_2019 .not_in_place {
+    background-image: linear-gradient(0.85turn, #FFDF00, #FFC000);
+    background-color: red;
+    height: 100%;
+    border-radius: 50%;
+    display: flex;
+    justify-content: space-around;
+    text-shadow: -2px -2px 2px #00000099;
+    }
 
 .style_1990 .black_number { background-color: #171717; }
 .style_2000 .black_number { background-color: #212121; }
@@ -189,12 +195,30 @@ box-shadow: inset -2px -2px 2px 0px #000000c2, inset -4px 2px 2px 0px #ffffffab;
 .style_2019 .motus_cell { background-color: #de0000;box-shadow: 2px 2px 7px -2px hsla(0, 0%, 0%, .5);color: f1f1f1;background-image: linear-gradient(180deg, #8c0000, #fff0); }
 
 
-td.correct.victory_line {
+/* td.correct.victory_line {
   background-image: linear-gradient(100deg, #fff0 20%, #ffffff36 30%, #ffffff80 50%, #ffffff24 70%, #fff0 80%);
   background-repeat: no-repeat;
   background-size: 80%;
+  animation: victory_cell_animation 0.8s linear infinite;
+} */
+
+td.correct.victory_line {
+  background-image: linear-gradient(100deg, #fff0 20%, #ffffff36 30%, #ffffff80 50%, #ffffff24 70%, #fff0 80%);
+  background-repeat: no-repeat;
+  background-size: 80%;  
   animation: victory_line_animation 0.8s linear infinite;
 }
+
+
+@keyframes victory_line_animation {
+  0% {
+    background-position: -500%;
+  }
+  100% {
+    background-position: 500%;
+  }
+}
+
 .not_in_place {
   
   
