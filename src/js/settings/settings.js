@@ -1,46 +1,3 @@
-function displaySettingsGroup(settings_section) {
-    editHTML("settings_section_number_grid", "style", "display:none");
-    editHTML("settings_section_team_scores", "style", "display:none");
-    editHTML("settings_section_gameplay", "style", "display:none");
-    editHTML("settings_section_sounds", "style", "display:none");
-    editHTML("settings_section_words", "style", "display:none");
-    editHTML("settings_section_github", "style", "display:none");
-
-    editHTML(settings_section, "style", "display:block");
-
-    var navpanel_title = document.getElementById("navpanel_title")
-
-    if (navpanel_title != null) { // when display: none
-        switch (settings_section) {
-            case "settings_section_number_grid":
-                navpanel_title.innerHTML = "Grilles numérotées";
-                break;
-            case "settings_section_team_scores":
-                navpanel_title.innerHTML = "Équipes et Scores";
-                break;
-            case "settings_section_gameplay":
-                navpanel_title.innerHTML = "Gameplay";
-                break;
-            case "settings_section_sounds":
-                navpanel_title.innerHTML = "Sons";
-                break;
-            case "settings_section_words":
-                navpanel_title.innerHTML = "Mots";
-                break;
-            case "settings_section_gamemode":
-                navpanel_title.innerHTML = "Modes de jeu";
-                break;
-            case "settings_section_github":
-                navpanel_title.innerHTML = "GitHub";
-                break;
-            default:
-                break;
-        }
-    }
-
-    changeSettingsGroupDisplay() //close panel
-}
-
 function lockNumberGridSettings() {    
     editHTML("use_number_grid_checkbox", "disabled", true);
     document.getElementById("use_number_grid_checkbox").setAttribute("title", "La partie est lancée.");            
@@ -77,14 +34,14 @@ function UpdateScoreSettings(value) {
 }
 
 function UpdateAlwaysAskSettings(value) {
-    game.always_ask = value;
-    if (value == true) { editHTML("always_ask_length_dropdown", "disabled", false); } else {
+    settings.always_ask = value;
+    if (value == false) { editHTML("always_ask_length_dropdown", "disabled", false); } else {
         editHTML("always_ask_length_dropdown", "disabled", true);
     }
 }
 
 function UpdateTeamSettings(value) {
-    game.team_enabled = value;
+    settings.team_enabled = value;
     if (value == true) {
         // team activated
         editHTML("settings_section_team", "disabled", false);
@@ -99,7 +56,7 @@ function UpdateTeamSettings(value) {
 }
 
 function UpdateNumberGridSettings(value) {
-    global.use_number_grid = value;
+    settings.use_number_grid = value;
     if (value == true) {
         editHTML("number_grid_button", "style", "display: block");
         editHTML("use_saving_ball_checkbox", "disabled", false);
@@ -146,8 +103,8 @@ function WordListAddRow(word_list_selected_word) {
     var word_list_row = word_list_table.insertRow(word_list_rowCount);
 
     word_list_row.insertCell(0).innerHTML = word_list_selected_word;
-    word_list_row.insertCell(1).innerHTML = '<input type="button" class="button" value = "❌" onClick="Javascript:WordListDeleteRow(this)">';
-    word_list_row.insertCell(2).innerHTML = '<input type="button" class="button" value = "Information sur ce mot" onClick="Javascript:SearchWordInformations(this)">';
+    word_list_row.insertCell(1).innerHTML = '<input type="button" class="button" value = "Information sur ce mot" onClick="Javascript:SearchWordInformations(this)">';
+    word_list_row.insertCell(2).innerHTML = '<input type="button" class="button" value = "❌" onClick="Javascript:WordListDeleteRow(this)">';
 
     document.getElementById('word_list_selected_word').value = "";
 
@@ -165,7 +122,9 @@ function WordListAddRowRandom(letter_count) {
 
 function WordAddCustom() {
     var wordInput = document.getElementById('word_list_selected_word').value
-    if (wordInput.length >= 5 && wordInput.length <= 10 && regularCharExpression.test(wordInput) == true) {
+    const regex = /^[a-zA-Z\u00C0-\u00ff]+$/;
+
+    if (wordInput.length >= 5 && wordInput.length <= 10 && regex.test(wordInput) == true) {
         WordListAddRow(wordInput)
     }
 }

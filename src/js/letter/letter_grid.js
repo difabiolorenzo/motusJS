@@ -7,7 +7,7 @@ function createLetterGrid() {
 }
 function changeLetterGrid() {
 	game.word_length = game.word_to_find_list[0].length;
-	game.verification_timer = Math.floor((2000 / game.word_length) * (game.word_length/10) * global.verification_time_multiplier);
+	game.verification_timer = Math.floor((2000 / game.word_length) * (game.word_length/10) * settings.verification_time_multiplier);
 
 	createGrid("letter_grid_placeolder",game.try_number_max,game.word_length,"letter","table_letter")
 	newWordLine();
@@ -38,8 +38,8 @@ function wordReinit() {
 	if (global.game_panel_displayed == "letter") {
 		game.word_to_find_list.splice(0, 1);
 		if (game.word_to_find_list.length == 0) {
-			if (game.always_ask == false) {
-				WordListAddRowRandom(game.always_ask_length);
+			if (settings.always_ask == false) {
+				WordListAddRowRandom(settings.always_ask_length);
 			} else {
 				console.log("Aucun mot dans la liste");
 	
@@ -154,7 +154,7 @@ function placeFirstLetter() {
 }
 
 function placeHelpingLetter() {
-	//game.lettre_plus_amount
+	//game.bonus_letter_amount
 	var helping_letter_placement = Math.round(Math.random() * (game.word_length - 2) + 2);
 
 	editHTML("letter_" + (game.try_count_index-1) + '_' + helping_letter_placement, "innerHTML", game.word_to_find[helping_letter_placement]);
@@ -220,7 +220,7 @@ function displaySolutionAnimation(reinit_word) {
 	
 			if (game.word_found == false) {playsound("loose");}
 	
-			if (game.team_enabled == true) {
+			if (settings.team_enabled == true) {
 				switchTeamFocus(); // Change l'équipe de main
 			}
 			game.word_displayed = true;
@@ -230,7 +230,7 @@ function displaySolutionAnimation(reinit_word) {
 }
 
 function addLetter(letter) {
-	if (game.check_word_first_letter == true && game.word_proposed.length == 0 ) {	//Check matching first letter
+	if (settings.check_word_first_letter == true && game.word_proposed.length == 0 ) {	//Check matching first letter
 		if (letter == game.word_to_find[0]) {
 			writeLetter();
 		} else {
@@ -246,7 +246,7 @@ function addLetter(letter) {
 }
 
 function removeLetter() {
-	if (game.word_proposed.length == 0 || (game.check_word_first_letter == true && game.word_proposed.length == 1)) {
+	if (game.word_proposed.length == 0 || (settings.check_word_first_letter == true && game.word_proposed.length == 1)) {
 		reinitWordLine();
 	}
 	if (game.word_proposed.length > 0) {
@@ -260,7 +260,7 @@ function submitWord() {
 		if (game.word_proposed == game.word_to_find) {
 			checkProposition()
 		} else {
-			if (game.check_word_length == true) {
+			if (settings.check_word_length == true) {
 				checkLength();
 			} else {
 				verifPresence();
@@ -300,7 +300,7 @@ function checkLength() {
 }
 
 function checkPresence() {		// Vérification de la présence du word_to_find proposé dans le dictionnaire
-	if (game.check_word_presence == true) {
+	if (settings.check_word_presence == true) {
 		if (dictionary_list[game.word_length-5].includes(game.word_proposed) == true) {
 			checkDuplication();
 		} else {
@@ -312,7 +312,7 @@ function checkPresence() {		// Vérification de la présence du word_to_find pro
 }
 
 function checkDuplication() {		// Vérification de la présence du word_to_find proposé dans le dictionnaire
-	if (game.check_word_duplication == true) {
+	if (settings.check_word_duplication == true) {
 		if (game.word_proposed_list.includes(game.word_proposed) == false) {
 			checkProposition();
 		} else {
@@ -383,7 +383,7 @@ function checkVictory() {
 		}
 		setTimeout(function() { addScoreTeamFocus(); }, 2250);
 
-		if (global.use_number_grid == true) {
+		if (settings.use_number_grid == true) {
 			if (settings.automatic_behaviour == true && settings.automatic_behaviour_redirect_number_grid == true) {
 				setTimeout(function() { switchGridType() } , 4000); //reinitialisation de la grille
 			}
@@ -393,7 +393,7 @@ function checkVictory() {
 			}
 		}
 	} else {
-		if (game.team_enabled == true && game.change_turn_mode == "by_proposition") {
+		if (settings.team_enabled == true && settings.change_turn_mode == "by_proposition") {
 			switchTeamFocus();
 		}
 		newWordLine();

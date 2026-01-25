@@ -62,12 +62,12 @@ function initNumberGrid() {
 			}
 		}
 
-		if (game.use_saving_ball == true && (game.limiting_saving_ball == true && game.number_grid_index == 0)) {
+		if (settings.use_saving_ball == true && (settings.limiting_saving_ball == true && game.number_grid_index == 0)) {
 			game.saving_ball_yellow = game.number_grid_possible_yellow[Math.round(Math.random() * (game.number_grid_possible_yellow.length-1))]
 			game.saving_ball_blue = game.number_grid_possible_blue[Math.round(Math.random() * (game.number_grid_possible_blue.length-1))]
 		}
 
-		for (var i = 0; i < game.black_ball_amount; i++) {
+		for (var i = 0; i < settings.black_ball_amount; i++) {
 			game.number_grid_possible_yellow.push("⚫");
 			game.number_grid_possible_blue.push("⚫");
 		}
@@ -98,12 +98,12 @@ function changeNumberGrid() {
 		}
 	}
 
-	game.try_picking_ball_left = game.try_picking_ball;
+	settings.try_picking_ball_left = settings.try_picking_ball;
 }
 
 function pickBall(forced_number) {
-	if (game.try_picking_ball_left > 0 && game.motus_engaged == undefined && global.picked_ball_animation == undefined && global.displayed_grid_type == "number_grid") {
-		game.try_picking_ball_left--;
+	if (settings.try_picking_ball_left > 0 && game.motus_engaged == undefined && global.picked_ball_animation == undefined && global.displayed_grid_type == "number_grid") {
+		settings.try_picking_ball_left--;
 		if (game.team_focus == "yellow") {
 			var grid_possible = game.number_grid_possible_yellow;
 			var saving_ball = game.saving_ball_yellow;
@@ -131,7 +131,7 @@ function pickBall(forced_number) {
 				saving_ball_engaged = false;
 				setTimeout(function() { playsound("boule_magique"); }, 1750);
 			} else {
-				game.try_picking_ball_left = 0;
+				settings.try_picking_ball_left = 0;
 			}
 			playsound('grille_boule_noire');
 			switchTeamFocus()
@@ -152,7 +152,7 @@ function pickBall(forced_number) {
 		}
 		addNumberPurgatory(random_ball)
 		grid_possible.splice(grid_possible.indexOf(random_ball),1)
-	} else if (game.try_picking_ball_left == 0){
+	} else if (settings.try_picking_ball_left == 0){
 		switchGridType()
 	}
 }

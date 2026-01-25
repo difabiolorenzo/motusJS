@@ -88,23 +88,35 @@ function editHTML(elementID, modifier, value) {
 }
 
 function UpdateStyle(value) {
+    settings.style = value;
+
     editHTML("letter_grid_page", "className", ("page style_" + value));
     editHTML("main_menu", "className", ("page style_" + value));
 
     var logo_img = document.getElementById("logo");
-
-    if (value == 2010 ) {
-        logo_img.src = "src/img/motus_logo_2010.png"
-        logo_img.title = "Style des années 2010"
-    } else if (value == 2019) {
-        logo_img.src = "src/img/motus_logo_2010_black.png"
-        logo_img.title = "Style de l'année 2019"
-    } else if (value == 2000) {
-        logo_img.src = "src/img/motus_logo_2000.png"
-        logo_img.title = "Style des années 2000"
-    } else if (value == 1990) {
-        logo_img.src = "src/img/motus_logo_1990.png"
-        logo_img.title = "Style des années 1990"
+    
+    switch (value) {
+        case "2010" : 
+            logo_img.src = "src/img/motus_logo_2010.png";
+            logo_img.title = "Style des années 2010";
+            document.getElementById("preview_img").src = "src/img/style_2010.png";
+            break;
+        case "2019" : 
+            logo_img.src = "src/img/motus_logo_2010_black.png";
+            logo_img.title = "Style de l'année 2019";
+            document.getElementById("preview_img").src = "src/img/style_2019.png";
+            break;
+        case "2000" : 
+            logo_img.src = "src/img/motus_logo_2000.png";
+            logo_img.title = "Style des années 2000";
+            document.getElementById("preview_img").src = "src/img/style_2000.png";
+            break;
+        case "1990" : 
+            logo_img.src = "src/img/motus_logo_1990.png";
+            logo_img.title = "Style des années 1990";
+            document.getElementById("preview_img").src = "src/img/style_1990.png";
+            break;
+        default : break;
     }
 }
 
@@ -143,9 +155,9 @@ function createGrid(placeolder_id, row, column, cell_id_prefix, id) {
 function addScoreTeamFocus() {
     if (global.gamemode == "normal") {
         if (game.team_focus == "yellow") {
-            game.score_yellow += game.score_addition;
+            game.score_yellow += settings.score_addition;
         } else {
-            game.score_blue += game.score_addition;
+            game.score_blue += settings.score_addition;
         }
         editHTML("score_0_panel", "innerHTML", game.score_yellow);
         editHTML("score_1_panel", "innerHTML", game.score_blue);
@@ -153,7 +165,7 @@ function addScoreTeamFocus() {
 }
 
 function switchTeamFocus() {
-    if (game.team_enabled == true) {
+    if (settings.team_enabled == true) {
         if (game.team_focus == "yellow") {
             game.team_focus = "blue"
         } else {
@@ -196,7 +208,7 @@ function errorHandler(errorCode, catching_up) { // Affiche dans la console le te
     playsound("error");
 
     if (catching_up == true) {
-        if (game.team_enabled == true) { switchTeamFocus(); }
+        if (settings.team_enabled == true) { switchTeamFocus(); }
         setTimeout(function () { retryLine(); }, 3000);
         playsound("wrong");
     }
@@ -228,7 +240,7 @@ function returnGame() {
 }
 
 function switchGridType() {
-    if (global.use_number_grid == true) {
+    if (settings.use_number_grid == true) {
         if (global.game_panel_displayed == "letter") {
             hideLetterGrid()
         } else {
