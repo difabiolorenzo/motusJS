@@ -1,3 +1,4 @@
+const { error } = require("node:console");
 
 
 //SOUND
@@ -90,34 +91,23 @@ function editHTML(elementID, modifier, value) {
 function UpdateStyle(value) {
     settings.style = value;
 
-    editHTML("letter_grid_page", "className", ("page style_" + value));
-    editHTML("main_menu", "className", ("page style_" + value));
+    const styles = ["2010", "2019", "2000", "1990"];
+
+    for (let i = 0; i < styles.length; i++) {
+        if (styles[i] != value) {
+            document.getElementById("main_menu").classList.remove("style_" + styles[i]);
+            document.getElementById("letter_grid_page").classList.remove("style_" + styles[i]);
+        }
+    }
+    
+    document.getElementById("main_menu").classList.add("style_" + value);
+    document.getElementById("letter_grid_page").classList.add("style_" + value);
 
     var logo_img = document.getElementById("logo");
-    
-    switch (value) {
-        case "2010" : 
-            logo_img.src = "src/img/motus_logo_2010.png";
-            logo_img.title = "Style des années 2010";
-            document.getElementById("preview_img").src = "src/img/style_2010.png";
-            break;
-        case "2019" : 
-            logo_img.src = "src/img/motus_logo_2010_black.png";
-            logo_img.title = "Style de l'année 2019";
-            document.getElementById("preview_img").src = "src/img/style_2019.png";
-            break;
-        case "2000" : 
-            logo_img.src = "src/img/motus_logo_2000.png";
-            logo_img.title = "Style des années 2000";
-            document.getElementById("preview_img").src = "src/img/style_2000.png";
-            break;
-        case "1990" : 
-            logo_img.src = "src/img/motus_logo_1990.png";
-            logo_img.title = "Style des années 1990";
-            document.getElementById("preview_img").src = "src/img/style_1990.png";
-            break;
-        default : break;
-    }
+
+    logo_img.src = `src/img/motus_logo_${value}.png`
+    logo_img.title = `Style ${value}`;
+    document.getElementById("preview_img").src = `src/img/style_${value}.png`;
 }
 
 function displayPage(page_name) {
@@ -271,4 +261,64 @@ function switchGridType() {
             }, 250)
         }
     }    
+}
+
+function addDictionaryPropositionWithCallback(word_length, callback) {
+    if (word_length < 5 || word_length > 10) {
+        console.error("Seuls les mots entre 5 et 10 lettres sont gérés.");
+        return;
+    }
+    const storageKey = "motus_dictionary_" + word_length;
+
+    if (localStorage.getItem(storageKey) != null) {
+        const dictionary = JSON.parse(localStorage.getItem(storageKey));
+        game.word_to_find_dictionary[`length_${word_length}`] = dictionary;
+        console.log(`Le dictionnaire des mots à trouver de ${word_length} lettres est chargé depuis le stockage local.`);
+
+        // Mise à jour des boutons de debug
+        document.getElementById(`debug_button_add_dictionary_${word_length}`).disabled = true;
+        document.getElementById(`debug_button_drop_dictionary_${word_length}`).disabled = false;
+
+        // Appel du callback
+        callback();
+    } else {
+        var script = document.createElement('script');
+        script.src = `./src/js/dictionary/proposition/${word_length}_lettres.js`;
+        script.onload = () => {
+            const data = game.word_to_find_dictionary[`length_${word_length}`];
+            if (!data) {
+                console.error("Le dictionnaire n'a pas été injecté par le script.");
+                return;
+            }
+            localStorage.setItem(storageKey, JSON.stringify(data));
+            console.log(`Dictionnaire ${word_length} lettres chargé et sauvegardé.`);
+
+            // Mise à jour des boutons de debug
+            document.getElementById(`debug_button_add_dictionary_${word_length}`).disabled = true;
+            document.getElementById(`debug_button_drop_dictionary_${word_length}`).disabled = false;
+
+            // Appel du callback
+            callback();
+        };
+        script.onerror = () => {
+            console.error("Erreur chargement script dictionnaire :", script.src);
+        };
+        document.head.appendChild(script);
+    }
+}
+
+function dropDictionaryProposition(word_length) {
+    if (word_length < 5 || word_length > 10 ) {
+        console.error("Seuls les mots entre 5 et 10 lettres sont gérés.")
+        return
+    }
+    const storageKey = "motus_dictionary_" + word_length;
+
+    game.word_to_find_dictionary[`length_${word_length}`] = "";
+    localStorage.removeItem(storageKey);
+
+    document.getElementById(`debug_button_add_dictionary_${word_length}`).disabled = false;
+    document.getElementById(`debug_button_drop_dictionary_${word_length}`).disabled = true;
+
+    console.log(`Le dictionnaire des mots de ${word_length} lettres sont supprimés`);
 }

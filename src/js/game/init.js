@@ -3,13 +3,21 @@ function initVariables() {
     loadSettingsByLocalStorage();
     setHTMLFromSettings()
 
-    global.version_name = "2.4 Dev 2";
+    global.version_name = "2.4 Dev 3";
     document.getElementById("version").innerHTML = global.version_name;
 }
 
 function setDefaultVariables() {
     game = {
         word_to_find_list: [],
+        word_to_find_dictionary: {
+            length_5: [],
+            length_6: [],
+            length_7: [],
+            length_8: [],
+            length_9: [],
+            length_10: []
+        },
 
         word_displayed: false,
         word_found: false,
@@ -186,4 +194,46 @@ function createGame() {
     lockNumberGridSettings();
     lockNumberGridSettings();
     createKeyboard();
-}   
+}
+
+function displayObjectInDOM(obj, elementId) {
+    const el = document.getElementById(elementId);
+
+    if (!el) {
+        console.error("Élément DOM introuvable :", elementId);
+        return;
+    }
+
+    el.textContent = JSON.stringify(obj, null, 4);
+}
+
+function displayLocalStorageInDOM() {
+    const elementId = "stateViewerLocalStorage";
+    const el = document.getElementById(elementId);
+
+    if (!el) {
+        console.error("Élément DOM introuvable :", elementId);
+        return;
+    }
+
+    const storageObj = {};
+
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        try {
+            const value = localStorage.getItem(key);
+            // Tentative JSON
+            storageObj[key] = JSON.parse(value);
+        } catch (e) {
+            // String simple
+            storageObj[key] = localStorage.getItem(key);
+        }
+    }
+
+    el.textContent = JSON.stringify(storageObj, null, 4);
+}
+
+function debug_random_sound_speed_change(value) {
+    global.debug_random_sound_speed_change = value;
+    document.getElementById("debug_ytp_speed_value").innerHTML = value
+}

@@ -86,11 +86,16 @@ function UpdateSavingBallSettings(value) {
 }
 
 function UpdateNumberSelectMode(mode) {
-    sort_mode = mode;
+    
+    button_pick_ball.className = "d-none"
+
+    if (mode == "random") {
+        button_pick_ball.className = ""
+    }
+
+    if (mode == "input_touch") {
+    }
     if (mode == "input_keyboard") {
-        editHTML("keyboard_number_grid_input", "style", "display:block");
-    } else {
-        editHTML("keyboard_number_grid_input", "style", "display:none");
     }
 }
 
@@ -103,7 +108,7 @@ function WordListAddRow(word_list_selected_word) {
     var word_list_row = word_list_table.insertRow(word_list_rowCount);
 
     word_list_row.insertCell(0).innerHTML = word_list_selected_word;
-    word_list_row.insertCell(1).innerHTML = '<input type="button" class="button" value = "Information sur ce mot" onClick="Javascript:SearchWordInformations(this)">';
+    word_list_row.insertCell(1).innerHTML = `<input type="button" class="button" value = "Information sur ce mot" onclick="SearchWordInformations('${word_list_selected_word}')">`;
     word_list_row.insertCell(2).innerHTML = '<input type="button" class="button" value = "❌" onClick="Javascript:WordListDeleteRow(this)">';
 
     document.getElementById('word_list_selected_word').value = "";
@@ -112,12 +117,39 @@ function WordListAddRow(word_list_selected_word) {
     game.word_to_find_list.push(word_list_selected_word);
 }
 
-function WordListAddRowRandom(letter_count) {
-    var dictionary_index = letter_count - 5; // 5 letters word is dict_0, 6 is dict_1
-    var word_list_random_word_index = Math.floor(Math.random() * dictionary_list[dictionary_index].length);
-    var word_list_random_word = dictionary_list[dictionary_index][word_list_random_word_index];
+function WordListAddRowRandom(word_length) {
+    // Vérifie si la longueur du mot est valide
+    if (word_length < 5 || word_length > 10) {
+        console.error("Seuls les mots entre 5 et 10 lettres sont gérés.");
+        return Promise.reject("Longueur de mot invalide.");
+    }
 
-    WordListAddRow(word_list_random_word);
+    const dictionary_index = `length_${word_length}`;
+
+    // Si le dictionnaire est déjà chargé, on utilise une promesse résolue
+    if (game.word_to_find_dictionary[dictionary_index] && game.word_to_find_dictionary[dictionary_index].length > 0) {
+        const word_list_random_word_index = Math.floor(Math.random() * game.word_to_find_dictionary[dictionary_index].length);
+        const word_list_random_word = game.word_to_find_dictionary[dictionary_index][word_list_random_word_index];
+        WordListAddRow(word_list_random_word);
+        return Promise.resolve();
+    }
+    // Sinon, on charge le dictionnaire et on attend sa disponibilité
+    else {
+        return new Promise((resolve, reject) => {
+            addDictionaryPropositionWithCallback(word_length, () => {
+                // Une fois le dictionnaire chargé, on essaie à nouveau
+                if (game.word_to_find_dictionary[dictionary_index] && game.word_to_find_dictionary[dictionary_index].length > 0) {
+                    const word_list_random_word_index = Math.floor(Math.random() * game.word_to_find_dictionary[dictionary_index].length);
+                    const word_list_random_word = game.word_to_find_dictionary[dictionary_index][word_list_random_word_index];
+                    WordListAddRow(word_list_random_word);
+                    resolve();
+                } else {
+                    console.error(`Le dictionnaire pour les mots de ${word_length} lettres n'est toujours pas disponible.`);
+                    reject("Dictionnaire non disponible.");
+                }
+            });
+        });
+    }
 }
 
 function WordAddCustom() {
@@ -139,10 +171,7 @@ function WordListDeleteRow(word) {
 }
 
 function SearchWordInformations(word) {
-    var word_list_index = word.parentNode.parentNode.rowIndex;
-    console.log(game.word_to_find_list[word_list_index - 1])
-
-    if (confirm("Voulez-vous ouvrir une page wiktionary.org sur le mot " + game.word_to_find_list[word_list_index - 1].toLowerCase() + "?")) {
-        window.open("https://fr.wiktionary.org/w/index.php?search=" + game.word_to_find_list[word_list_index - 1].toLowerCase(), "_blank");
+    if (confirm("Voulez-vous ouvrir une page wiktionary.org sur le mot " + word.toLowerCase() + "?")) {
+        window.open("https://fr.wiktionary.org/w/index.php?search=" + word.toLowerCase(), "_blank");
     }
 }

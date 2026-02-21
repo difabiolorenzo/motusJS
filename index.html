@@ -12,19 +12,6 @@
 </head>
 
 <body id="body" onLoad="initVariables()">
-    <script type="text/javascript" src="./src/js/dictionary/words.js"></script>
-    <script type="text/javascript" src="./src/js/game/game.js"></script>
-    <script type="text/javascript" src="./src/js/game/init.js"></script>
-    <script type="text/javascript" src="./src/js/letter/letter_grid.js"></script>
-    <script type="text/javascript" src="./src/js/number/number_grid.js"></script>
-    <script type="text/javascript" src="./src/js/number/grid_data.js"></script>
-    <script type="text/javascript" src="./src/js/settings/settings.js"></script>
-    <script type="text/javascript" src="./src/js/game/keyinput.js"></script>
-    <!-- <script type="module" src="./src/js/settings/settings.json"></script> -->
-
-    <script type="text/javascript" src="./src/js/sounds/jquery-3.7.0.min.js"></script>
-    <script type="text/javascript" src="./src/js/sounds/jquery.playSound.js"></script>
-
     <!-- Page: Menu principal -->
     <!-- Les pages devront être affichées une à la fois -->
     <div class="page" id="main_menu" style="display:block;">
@@ -39,6 +26,7 @@
             <button class="button menu_button" onclick="displayPage('credit_page')">Credits</button>
             <button class="button menu_button" id="debug_menu_button" onclick="displayPage('debug_page')">Debug</button>
         </div>
+
         <div id="version_placeolder">
             <a id="game">motusJS</a><a id="version">JavaScript desactivé.</a>
         </div>
@@ -92,7 +80,7 @@
                     <div id="purgatory">
                     </div>
                     <div id="number_grid_actions">
-                        <div class="pick_ball" onclick="pickBall()">?</div>
+                        <div id="button_pick_ball" role="button" class="pick_ball" onclick="pickBall()">?</div>
                     </div>
                 </div>
             </div>
@@ -128,45 +116,47 @@
     <div class="page" id="credit_page" style="display:none;">
         <div id="credit-up">
             <div class="d-flex topbar-page">
-                <h1 class="link" onclick="displayPage('main_menu')">🡰</h1>
+                <button class="btn nav-button btn-light" onclick="displayPage('main_menu')">🡰</button>
                 <h1>Credits</h1>
             </div>
-            <div class="section">
-                <h3>GitHub</h3>
-                <button class="button menu_button"
-                    onclick="window.location.href = 'https://github.com/difabiolorenzo/motusJS'">GitHub</button>
+            <div class="">
+                <div class="section">
+                    <h3>GitHub</h3>
+                    <button class="btn"
+                        onclick="window.location.href = 'https://github.com/difabiolorenzo/motusJS'">GitHub</button>
+                </div>
+                <div class="section">
+                    <h3>Motus</h3>
+                    <p>Le jeu Motus est une propriété de France Télévisions / IDTV.</p>
+                    <p>Lingo 1990 conception Ralph Andrews</p>
+                    <p>ALL 3 MEDIA International</p>
+                    <p>L’ensemble des éléments (logos, marques et autres éléments reproduits) sont réservés et protégés par
+                        le droit
+                        de la propriété intellectuelle, notamment les droits d’auteur, droits voisins, droits des marques,
+                        tous
+                        reviennent à <a href="https://www.francetelevisions.fr/cgu">francetelevisions.</a></p>
+                </div>
+                <div class="section">
+                    <h3>jQuery</h3>
+                    <p>jQuery est sous licence <a
+                            href="https://tldrlegal.com/license/creative-commons-cc0-1.0-universal">CC0</a></p>
+                </div>
+                <div class="section">
+                    <h3>Idée d'origine</h3>
+                    <p>motusJS est construit sur les base du code de <b>sogroo</b> avec l'ancienne version de son site <a
+                            href="https://web.archive.org/web/20200814003927/http://www.anagrammeur.com/jeux/motus/motus.php">anagrammeur.com</a>
+                    </p>
+                </div>
+                <div class="section">
+                    <h3>Dictionnaires</h3>
+                    <p>Les dictionnaires des mots proviennent du jeu <a
+                            href="ftp://ftp.ac-grenoble.fr/ge/educational_games">XScrabble.</a></p>
+                </div>
+                <div class="section">
+                    <h3>Icônes</h3>
+                    <p>Icônes par <a href="https://www.flaticon.com/uicons">Flaticon</a></p>
+                </div>
             </div>
-            <div class="section">
-                <h3>Motus</h3>
-                <p>Le jeu Motus est une propriété de France Télévisions / IDTV.</p>
-                <p>Lingo 1990 conception Ralph Andrews</p>
-                <p>ALL 3 MEDIA International</p>
-                <p>L’ensemble des éléments (logos, marques et autres éléments reproduits) sont réservés et protégés par
-                    le droit
-                    de la propriété intellectuelle, notamment les droits d’auteur, droits voisins, droits des marques,
-                    tous
-                    reviennent à <a href="https://www.francetelevisions.fr/cgu">francetelevisions.</a></p>
-            </div>
-            <div class="section">
-                <h3>jQuery</h3>
-                <p>jQuery est sous licence <a
-                        href="https://tldrlegal.com/license/creative-commons-cc0-1.0-universal">CC0</a></p>
-            </div>
-            <div class="section">
-                <h3>Idée d'origine</h3>
-                <p>motusJS est construit sur les base du code de <b>sogroo</b> avec l'ancienne version de son site <a
-                        href="https://web.archive.org/web/20200814003927/http://www.anagrammeur.com/jeux/motus/motus.php">anagrammeur.com</a>
-                </p>
-            </div>
-            <div class="section">
-                <h3>Dictionnaires</h3>
-                <p>Les dictionnaires des mots proviennent du jeu <a
-                        href="ftp://ftp.ac-grenoble.fr/ge/educational_games">XScrabble.</a></p>
-            </div>
-        </div>
-        <div class="section">
-            <h3>Icônes</h3>
-            <p>Icônes par <a href="https://www.flaticon.com/uicons">Flaticon</a></p>
         </div>
     </div>
     </div>
@@ -176,7 +166,7 @@
     <!-- Page: Paramètres -->
     <div class="page" id="settings_page" style="display:none;">
         <div class="topbar-page">
-            <h1 class="link" onclick="displayPage('main_menu')">🡰</h1>
+            <button class="btn nav-button btn-light" onclick="displayPage('main_menu')">🡰</button>
             <h1>Paramètres</h1>
         </div>
 
@@ -346,8 +336,8 @@
                         <label for="sort_mode_select">Mode de séléction des boules</label>
                         <select disabled class="select" id="sort_mode_select" onchange="UpdateNumberSelectMode(this.value);">
                             <option value="random">Au hasard</option>
-                            <option value="input_touch">Par clique (n'inclut pas les boules noires)</option>
-                            <option value="input_keyboard">Par clavier (n'inclut pas les boules noires))</option>
+                            <option value="input_touch">Par clique</option>
+                            <option value="input_keyboard">Par clavier</option>
                         </select>
                     </div>
                 </div>
@@ -395,17 +385,17 @@
                 <div id="settings_ajout_mot_buttons" class="p-4">
                     <h3>Nombre de lettre</h3>
                     <input type="button" id="word_list_button_random" value="5"
-                        onclick="Javascript:WordListAddRowRandom(5)">
+                        onclick="WordListAddRowRandom(5)">
                     <input type="button" id="word_list_button_random" value="6"
-                        onclick="Javascript:WordListAddRowRandom(6)">
+                        onclick="WordListAddRowRandom(6)">
                     <input type="button" id="word_list_button_random" value="7"
-                        onclick="Javascript:WordListAddRowRandom(7)">
+                        onclick="WordListAddRowRandom(7)">
                     <input type="button" id="word_list_button_random" value="8"
-                        onclick="Javascript:WordListAddRowRandom(8)">
+                        onclick="WordListAddRowRandom(8)">
                     <input type="button" id="word_list_button_random" value="9"
-                        onclick="Javascript:WordListAddRowRandom(9)">
+                        onclick="WordListAddRowRandom(9)">
                     <input type="button" id="word_list_button_random" value="10"
-                        onclick="Javascript:WordListAddRowRandom(10)">
+                        onclick="WordListAddRowRandom(10)">
                 </div>
 
                 <div class="word_list_section  p-4" id="word_list_section_text">
@@ -431,33 +421,104 @@
 
     <!-- Page: Debug -->
     <div class="page" id="debug_page" style="display:none; color:white;">
-        <div>
+        <div class="topbar-page">
+            <button class="btn nav-button btn-light" onclick="displayPage('main_menu')">🡰</button>
             <h1>Debug</h1>
-            <button onclick="displayPage('main_menu')">Retour</button>
         </div>
 
-        <div>
-            <button onclick="playsound('grille_creation');">grille_creation</button>
-            <button onclick="playsound('grille_numero');">grille_numero</button>
-            <button onclick="playsound('grille_boule_noire');">grille_boule_noire</button>
-            <button onclick="playsound('grille_numero_tire');">grille_numero_tire</button>
-            <button onclick="playsound('motus');">motus</button>
-            <button onclick="playsound('boule_magique');">boule_magique</button>
-        </div>
+        <h2>Son</h2>
+            <div>
+                <button class="btn btn-light" onclick="playsound('grille_creation');">grille_creation</button>
+                <button class="btn btn-light" onclick="playsound('grille_numero');">grille_numero</button>
+                <button class="btn btn-light" onclick="playsound('grille_boule_noire');">grille_boule_noire</button>
+                <button class="btn btn-light" onclick="playsound('grille_numero_tire');">grille_numero_tire</button>
+                <button class="btn btn-light" onclick="playsound('motus');">motus</button>
+                <button class="btn btn-light" onclick="playsound('boule_magique');">boule_magique</button>
+            </div>
 
-        <div>
-            <button onclick="playsound('letter_ok');">letter_ok</button>
-            <button onclick="playsound('letter_bad');">letter_bad</button>
-            <button onclick="playsound('letter_missing');">letter_missing</button>
-            <button onclick="playsound('letter_bonus');">letter_bonus</button>
-            <button onclick="playsound('wrong');">wrong</button>
-        </div>
+            <div>
+                <button class="btn btn-light" onclick="playsound('letter_ok');">correcte</button>
+                <button class="btn btn-light" onclick="playsound('letter_bad');">mauvaise</button>
+                <button class="btn btn-light" onclick="playsound('letter_missing');">manquante</button>
+                <button class="btn btn-light" onclick="playsound('letter_bonus');">bonus</button>
+                <button class="btn btn-light" onclick="playsound('wrong');">perdu</button>
+            </div>
 
-        <div>
-            <button onclick="playsound('victory');">victory</button>
-            <button onclick="playsound('temps_ecoule');">temps_ecoule</button>
-            <button onclick="playsound('loose');">loose</button>
-        </div>
+            <div>
+                <button class="btn btn-light" onclick="playsound('victory');">victoire</button>
+                <button class="btn btn-light" onclick="playsound('temps_ecoule');">temps écoule</button>
+                <button class="btn btn-light" onclick="playsound('loose');">perdu</button>
+            </div>
+
+            <div class="d-none">
+                <h4>random sound</h4>
+                <code><p>NOUVEAUTE : N O U V E A U T E <a href="https://youtu.be/QZawzcXAWWA?si=eaIW3h7g_9Yjdu3K&t=20">(YouTube)</a></p></code>
+                <div>
+                    
+                    <div class="form-group">
+                        <label for="debug_ytp_speed">Vitesse</label>
+                        <input type="range" id="debug_ytp_speed" name="volume" min="1" max="10" value="1" onchange="debug_random_sound_speed_change(this.value)"/>
+                        <span id="debug_ytp_speed_value"></span>
+                    </div>
+                    <input type="range" id="debug_ytp_amount" name="volume" min="5" max="100" value="20"/>
+                </div>
+                <div>
+                    <table class="grid style_2010">
+                        <tr id="letter_line_0"><td id="letter_0_0" class="background">B</td><td id="letter_0_1" class="background">.</td><td id="letter_0_2" class="background">.</td><td id="letter_0_3" class="background">.</td><td id="letter_0_4" class="background">R</td><td id="letter_0_5" class="background">.</td><td id="letter_0_6" class="background">.</td><td id="letter_0_7" class="background">.</td></tr>
+                    </table>
+                </div>
+            </div>
+
+        <h2>Stockage Local</h2>
+            <h4>add</h4>
+            <div>
+                <button class="btn btn-light" id="debug_button_add_dictionary_5" onclick="addDictionaryProposition(5);">5</button>
+                <button class="btn btn-light" id="debug_button_add_dictionary_6" onclick="addDictionaryProposition(6);">6</button>
+                <button class="btn btn-light" id="debug_button_add_dictionary_7" onclick="addDictionaryProposition(7);">7</button>
+                <button class="btn btn-light" id="debug_button_add_dictionary_8" onclick="addDictionaryProposition(8);">8</button>
+                <button class="btn btn-light" id="debug_button_add_dictionary_9" onclick="addDictionaryProposition(9);">9</button>
+                <button class="btn btn-light" id="debug_button_add_dictionary_10" onclick="addDictionaryProposition(10);">10</button>
+            </div>
+            <h4>drop</h4>
+            <div>
+                <button disabled class="btn btn-light" id="debug_button_drop_dictionary_5" onclick="dropDictionaryProposition(5);">5</button>
+                <button disabled class="btn btn-light" id="debug_button_drop_dictionary_6" onclick="dropDictionaryProposition(6);">6</button>
+                <button disabled class="btn btn-light" id="debug_button_drop_dictionary_7" onclick="dropDictionaryProposition(7);">7</button>
+                <button disabled class="btn btn-light" id="debug_button_drop_dictionary_8" onclick="dropDictionaryProposition(8);">8</button>
+                <button disabled class="btn btn-light" id="debug_button_drop_dictionary_9" onclick="dropDictionaryProposition(9);">9</button>
+                <button disabled class="btn btn-light" id="debug_button_drop_dictionary_10" onclick="dropDictionaryProposition(10);">10</button>
+            </div>
+
+            <div>
+                <button class="btn btn-light" onclick="displayLocalStorageInDOM()">raffraichir</button>
+                <pre id="stateViewerLocalStorage" class="stateViewer"></pre>
+            </div>
+
+        <h2>Données</h2>
+            <h3>Gamestate</h3>
+            <button class="btn btn-light" onclick="
+                    displayObjectInDOM(game, 'stateViewerGame');
+                    displayObjectInDOM(global, 'stateViewerGlobal');
+                    displayObjectInDOM(settings, 'stateViewerSettings');
+                ">raffraichir tous</button>
+            <div class="d-flex">
+                <div>
+                    <h4>game</h4>
+                    <button class="btn btn-light" onclick="displayObjectInDOM(game, 'stateViewerGame');">raffraichir</button>
+                    <pre id="stateViewerGame" class="stateViewer"></pre>
+                </div>
+                <div>
+                    <h4>global</h4>
+                    <button class="btn btn-light" onclick="displayObjectInDOM(global, 'stateViewerGlobal');">raffraichir</button>
+                    <pre id="stateViewerGlobal" class="stateViewer"></pre>
+                </div>
+                <div>
+                    <h4>settings</h4>
+                    <button class="btn btn-light" onclick="displayObjectInDOM(settings, 'stateViewerSettings');">raffraichir</button>
+                    <pre id="stateViewerSettings" class="stateViewer"></pre>
+                </div>
+            </div>
+            
     </div>
 </body>
 
@@ -478,5 +539,20 @@
     <source src="src/sounds/boule_magique.mp3">
     <source src="src/sounds/jingle_motus.mp3">
 </audio>
+
+    <script type="text/javascript" src="./src/js/dictionary/words.js"></script>
+    <script type="text/javascript" src="./src/js/game/game.js"></script>
+    <script type="text/javascript" src="./src/js/game/init.js"></script>
+    <script type="text/javascript" src="./src/js/letter/letter_grid.js"></script>
+    <script type="text/javascript" src="./src/js/number/number_grid.js"></script>
+    <script type="text/javascript" src="./src/js/number/grid_data.js"></script>
+    <script type="text/javascript" src="./src/js/settings/settings.js"></script>
+    <script type="text/javascript" src="./src/js/game/keyinput.js"></script>
+    <script type="text/javascript" src="./src/js/dictionary/proposition/5_lettres.js"></script>
+    <!-- <script type="module" src="./src/js/settings/settings.json"></script> -->
+
+    <script type="text/javascript" src="./src/js/sounds/jquery-3.7.0.min.js"></script>
+    <script type="text/javascript" src="./src/js/sounds/jquery.playSound.js"></script>
+
 
 </html>

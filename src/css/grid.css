@@ -112,8 +112,7 @@ margin-left: auto;
 
 #purgatory {
   width: 100vw;
-  
-  
+  font-weight: bold;
   
 height: 100%;border-left: none;
     border-bottom: none;display: grid;justify-items: center;
@@ -251,7 +250,7 @@ display: block;
   margin-left: 1.75vw;
 }
 
-.number, .purgatory_number, .pick_ball {
+.number, .purgatory_number, #button_pick_ball {
   margin: 0;
   box-shadow: 2px 2px 5px 0px #0000006b;
   font-size: 6vw;color: black;height: 10vw;width: 10vw;
@@ -265,7 +264,7 @@ display: block;
   line-height: 9.95vw;
 }
 
-.pick_ball {
+#button_pick_ball {
   font-size: 15vw;
   height: 25vw;
   width: 25vw;
@@ -295,16 +294,16 @@ user-select: none;}
   }
 }
 
-  .pick_ball:hover {
+  #button_pick_ball:hover {
     animation: hover_pick_button 0.3s ease-in-out;
     border: 5px solid white;
     color: white
   }
 
-.style_1990 .number, .style_1990 .purgatory_number, .style_1990 .pick_ball { background-color: #e3d310; }
-.style_2000 .number, .style_2000 .purgatory_number, .style_2000 .pick_ball { background-color: #e3d310; }
-.style_2010 .number, .style_2010 .purgatory_number, .style_2010 .pick_ball { background-image: -webkit-radial-gradient(5vw 0vw, circle cover, #ffff35, #c79300); }
-.style_2019 .number, .style_2019 .purgatory_number, .style_2019 .pick_ball { background-color: #d9d100;box-shadow: 2px 2px 7px -2px hsla(0, 0%, 0%, .5);background-image: linear-gradient(180deg, #ffb500, #ff8d0000); font-family: Gotham; box-shadow: inset -1px -2px 1px 1px #00000054;text-shadow: 0 0 0 BLACK;}
+.style_1990 .number, .style_1990 .purgatory_number, .style_1990 #button_pick_ball { background-color: #e3d310; }
+.style_2000 .number, .style_2000 .purgatory_number, .style_2000 #button_pick_ball { background-color: #e3d310; }
+.style_2010 .number, .style_2010 .purgatory_number, .style_2010 #button_pick_ball { background-image: -webkit-radial-gradient(5vw 0vw, circle cover, #ffff35, #c79300); }
+.style_2019 .number, .style_2019 .purgatory_number, .style_2019 #button_pick_ball { background-color: #d9d100;box-shadow: 2px 2px 7px -2px hsla(0, 0%, 0%, .5);background-image: linear-gradient(180deg, #ffb500, #ff8d0000); font-family: Gotham; box-shadow: inset -1px -2px 1px 1px #00000054;text-shadow: 0 0 0 BLACK;}
 
 .style_1990 .motus { background-color: #bb0000;color: f1f1f1; }
 .style_2000 .motus { background-color: #bb0000;color: f1f1f1; }
