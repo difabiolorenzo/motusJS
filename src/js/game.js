@@ -8,11 +8,12 @@ function initVariables() {
     document.getElementById("version").innerHTML = "MotusJS " + game.version;
     preloadSounds();
     registerServiceWorker();
+    initAnimator();
 }
 
 function setDefaultVariables() {
     game = {
-        version: "2.6",
+        version: "2.6.1",
         displayed_grid_type: "letter_grid", // "number_grid"
         displayed_page: "main_menu",
         
@@ -237,6 +238,7 @@ function setDefaultVariables() {
         score_motus: 100,           // points par MOTUS
         change_turn_mode: "by_error", // ("by_error" || "by_proposition")
         playsound_enabled: true,
+        public_window_sounds: true,     // sons joués par la fenêtre publique quand elle est ouverte
         play_extra_sounds: false,
 
         help_page_length: 8,
@@ -254,6 +256,10 @@ function initGame() {
         returnGame();
         return;
     }
+
+    // Panneau animateur fermé à chaque lancement : le mot n'apparaît jamais par accident à l'écran
+    toggleAnimatorPanel(false);
+    clearUndo();
 
     game.state = {
         letter_grid_created: false,
@@ -535,6 +541,7 @@ function setHTMLFromSettings() {
     updateMenuWordLength(settings.always_ask_length, false);
     document.getElementById("settings_section_team").value = settings.change_turn_mode;
     document.getElementById("checkbox_sound_activated").checked = settings.playsound_enabled;
+    document.getElementById("checkbox_public_window_sounds").checked = settings.public_window_sounds;
 }
 
 function displayObjectInDOM(obj, elementId) {
@@ -720,7 +727,8 @@ function UpdateNumberSelectMode(value = settings.ball_picking_mode) {
 
     
 
-    if (game.word_found == false) {
+    // Pas de tirage avant un mot trouvé, sauf pioche déverrouillée depuis le panneau animateur
+    if (game.word_found == false && game.number_grid_unlocked != true) {
         console.log("Pas de boule a tiré, le mot n'est pas trouvé.")
         return;
     }
@@ -938,11 +946,20 @@ function playAudio(src) {
     const base = audio_cache[src];
     const audio = base.paused || base.ended ? base : base.cloneNode();
     audio.currentTime = 0;
-    audio.play().catch(error => console.warn(`Lecture du son impossible (${src}) :`, error));
+    // Renvoie une promesse : true si le son a été joué
+    return audio.play().then(() => true).catch(error => {
+        console.warn(`Lecture du son impossible (${src}) :`, error);
+        return false;
+    });
 }
 
 function playsound(sound) {
     if (settings.playsound_enabled == true && SOUND_FILES[sound]) {
+        // Fenêtre publique ouverte : c'est elle qui joue le son (haut-parleurs de la salle)
+        if (shouldPlaySoundInPublicWindow()) {
+            sendToPublicWindow({ type: "motus_sound", sound: sound });
+            return;
+        }
         playAudio(SOUND_FILES[sound]);
     }
 }
@@ -1132,6 +1149,7 @@ function wordErrorHandler(errorCode, catching_up) { // Affiche dans la console l
     playsound("error");
 
     if (catching_up == true) {
+        markGameBusy(3500);
         if (settings.team_enabled == true) { switchTeamFocus(); }
         setTimeout(function () {
             if (settings.reinit_line_if_unvalid_word == true) {
@@ -1475,7 +1493,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Un clic souris sur la barre haute ou le clavier visuel ne garde pas le focus sur le bouton :
 // sinon la touche Entrée suivante activerait ce bouton au lieu de valider le mot
 document.addEventListener('mousedown', function(event) {
-    if (event.target.closest && event.target.closest('.topbar_button_group, .keyboard_key')) {
+    if (event.target.closest && event.target.closest('.topbar_button_group, .keyboard_key, .animator_panel button')) {
         event.preventDefault();
     }
 });

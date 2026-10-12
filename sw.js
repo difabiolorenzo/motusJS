@@ -2,7 +2,7 @@
 // Stratégie « réseau d'abord » : en ligne, toujours la dernière version (pas de cache périmé après une mise à jour) ;
 // hors ligne, la copie mise en cache. Tous les fichiers du jeu sont mis en cache dès la première visite.
 // Incrémenter CACHE_VERSION avec game.version (game.js) pour purger les anciennes copies.
-const CACHE_VERSION = "2.6";
+const CACHE_VERSION = "2.6.1";
 const CACHE_NAME = `motusjs-${CACHE_VERSION}`;
 
 const PRECACHE_FILES = [
@@ -17,6 +17,7 @@ const PRECACHE_FILES = [
     "src/js/number_grid.js",
     "src/js/aide.js",
     "src/js/keyinput.js",
+    "src/js/animator.js",
     "src/data/grille_tele.js",
     "src/js/dictionary/mot_a_trouver/5_lettres.js",
     "src/js/dictionary/mot_a_trouver/6_lettres.js",

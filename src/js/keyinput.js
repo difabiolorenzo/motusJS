@@ -1,4 +1,7 @@
 document.addEventListener("keydown", function (event) {
+	// Fenêtre publique : affichage seulement, le clavier ne pilote rien
+	if (IS_PUBLIC_VIEW) { return; }
+
 	// Choix de la longueur du prochain mot : 5 à 9, 0 pour 10 (rangée du haut ou pavé numérique)
 	if (document.getElementById("word_length_dialog").open) {
 		const length_keys = { Digit5: 5, Digit6: 6, Digit7: 7, Digit8: 8, Digit9: 9, Digit0: 10,
@@ -29,12 +32,21 @@ document.addEventListener("keydown", function (event) {
 			break;
 	}
 	if (game.started == true && game.pause == false) {
+		// Annuler la dernière action de l'animateur
+		if ((event.ctrlKey || event.metaKey) && event.code == "KeyZ") {
+			event.preventDefault();
+			animatorCommand("undo");
+			return;
+		}
 		switch (event.code) {
 			case "Digit6":
-				switchGameGridFocusOn()
+				animatorCommand("switch_grid");
 				break;
 			case "Digit5":
-				switchTeamFocus();
+				animatorCommand("switch_team");
+				break;
+			case "Digit7":
+				toggleAnimatorPanel();
 				break;
 		}
 		if (game.focus_on == "letter") {
@@ -51,17 +63,16 @@ document.addEventListener("keydown", function (event) {
 				case "Digit1":
 					// Confirmation d'une validation en attente, sinon nouvelle ligne
 					if (confirmWordSubmission()) { break; }
-					newWordLine();
+					animatorCommand("new_line");
 					break;
 				case "Digit2":
-					addBonusLetter();
+					animatorCommand("bonus");
 					break;
 				case "Digit3":
-					removeWordLine();
+					animatorCommand("remove_line");
 					break;
 				case "Digit4":
-					reinitWordLine();
-					updateCursor();
+					animatorCommand("replace_line");
 					break;
 				case "Digit9":
 					wordReinit();
@@ -77,7 +88,8 @@ document.addEventListener("keydown", function (event) {
 					break;
 			}
 			if (game.word_proposed.length < game.word_length) {
-				if ((event.key >= "a" && event.key <= "z" || event.key >= "A" && event.key <= "Z") && event.key != "Backspace" && event.key != "Enter") { //if between a & z OR A & Z
+				// Une seule lettre de a à z, sans Ctrl / Alt / Cmd (sinon « Shift », « Tab »… passaient le test)
+				if (event.key.length == 1 && /[a-zA-Z]/.test(event.key) && !event.ctrlKey && !event.altKey && !event.metaKey) {
 					addLetter(event.key.toUpperCase());
 				}
 			}

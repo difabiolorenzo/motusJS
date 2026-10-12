@@ -125,6 +125,8 @@ function wordInit() {
 	game.already_proposed = false;
 	game.keyboard_cursor_position = {x: 0, y: 0}
 	game.word_recorded = false;
+	game.number_grid_unlocked = false;
+	clearUndo();
 	
 	if (game.word_to_find_list.length == 0) {
 		console.error("Aucun mot trouvé dans la liste")
@@ -428,6 +430,7 @@ function addBonusLetter() {
 		&& game.try_count_index <= game.try_number_max) {
 
 		let letter_left = game.letter_placement_status.filter(status => status === "missing").length;
+		markGameBusy(900);
 		
 		if (letter_left <= 1 && settings.playsound_enabled && settings.play_extra_sounds) {
 			// Pas assez de lettre à trouver
@@ -471,6 +474,7 @@ function displaySolution() {
 	}
 
 	announce(`Solution : ${game.word_to_find}.`);
+	markGameBusy((game.word_length + 1) * Math.floor((2000 / game.word_length) * (game.word_length/10) * settings.verification_time_multiplier) + 2500);
 	if (game.word_found != true) { recordWordResult("non trouvé"); }
 	stopProposalTimer();
 
@@ -683,6 +687,7 @@ function checkProposition() {
 
 	// Animation 
 	const verification_timer = Math.floor((2000 / game.word_length) * (game.word_length/10) * settings.verification_time_multiplier);
+	markGameBusy(verification_timer * word_to_find.length + 500);
 	for (let i=0;i<word_to_find.length;i++) {
 		setTimeout(function () {
 			switch (proposed_letter_placement_status[i]) {
@@ -720,6 +725,7 @@ function checkVictory() {
 
 	game.word_found = true;
 	game.word_displayed = true;
+	markGameBusy(4500);
 	announce(`Mot trouvé : ${game.word_to_find} !`);
 	recordWordResult("trouvé");
 

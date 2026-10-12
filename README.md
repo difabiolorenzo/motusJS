@@ -40,6 +40,8 @@ Pour les règles complètes, voir [la page wikipedia de Motus](https://fr.wikipe
 * Nouveau mot avec la touche **ç** ou **9**
 * Affichage du mot avec la touche **à** ou **0**
 * Son du temps écoulé avec la touche **$** (**¤**)
+* Panneau animateur avec la touche **è** / **7**
+* Annuler la dernière action (lettre bonus, ligne) avec **Ctrl** + **Z**
 * Retour au menu / reprise de la partie avec la touche **Échap**
 
 Avec l'option « Confirmer chaque mot avant vérification », **Entrer** met le mot en attente : **\&** / **1** confirme, **Effacer** annule.
@@ -51,6 +53,12 @@ Avec l'option « Confirmer chaque mot avant vérification », **Entrer** met le 
 * Barème réglable dans Paramètres > Équipes et Scores : points par mot trouvé et par MOTUS.
 * Chronomètre expérimental (Paramètres > Expérimental) : compte à rebours par proposition, avec durée et comportement à zéro réglables.
 * Le jeu fonctionne hors ligne après une première visite en ligne.
+
+### Vue animateur
+
+La touche **7** (ou le bouton « Animateur ») ouvre un panneau réservé à l'animateur : mot à trouver, lignes utilisées, mots proposés, prochains mots, scores, boules restantes et boule magique, boutons pour chaque commande et annulation des dernières actions. Sur la grille de numéros, le panneau affiche une copie cliquable de la grille de l'équipe qui a la main : un clic tire la boule choisie (boule magique repérée), avec des boutons « Boule noire » et « Au hasard ». « Déverrouiller la pioche » permet de tirer même sans mot trouvé, ou de redonner des tirages. Le panneau est fermé à chaque nouvelle partie.
+
+Depuis ce panneau, « Ouvrir la fenêtre publique » affiche la grille seule dans une seconde fenêtre (projecteur, second écran), synchronisée en direct, sans jamais montrer le mot avant qu'il soit révélé. Les sons y sont joués (réglable dans Paramètres > Sons). Fonctionne aussi en ouvrant `index.html` sans serveur.
 
 ### Aide
 

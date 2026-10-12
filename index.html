@@ -17,6 +17,8 @@
     <body id="body" onLoad="initVariables()">
         <!-- Annonces pour les lecteurs d'écran (résultats, erreurs) -->
         <div id="screen_reader_announcer" class="visually-hidden" role="status" aria-live="polite"></div>
+        <!-- Fenêtre publique uniquement : le navigateur exige un clic avant de jouer du son -->
+        <button type="button" id="public_sound_notice" class="public_sound_notice d-none">Cliquez pour activer le son</button>
 
         <!-- Page: Menu principal -->
         <!-- Les pages devront être affichées une à la fois -->
@@ -56,7 +58,7 @@
                     <span class="topbar_label">Menu</span>
                 </button>
                 <div id="topbar_game_buttons">
-                    <button type="button" id="topbar_button_bonus_letter" class="topbar_button_group d-none" onclick="addBonusLetter()">
+                    <button type="button" id="topbar_button_bonus_letter" class="topbar_button_group d-none" onclick="animatorCommand('bonus')">
                         <img src="./src/img/sparkles.svg" alt="" />
                         <span class="topbar_label">Lettre bonus</span>
                     </button>
@@ -86,6 +88,11 @@
                         <span class="topbar_label">TEAM</span>
                     </div> -->
                 </div>
+                <button type="button" id="topbar_button_animator" class="topbar_button_group" onclick="toggleAnimatorPanel()"
+                    aria-pressed="false" aria-controls="animator_panel">
+                    <img src="./src/img/stats.svg" alt="" />
+                    <span class="topbar_label">Animateur</span>
+                </button>
                 <button type="button" class="topbar_button_group" data-toggle="modal" data-target="#settings-modal">
                     <img src="./src/img/settings.png" alt="" />
                     <span class="topbar_label">Paramètres</span>
@@ -113,6 +120,47 @@
                 <div class="flex_section"> -->
             </div>
             <div id="game">
+                <!-- Panneau animateur (touche 7) : visible seulement sur l'écran de l'animateur -->
+                <aside id="animator_panel" class="animator_panel d-none" aria-labelledby="animator_panel_title">
+                    <div class="animator_panel_header">
+                        <h2 id="animator_panel_title">Animateur</h2>
+                        <button type="button" class="animator_close" onclick="toggleAnimatorPanel(false)" aria-label="Fermer le panneau animateur">&times;</button>
+                    </div>
+
+                    <h3>Mot à trouver</h3>
+                    <p id="animator_word" class="animator_word">—</p>
+                    <p id="animator_lines"></p>
+                    <p><strong>Déjà proposés :</strong> <span id="animator_proposed"></span></p>
+                    <p><strong>Prochains mots :</strong> <span id="animator_next"></span></p>
+
+                    <h3>Équipes</h3>
+                    <p id="animator_teams"></p>
+
+                    <section id="animator_numbers_section" class="d-none">
+                        <h3>Grille de numéros</h3>
+                        <div id="animator_numbers"></div>
+                    </section>
+
+                    <h3>Actions</h3>
+                    <div class="animator_actions">
+                        <button type="button" onclick="animatorCommand('bonus')">Lettre bonus <kbd>2</kbd></button>
+                        <button type="button" onclick="animatorCommand('new_line')">Nouvelle ligne <kbd>1</kbd></button>
+                        <button type="button" onclick="animatorCommand('remove_line')">Supprimer la ligne <kbd>3</kbd></button>
+                        <button type="button" onclick="animatorCommand('replace_line')">Remplacer la ligne <kbd>4</kbd></button>
+                        <button type="button" onclick="animatorCommand('switch_team')">Changer d'équipe <kbd>5</kbd></button>
+                        <button type="button" onclick="animatorCommand('switch_grid')">Changer de grille <kbd>6</kbd></button>
+                        <button type="button" onclick="animatorCommand('new_word')">Nouveau mot <kbd>9</kbd></button>
+                        <button type="button" onclick="animatorCommand('solution')">Solution <kbd>0</kbd></button>
+                        <button type="button" onclick="animatorCommand('times_up')">Temps écoulé <kbd>$</kbd></button>
+                        <button type="button" id="animator_undo_button" onclick="animatorCommand('undo')" disabled>Annuler <span id="animator_undo_count"></span> <kbd>Ctrl+Z</kbd></button>
+                    </div>
+
+                    <h3>Fenêtre publique</h3>
+                    <p>La grille seule, pour un second écran ou un projecteur.</p>
+                    <p id="animator_public_status" role="status">Fermée.</p>
+                    <button type="button" id="animator_public_button" class="btn btn-primary" onclick="togglePublicWindow()">Ouvrir la fenêtre publique</button>
+                </aside>
+
                 <div id="game_grid">
                     <div id="letter_grid_section">
                         <div id="word_typing_indicator_placeholder"><span id="word_typing_indicator"></span></div>
@@ -222,6 +270,8 @@
                     <li>Nouveau mot : <kbd>ç</kbd> / <kbd>9</kbd></li>
                     <li>Afficher la solution : <kbd>à</kbd> / <kbd>0</kbd></li>
                     <li>Son du temps écoulé : <kbd>$</kbd> (<kbd>¤</kbd>)</li>
+                    <li>Panneau animateur (mot à trouver, actions, fenêtre publique) : <kbd>è</kbd> / <kbd>7</kbd></li>
+                    <li>Annuler la dernière action (lettre bonus, ligne) : <kbd>Ctrl</kbd> + <kbd>Z</kbd></li>
                     <li>Retour au menu / reprise de la partie : <kbd>Échap</kbd></li>
                     <li>Avec « Confirmer chaque mot » : <kbd>Entrée</kbd>, puis <kbd>&amp;</kbd> / <kbd>1</kbd> pour confirmer ou <kbd>Effacer</kbd> pour annuler</li>
                 </ul>
@@ -840,6 +890,11 @@
                                     onchange="settings.playsound_enabled = this.checked">
                                 <label for="checkbox_sound_activated">Activer les bruitages</label>
                             </div>
+                            <div class="form-group">
+                                <input type="checkbox" name="checkbox_public_window_sounds" id="checkbox_public_window_sounds"
+                                    onchange="settings.public_window_sounds = this.checked">
+                                <label for="checkbox_public_window_sounds">Jouer les sons dans la fenêtre publique quand elle est ouverte</label>
+                            </div>
                         </div>
 
                         <!-- Experimental -->
@@ -906,5 +961,6 @@
         <script type="text/javascript" src="./src/js/aide.js"></script>
         <script type="text/javascript" src="./src/data/grille_tele.js"></script>
         <script type="text/javascript" src="./src/js/keyinput.js"></script>
+        <script type="text/javascript" src="./src/js/animator.js"></script>
     </body>
 </html>
