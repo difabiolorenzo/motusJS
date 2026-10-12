@@ -1,0 +1,160 @@
+{
+    "emission" : [
+        {
+            "date": "13/09/2024",
+            "emission": "3546",
+            "lien": "https://www.youtube.com/watch?v=7SWenWcFdzw",
+            "equipe_jaune": {
+                "joueur_1": "Christine",
+                "joueur_2": "Cindy"
+            },
+            "equipe_bleu": {
+                "joueur_3": "Françoise",
+                "joueur_4": "Annie"
+            },
+            "cagnote_euros": "4800",
+            "mots": [
+                {
+                    "proposition": [
+                        {"proposition": "SOUDAINES", "joueur": 1},
+                        {"proposition": "SCANDALES", "joueur": 2},
+                        {"proposition": "STUDIEUSE", "joueur": 1},
+                        {"proposition": "SOULANTES", "joueur": 2},
+                        {"proposition": "SAUVAGEON", "joueur": 1},
+                        {"proposition": "SAUCISSES", "joueur": 2}
+                    ],
+                    "trouve": true
+                },   
+                {
+                    "proposition": [
+                        {"proposition": "LIONCEAUX", "joueur": 1},
+                        {"proposition": "LECTRICES", "joueur": 2},
+                        {"proposition": "LACONIQUE", "joueur": 1},
+                        {"proposition": "LOCATIVES", "joueur": 2},
+                        {"proposition": "LOCALISEE", "joueur": 1}
+                    ],
+                    "trouve": true
+                },   
+                {
+                    "proposition": [
+                        {"proposition": "ROUMAINES", "joueur": 2},
+                        {"proposition": "RATISSANT", "joueur": 1},
+                        {"proposition": "ROCAILLES", "joueur": 2},
+                        {"proposition": "RATATINER", "joueur": 1},
+                        {"proposition": "RUSTIQUES", "joueur": 2},
+                        {"proposition": "RESSAISIR", "joueur": 1},
+                        {"proposition": "REDACTEUR", "joueur": 3}
+                    ],
+                    "trouve": true
+                },   
+                {
+                    "proposition": [
+                        {"proposition": "VAUDOISES", "joueur": 1},
+                        {"proposition": "VERACITES", "joueur": 2},
+                        {"proposition": "VALORISEE", "joueur": 1}
+                    ],
+                    "trouve": true
+                },   
+                {
+                    "proposition": [
+                        {"proposition": "EOLIENNES", "joueur": 2},
+                        {"proposition": "EVANOUIES", "joueur": 1},
+                        {"proposition": "ENNUYEUSE", "joueur": 2},
+                        {"proposition": "EPUISANTE", "joueur": 1},
+                        {"proposition": "EVASIONS", "joueur": 2},
+                        {"proposition": "ETUDIANTE", "joueur": 3}
+                    ],
+                    "trouve": true
+                },   
+                {
+                    "proposition": [
+                        {"proposition": "NOUGATINE", "joueur": 4},
+                        {"proposition": "NARRATEUR", "joueur": 3},
+                        {"proposition": "NENUPHARS", "joueur": 4},
+                        {"proposition": "NAGEOIRES", "joueur": 3},
+                        {"proposition": "NEIGEUSES", "joueur": 4},
+                        {"proposition": "NUCLEAIRE", "joueur": 3},
+                        {"proposition": "NUMERAIRE", "joueur": 1}
+                    ],
+                    "trouve": true
+                },   
+                {
+                    "proposition": [
+                        {"proposition": "FOUTAISES", "joueur": 2},
+                        {"proposition": "FIRMAMENT", "joueur": 1},
+                        {"proposition": "FANFARONS", "joueur": 2},
+                        {"proposition": "FLAGEOLAN", "joueur": 1},
+                        {"proposition": "FECONDANT", "joueur": 3}
+                    ],
+                    "trouve": true
+                }, 
+                {
+                    "proposition": [
+                        {"proposition": "DOUANIERS", "joueur": 1},
+                        {"proposition": "DIACLASES", "joueur": 2},
+                        {"proposition": "DEROBADES", "joueur": 1},
+                        {"proposition": "DETOURNER", "joueur": 2},
+                        {"proposition": "DETERMINE", "joueur": 1},
+                        {"proposition": "", "joueur": 2},
+                        {"proposition": "DETROMPER", "joueur": 3}
+                    ],
+                    "trouve": true
+                }
+            ],
+            "numero": [
+                {
+                    "pioche" : [
+                        {"joueur": 2, "numero": 41},
+                        {"joueur": 1, "numero": 57}
+                    ],
+                    "grille": 1
+                },
+                {
+                    "pioche" : [
+                        {"joueur": 1, "numero": 21},
+                        {"joueur": 2, "numero": 43}
+                    ],
+                    "grille": 1
+                },
+                {
+                    "pioche" : [
+                        {"joueur": 3, "numero": 0}
+                    ],
+                    "grille": 1
+                },
+                {
+                    "pioche" : [
+                        {"joueur": 1, "numero": 45},
+                        {"joueur": 2, "numero": 61}
+                    ],
+                    "grille": 1
+                },
+                {
+                    "pioche" : [
+                        {"joueur": 4, "numero": 0}
+                    ],
+                    "grille": 1
+                },
+                {
+                    "pioche" : [
+                        {"joueur": 3, "numero": 20},
+                        {"joueur": 4, "numero": 10}
+                    ],
+                    "grille": 1
+                },
+                {
+                    "pioche" : [
+                        {"joueur": 1, "numero": 51}
+                    ],
+                    "grille": 1
+                },
+                {
+                    "pioche" : [
+                        {"joueur": 3, "numero": 0}
+                    ],
+                    "grille": 2
+                }
+            ]
+        }
+    ]
+}

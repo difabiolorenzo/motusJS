@@ -1,0 +1,20 @@
+# Texte : LF dans le dépôt, CRLF dans la copie de travail
+* text=auto eol=crlf
+
+# Exception : prototype de la vasque en LF
+vasque/index.html text eol=lf
+
+# Binaires
+*.mp3 binary
+*.wav binary
+*.ogg binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.otf binary
+*.ttf binary
+*.woff binary
+*.woff2 binary

@@ -9,11 +9,10 @@ function initNumberGrid() {
 	document.getElementById("number_grid_yellow_placeolder").innerHTML = createHTMLGrid(5, 5, "number_yellow", "number_grid_yellow", false);
 	document.getElementById("number_grid_blue_placeolder").innerHTML = createHTMLGrid(5, 5, "number_blue", "number_grid_blue", false);
 
-	// Remplissage des grille automatiquement ou manuellement
-	fillNumberGrid("yellow", false);
-	fillNumberGrid("blue", false);
-	// fillNumberGrid("yellow", settings.number_grid_creation_animation);
-	// fillNumberGrid("blue", settings.number_grid_creation_animation);
+	// Remplissage des grilles, animé seulement si elles sont affichées dès le début
+	const creation_animation = settings.number_grid_creation_animation == true && settings.start_by_number_grid == true;
+	fillNumberGrid("yellow", creation_animation);
+	fillNumberGrid("blue", creation_animation);
 
 	game.state.number_grid_complete = true;
 	game.state.number_grid_yellow_created = true;
@@ -71,9 +70,9 @@ function defaultNumberGridVariables() {
 	}
 	
 	// Boule magique
-	if (settings.use_saving_ball == true && (settings.limiting_saving_ball == true && game.number_grid_index == 0)) {
-		var random_yellow_saving_ball = numbers_yellow[Math.floor(Math.random() * (numbers_yellow.length - 1))];
-		var random_blue_saving_ball = numbers_blue[Math.floor(Math.random() * (numbers_blue.length - 1))];
+	if (isSavingBallAllowed()) {
+		var random_yellow_saving_ball = numbers_yellow[Math.floor(Math.random() * numbers_yellow.length)];
+		var random_blue_saving_ball = numbers_blue[Math.floor(Math.random() * numbers_blue.length)];
 		
 		var random_yellow_saving_ball_state = "available";
 		var random_blue_saving_ball_state = "available";
@@ -88,7 +87,7 @@ function defaultNumberGridVariables() {
 	};
 
 	game.number_grid_saving_ball_state = {
-		yellow: random_blue_saving_ball_state,
+		yellow: random_yellow_saving_ball_state,
 		blue: random_blue_saving_ball_state
 	};
 
@@ -270,7 +269,7 @@ function fillNumberGrid(team, animation = false) {
 		}
 
 		function displaySavingBall() {
-			if (settings.use_saving_ball == true && (settings.limiting_saving_ball == true && game.number_grid_index != 0)) {
+			if (!isSavingBallAllowed() || game.number_grid_saving_ball[team] === undefined) {
 				return;
 			}
 			
@@ -343,6 +342,8 @@ function updateNumberLeftIndicator() {
 function randomPickBall() {
 	if (game.number_grid_try_left == 0) {
 		playsound("error");
+		showGameMessage("Plus de boule à tirer.");
+		announce("Plus de boule à tirer.");
 		return;
 	}
 
@@ -410,6 +411,8 @@ function pickBall(forced_number) {
 
 	if (game.number_grid_possible[team].indexOf(forced_number) == -1) {
 		console.log("La boule choisie n'est pas disponible dans cette grille");
+		showGameMessage("Cette boule n'est pas dans la grille.");
+		announce("Cette boule n'est pas dans la grille.");
 		return;
 	}
 
@@ -419,6 +422,7 @@ function pickBall(forced_number) {
 	// Boule noire
 	if (forced_number == "⚫") {
 		console.log('%cBoule Noire', 'background: black; color: gold');
+		announce("Boule noire !");
 
 		// Si boule magique
 		if (saving_ball_state == "stored") {
@@ -442,7 +446,7 @@ function pickBall(forced_number) {
 		playsound('grille_numero_tire');
 		
 		// Boule Magique
-		if (settings.use_saving_ball == true && (settings.limiting_saving_ball == true && game.number_grid_index == 0)) {
+		if (isSavingBallAllowed()) {
 			if (forced_number == saving_ball) {
 				game.number_grid_saving_ball_state[team] = "stored"
 				playsound("boule_magique");
@@ -451,13 +455,20 @@ function pickBall(forced_number) {
 		}
 
 		console.log('%c' + forced_number, 'background: black; color: gold');
+		announce(`Boule ${forced_number}.`);
 
 		// Animation
 		var pos_index = game.number_grid_data[team][game.number_grid_index+1].indexOf(forced_number);
 		var grid_pos_y_x_element = document.getElementById(`number_${team}_` + ((pos_index - (pos_index % 5)) / 5) + "_" + (pos_index % 5));
 		var grid_number_element = grid_pos_y_x_element.children[0];
 
-		for (var i=0; i<13; i++) {
+		// Clignotement, remplacé par l'état final si les animations sont réduites
+		const blink_count = prefersReducedMotion() ? 0 : 13;
+		if (blink_count == 0) {
+			grid_number_element.innerHTML = "";
+			grid_number_element.className = "numberNEW hided_number";
+		}
+		for (var i=0; i<blink_count; i++) {
 			if ((i % 2) == 1) {
 				setTimeout(function() {
 					grid_number_element.innerHTML = forced_number;
@@ -505,34 +516,38 @@ function pickBall(forced_number) {
 	// A AJOUTER : AFFICHAGE VASQUE DES BOULES TIREES
 }
 
-function checkMotus() {
-	const dynamic_mask = game.number_grid_dynamic_mask[game.team_focus]
-
+// Cherche une ligne complète (5 cases à 0) dans un masque 5x5 ; renvoie {position, offset} ou null
+function findMotusLine(dynamic_mask) {
 	// Calcul de la somme des placements
 	var slash_sum = dynamic_mask[0] + dynamic_mask[6] + dynamic_mask[12] + dynamic_mask[18] + dynamic_mask[24];
 	var backslash_sum = dynamic_mask[20] + dynamic_mask[16] + dynamic_mask[12] + dynamic_mask[8] + dynamic_mask[4];
-	
-	if (slash_sum == 0) {
-		animation("slash", undefined);
-		return;
-	}
-	if (backslash_sum == 0) {
-		animation("backslash", undefined);
-		return;
-	}
+
+	if (slash_sum == 0) { return { position: "slash", offset: undefined }; }
+	if (backslash_sum == 0) { return { position: "backslash", offset: undefined }; }
 
 	for (let i = 0; i < 5; i++) {
 		let horizontal_sum = dynamic_mask[i*5] + dynamic_mask[(i*5)+1] + dynamic_mask[(i*5)+2] + dynamic_mask[(i*5)+3] + dynamic_mask[(i*5)+4];
 		let vertical_sum = dynamic_mask[i] + dynamic_mask[i+5] + dynamic_mask[i+(5*2)] + dynamic_mask[i+(5*3)] + dynamic_mask[i+(5*4)];
 
-		if (horizontal_sum == 0) {
-			animation("horizontal", i);
-			return;
-		}
-		if (vertical_sum == 0) {
-			animation("vertical", i);
-			return;
-		}
+		if (horizontal_sum == 0) { return { position: "horizontal", offset: i }; }
+		if (vertical_sum == 0) { return { position: "vertical", offset: i }; }
+	}
+
+	return null;
+}
+
+// Boule magique en jeu sur la grille actuelle : activée, et soit non limitée, soit sur la première grille
+function isSavingBallAllowed() {
+	return settings.use_saving_ball == true && (settings.limiting_saving_ball == false || game.number_grid_index == 0);
+}
+
+function checkMotus() {
+	const dynamic_mask = game.number_grid_dynamic_mask[game.team_focus]
+
+	const motus_line = findMotusLine(dynamic_mask);
+	if (motus_line != null) {
+		animation(motus_line.position, motus_line.offset);
+		return;
 	}
 
 	// Animation par position
@@ -543,6 +558,11 @@ function checkMotus() {
 		game.motus_aligned = true
 
 		playsound('motus');
+		announce("MOTUS !");
+		recordMotus();
+
+		// Points du MOTUS (barème réglable)
+		addTeamScore(undefined, settings.score_motus);
 		game.number_grid_try_left = 0;
 
 		switch (position_name) {
@@ -587,11 +607,6 @@ function checkMotus() {
 		}, 500 + animation_delay);
     }
 
-		// Multiplication du nombre de points?
-		for (let i = 0; i < 2; i++) {
-			addTeamScore();
-		}
-		
 
 		// Suppression de l'affichage de la boule magique (correspond à l'affichage en TV?)
 		// const saving_ball_element = document.getElementsByClassName('saving_ball');

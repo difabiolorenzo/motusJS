@@ -1,0 +1,13 @@
+body {
+  margin: 0;
+  font-family: sans-serif;
+  text-align: center;
+  color: white;
+}
+
+canvas {
+  display: block;
+  margin: auto;
+  background: radial-gradient(circle at center, #444 0%, #222 100%);
+  border-radius: 50%;
+}

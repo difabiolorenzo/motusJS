@@ -132,11 +132,41 @@ img#preview_img {
   padding: 0.5rem;
   }
 
-div#game {
-  /* position: fix;/* display: flex;;/* flex-wrap: nowrap; */
+/* Page de jeu en colonne : barre haute, puis zone de grille qui prend toute la place libre, puis clavier.
+   La grille se dimensionne d'après cette place (grid.css), sans passer sous la barre haute. */
+div#game_page {
+  display: flex;
   flex-direction: column;
-  bottom: 0;
-  position: fixed;
+}
+div#game_page > .topbar,
+div#game_page #user_actions {
+  flex-shrink: 0;
+}
+div#game {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+div#game_grid {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+div#letter_grid_section {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+}
+div#letter_grid_placeolder {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  container-type: size;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .caroussel {
@@ -158,12 +188,12 @@ div#number_grid_content {display: flex;transition: 0.33s;}
 
 div#number_grid_actions {width: 100vw;display: flex;/* background: aqua; */align-items: center;justify-content: center;}
 
-#user_actions {display: inline-flex;/* height: 100%; */max-height: 27.5vh;width: 200%;flex-direction: row;flex-wrap: nowrap;/* background-color: green; */overflow-x: clip;}
+#user_actions {display: inline-flex;/* height: 100%; */width: 200%;flex-direction: row;flex-wrap: nowrap;/* background-color: green; */overflow-x: clip;}
 
 #keyboard {
   /* opacity: 0; */
   /* padding: 5px; */
-  margin: 10px 0;
+  margin: clamp(2px, 1vh, 10px) 0;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -203,24 +233,43 @@ div#number_grid_actions {width: 100vw;display: flex;/* background: aqua; */align
 
 .keyboard_key {
   background-color: white;
-  padding: 1rem clamp(10px, 3vw, 1.5rem);
-  font-size: clamp(9px, 4vw, 25px);
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  /* Hauteur et police réduites sur les écrans peu hauts, pour laisser la place à la grille */
+  padding: clamp(0.2rem, 1.8vh, 1rem) clamp(10px, 3vw, 1.5rem);
+  font-size: min(clamp(9px, 4vw, 25px), 3.5vh);
   border-radius: .3rem;
   font-weight: bold;
   font-family: monospace;
+}
+.keyboard_key:hover {
+  /* Contour intérieur net au survol : pas de bordure, la taille de la touche ne change pas */
+  border: none;
+  box-shadow: inset 0 0 0 2px #000, 0 3px 2px 0 rgb(0 0 0 / 20%);
 }
 .keyboard_key_submit, .keyboard_key_remove {
   background-color: #b6deff;
 }
 
-#keyboard.hided{transform: translate(-50vh, 0);width: 0;padding: 0;}
+#keyboard.hided{transform: translate(-50vh, 0);width: 0;padding: 0;height: 0;margin: 0;overflow: hidden;visibility: hidden;}
 
 
 div#topbar_game_buttons  {
     display: flex;
 }
-div#topbar_game_buttons>div  {
+div#topbar_game_buttons>.topbar_button_group  {
     margin: 0 10px;
+}
+
+/* Boutons de la barre haute : apparence d'origine, sans le style par défaut des <button> */
+button.topbar_button_group {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
 }
 
 span.topbar_label {
@@ -231,8 +280,10 @@ span.topbar_label {
 
 div#number_grids {
     display: flex;
-    height: 100%;
+    flex: 1 1 auto;
+    min-height: 0;
     width: 100%;
+    container-type: size;
     justify-content: center;
     align-items: center;
 }
@@ -338,7 +389,7 @@ label.button_label {color: white;text-align: center;}
   .topbar_button_group {
     flex-direction: row;
   }
-  div#topbar_game_buttons>div {
+  div#topbar_game_buttons>.topbar_button_group {
     margin: 0;
   }
   div#topbar_game_buttons  {
@@ -389,3 +440,227 @@ span#number_grid_random_selection_left_indicator {
     text-wrap-mode: nowrap;
     font-weight: bold;
 }
+
+/* Accessibilité : contour de focus visible au clavier (blanc sur les fonds sombres) */
+:focus-visible {
+  outline: 3px solid #000;
+  outline-offset: 2px;
+}
+.topbar :focus-visible,
+#main_menu :focus-visible {
+  outline-color: #fff;
+}
+
+/* Accessibilité : animations réduites si le système le demande */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Fenêtres peu hautes (téléphone à l'horizontale, petit portable) : barre haute et score compacts
+   pour laisser la place à la grille. Les libellés restent lus par les lecteurs d'écran. */
+@media (max-height: 560px) {
+  #game_page .topbar {
+    padding: 0.2rem 0.5rem;
+  }
+  #game_page .topbar img {
+    height: 1.75rem;
+    padding: 0.2rem;
+  }
+  #game_page .topbar_label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+  #game_page .score {
+    height: 2.5rem;
+    font-size: 1.75rem;
+  }
+  #game_page #score_placeolder {
+    margin-top: 4px;
+  }
+}
+
+/* Page d'aide */
+.help_content {
+  max-width: 50rem;
+  margin: 0 auto;
+}
+.help_content h1,
+.help_content h2 {
+  color: #002761;
+}
+.help_result_list {
+  columns: 8rem;
+  list-style: none;
+  padding: 0;
+  font-family: monospace;
+  font-size: 1.1rem;
+}
+.help_shortcuts {
+  line-height: 2;
+}
+kbd {
+  display: inline-block;
+  min-width: 1.5em;
+  padding: 0 0.4em;
+  border: 1px solid #8a8a8a;
+  border-bottom-width: 3px;
+  border-radius: 4px;
+  background: #fff;
+  font-family: monospace;
+  text-align: center;
+  line-height: 1.6;
+}
+
+/* Bandeau des messages de jeu : ancre sans hauteur entre les grilles et le score,
+   le bandeau s'affiche par-dessus le bas de la grille sans décaler la mise en page */
+#game_message_anchor {
+  position: relative;
+  height: 0;
+  width: 100%;
+  z-index: 5;
+}
+.game_message {
+  position: absolute;
+  bottom: 0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 90vw;
+  padding: 0.5rem 1rem;
+  border-radius: 0.4rem;
+  background-color: #000000d9;
+  color: #fff;
+  font-weight: bold;
+  font-size: clamp(0.9rem, 2.2vh, 1.25rem);
+  text-align: center;
+  box-shadow: 0 2px 8px #00000066;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0.2s;
+}
+.game_message.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Fenêtre « Nombre de lettres du prochain mot » */
+.word_length_dialog {
+  border: none;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: 0 3px 12px #0000004d;
+}
+.word_length_dialog::backdrop {
+  background-color: #00000080;
+}
+.word_length_dialog h2 {
+  margin-top: 0;
+}
+.word_length_choices {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.word_length_choices button {
+  min-width: 3.5rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+/* Paramètres : état de la sauvegarde automatique */
+.settings_save_status {
+  margin-right: 1rem;
+  color: #444;
+  font-size: 0.9rem;
+}
+
+/* Menu : rangée « Lettres » 5 à 10 sous « Jouer » */
+.menu_word_length {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 60vw;
+  margin-bottom: 1vh;
+  color: white;
+  font-weight: bold;
+}
+.menu_word_length_label {
+  margin-right: 0.5rem;
+}
+.menu_word_length button {
+  flex: 1 1 0;
+  max-width: 4rem;
+  height: 5vh;
+  min-height: 2rem;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: white;
+  background-color: #0003;
+  border: 1px solid #0000004d;
+  border-radius: 2px;
+  cursor: pointer;
+}
+.menu_word_length button.active {
+  background-color: white;
+  color: var(--menu_background);
+}
+
+/* Chronomètre (compte à rebours d'une proposition), à côté du score */
+.proposal_timer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 3.5rem;
+  margin: 0 1vw;
+  padding: 0 0.5rem;
+  border-radius: 0.4rem;
+  background-color: #000000b3;
+  color: #fff;
+  font-weight: bold;
+  font-size: clamp(1.5rem, 4vh, 2.5rem);
+  font-variant-numeric: tabular-nums;
+}
+.proposal_timer.urgent {
+  background-color: #c0001a;
+}
+
+/* Page Historique */
+.history_table_wrapper {
+  overflow-x: auto;
+  margin-bottom: 1rem;
+}
+.history_table {
+  border-collapse: collapse;
+  min-width: 100%;
+  background-color: #fff;
+}
+.history_table th,
+.history_table td {
+  padding: 0.4rem 0.75rem;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+.history_table th {
+  background-color: #002761;
+  color: #fff;
+}
+.history_word {
+  font-family: monospace;
+  font-weight: bold;
+}
+.history_trouvé td:nth-child(5) { color: #0a7a2f; font-weight: bold; }
+.history_non_trouvé td:nth-child(5),
+.history_passé td:nth-child(5) { color: #b00020; }
+.history_MOTUS td { background-color: #fff6d6; font-weight: bold; }

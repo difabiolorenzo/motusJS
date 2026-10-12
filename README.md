@@ -40,6 +40,29 @@ Pour les règles complètes, voir [la page wikipedia de Motus](https://fr.wikipe
 * Nouveau mot avec la touche **ç** ou **9**
 * Affichage du mot avec la touche **à** ou **0**
 * Son du temps écoulé avec la touche **$** (**¤**)
+* Retour au menu / reprise de la partie avec la touche **Échap**
+
+Avec l'option « Confirmer chaque mot avant vérification », **Entrer** met le mot en attente : **\&** / **1** confirme, **Effacer** annule.
+
+### Partie
+
+* Le menu choisit le nombre de lettres des mots (5 à 10) sous « Jouer ».
+* « Historique » liste les mots joués (trouvés, non trouvés, passés), les MOTUS et les points, avec un export CSV.
+* Barème réglable dans Paramètres > Équipes et Scores : points par mot trouvé et par MOTUS.
+* Chronomètre expérimental (Paramètres > Expérimental) : compte à rebours par proposition, avec durée et comportement à zéro réglables.
+* Le jeu fonctionne hors ligne après une première visite en ligne.
+
+### Aide
+
+La page « Aide » du menu liste les mots possibles à partir de ce que montre la grille (lettres bien placées, mal placées, absentes) et rappelle les raccourcis clavier.
+
+### Rejouer une émission
+
+Option expérimentale, à activer dans Paramètres > Expérimental. Le bouton « Rejouer une émission » du menu lance une partie avec les mots réels d'une émission (dans l'ordre), puis continue avec des mots au hasard.
+
+### Tests
+
+`node tests/run.js` vérifie les dictionnaires, la coloration des lettres et la détection du MOTUS (Node seul, sans installation).
 
 ## Crédits et Inspiration
 
@@ -48,7 +71,6 @@ Pour les règles complètes, voir [la page wikipedia de Motus](https://fr.wikipe
 * Tous les sons et le principe du jeu sont sous les droits de France Télévisions
 * Sur les bases du code de **Sogroo** avec son site http://www.anagrammeur.com/jeux/motus/motus.php
 * Les dictionnaires de mots sont tirés du Motus de **Sogroo** et de l'ODS4 présent dans **XScrabble** ftp://ftp.ac-grenoble.fr/ge/educational\_games
-* jQuery sous la license MIT https://tldrlegal.com/license/mit-license
 * Icones sur https://www.flaticon.com/uicons
-* Méthodes de tris par [@Schraf](https://www.youtube.com/@Schraf)
+* Méthodes de tris par [@Schraf](https://www.youtube.com/@Schraf) : [youtube.com](https://www.youtube.com/watch?v=WOMYXTmE3jc)
 

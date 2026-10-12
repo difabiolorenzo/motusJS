@@ -1,4 +1,5 @@
-<html>
+<!DOCTYPE html>
+<html lang="fr">
     <head>
         <title>MotusJS</title>
         <meta name="description" lang="fr"
@@ -9,20 +10,36 @@
         <link rel="stylesheet" type="text/css" title="css" href="src/css/grid.css">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="shortcut icon" type="image/x-icon" href="src/img/favicon.png">
+        <link rel="manifest" href="manifest.webmanifest">
+        <meta name="theme-color" content="#A52A2E">
     </head>
 
     <body id="body" onLoad="initVariables()">
+        <!-- Annonces pour les lecteurs d'écran (résultats, erreurs) -->
+        <div id="screen_reader_announcer" class="visually-hidden" role="status" aria-live="polite"></div>
+
         <!-- Page: Menu principal -->
         <!-- Les pages devront être affichées une à la fois -->
         <div class="page" id="main_menu">
             <!-- Contenu du menu principal -->
             <div id="logo_placeholder">
-                <img src="" id="logo"></img>
+                <img src="" id="logo" alt="Motus">
             </div>
 
             <div id="main_menu_content">
                 <button class="button menu_button" onclick="initGame()" autofocus=true>Jouer</button>
-                <button class="button menu_button d-none" onclick="displayPage('help_page')">Aide</button>
+                <div id="menu_word_length" class="menu_word_length" role="radiogroup" aria-label="Nombre de lettres des mots">
+                    <span class="menu_word_length_label" aria-hidden="true">Lettres</span>
+                    <button type="button" role="radio" data-length="5" onclick="updateMenuWordLength(5)">5</button>
+                    <button type="button" role="radio" data-length="6" onclick="updateMenuWordLength(6)">6</button>
+                    <button type="button" role="radio" data-length="7" onclick="updateMenuWordLength(7)">7</button>
+                    <button type="button" role="radio" data-length="8" onclick="updateMenuWordLength(8)">8</button>
+                    <button type="button" role="radio" data-length="9" onclick="updateMenuWordLength(9)">9</button>
+                    <button type="button" role="radio" data-length="10" onclick="updateMenuWordLength(10)">10</button>
+                </div>
+                <button class="button menu_button d-none" id="menu_button_tv_replay" onclick="displayTvPage()">Rejouer une émission</button>
+                <button class="button menu_button" onclick="displayHistoryPage()">Historique</button>
+                <button class="button menu_button" onclick="displayPage('help_page')">Aide</button>
                 <button class="button menu_button" data-toggle="modal" data-target="#settings-modal">Paramètres</button>
                 <button class="button menu_button" onclick="displayPage('credit_page')">Credits</button>
                 <button class="button menu_button" id="debug_menu_button" onclick="displayPage('debug_page')">Debug</button>
@@ -34,46 +51,45 @@
         <!-- Page: Game -->
         <div class="page d-none style_2010 visible_keyboard" id="game_page">
             <div class="topbar">
-                <div class="topbar_button_group" onclick="displayPage('main_menu')" tabindex="0">
-                    <img src="./src/img/left_arrow.svg" alt="menu" />
+                <button type="button" class="topbar_button_group" onclick="displayPage('main_menu')">
+                    <img src="./src/img/left_arrow.svg" alt="" />
                     <span class="topbar_label">Menu</span>
-                </div>
+                </button>
                 <div id="topbar_game_buttons">
-                    <div id="topbar_button_bonus_letter" class="topbar_button_group d-none" onclick="addBonusLetter()"
-                        tabindex="0">
-                        <img src="./src/img/sparkles.svg" alt="bonus-letter" />
+                    <button type="button" id="topbar_button_bonus_letter" class="topbar_button_group d-none" onclick="addBonusLetter()">
+                        <img src="./src/img/sparkles.svg" alt="" />
                         <span class="topbar_label">Lettre bonus</span>
-                    </div>
-                    <div id="topbar_button_display_solution" class="topbar_button_group d-none"
-                        onclick="displaySolution(true)" tabindex="0">
-                        <img src="./src/img/dots.svg" alt="dislpay-wanted-word" />
+                    </button>
+                    <button type="button" id="topbar_button_display_solution" class="topbar_button_group d-none"
+                        onclick="displaySolution(true)">
+                        <img src="./src/img/dots.svg" alt="" />
                         <span class="topbar_label">Afficher le mot</span>
-                    </div>
-                    <div id="topbar_button_word_reinit" class="topbar_button_group d-none"
-                        onclick="wordReinit()" tabindex="0">
-                        <img src="./src/img/refresh.svg" alt="new-word" />
+                    </button>
+                    <button type="button" id="topbar_button_word_reinit" class="topbar_button_group d-none"
+                        onclick="wordReinit()">
+                        <img src="./src/img/refresh.svg" alt="" />
                         <span class="topbar_label">Reinitialiser la grille</span>
-                    </div>
-                    <div id="topbar_button_display_number_grid" class="topbar_button_group d-none"
-                        onclick="displayNumberGrid()" tabindex="0">
-                        <img src="./src/img/dice_20.svg" alt="switch_panel" />
+                    </button>
+                    <button type="button" id="topbar_button_display_number_grid" class="topbar_button_group d-none"
+                        onclick="displayNumberGrid()">
+                        <img src="./src/img/dice_20.svg" alt="" />
                         <span class="topbar_label">Grille des numéros</span>
-                    </div>
+                    </button>
 
-                    <div id="topbar_button_display_letter_grid" class="topbar_button_group d-none"
-                        onclick="displayLetterGrid()" tabindex="0">
-                        <img src="./src/img/grid.svg" alt="switch_panel" />
+                    <button type="button" id="topbar_button_display_letter_grid" class="topbar_button_group d-none"
+                        onclick="displayLetterGrid()">
+                        <img src="./src/img/grid.svg" alt="" />
                         <span class="topbar_label">Grille de mots</span>
-                    </div>
+                    </button>
                     <!-- <div id="topbar_button_change_team" class="topbar_button_group" onclick="switchTeamFocus()" tabindex="0">
                         <img src="./src/img/dice_20.svg" alt="switch_panel" id="switch-panel-icon"/>
                         <span class="topbar_label">TEAM</span>
                     </div> -->
                 </div>
-                <div class="topbar_button_group"  data-toggle="modal" data-target="#settings-modal" tabindex="0">
-                    <img src="./src/img/settings.png" alt="settings" />
+                <button type="button" class="topbar_button_group" data-toggle="modal" data-target="#settings-modal">
+                    <img src="./src/img/settings.png" alt="" />
                     <span class="topbar_label">Paramètres</span>
-                </div>
+                </button>
 
                 <!-- <button class="button flex_button" id="new_line_button" onclick="newWordLine();">Nouvelle Ligne</button>
                 <button class="button flex_button" id="delete_line_button" onclick="removeWordLine();">Supprimer la ligne</button>
@@ -106,9 +122,14 @@
                         <div id="number_grid_yellow_placeolder" class="number_grid_placeolder active"></div>
                         <div id="number_grid_blue_placeolder" class="number_grid_placeolder"></div>
                     </div>
+                    <!-- Bandeau des messages de jeu (erreurs, confirmation), affiché par-dessus le bas de la grille -->
+                    <div id="game_message_anchor">
+                        <div id="game_message" class="game_message" aria-hidden="true"></div>
+                    </div>
                     <div id="score_placeolder">
                         <div class='score' id='score_yellow_panel'>.</div>
                         <div class='score d-none' id='score_blue_panel'>.</div>
+                        <div id="proposal_timer" class="proposal_timer d-none" role="timer" aria-label="Temps restant pour la proposition"></div>
                     </div>
                 </div>
                 <div id="user_actions">
@@ -120,18 +141,18 @@
                     <div id="number_grid_interactions">
                         <div id="number_grid_actions">
                             <div id="number_grid_post_action">
-                                <button id="number_grid_return_to_letter_grid" class="btn btn-light d-none" role="button" onclick="displayLetterGrid()">Grille de mot</button>
-                                <button id="number_grid_change_grid_button" class="btn btn-light d-none" role="button" onclick="changeNumberGrid()">Changer la grille</button>
-                                <button id="number_grid_create_yellow_grid_button" class="btn btn-yellow d-none" role="button" onclick="fillYellowNumberGrid()">Créer la grille de l'équipe jaune</button>
-                                <button id="number_grid_create_blue_grid_button" class="btn btn-blue d-none" role="button" onclick="fillBlueNumberGrid()">Créer la grille de l'équipe bleu</button>
+                                <button id="number_grid_return_to_letter_grid" class="btn btn-light d-none" onclick="displayLetterGrid()">Grille de mot</button>
+                                <button id="number_grid_change_grid_button" class="btn btn-light d-none" onclick="changeNumberGrid()">Changer la grille</button>
+                                <button id="number_grid_create_yellow_grid_button" class="btn btn-yellow d-none" onclick="fillYellowNumberGrid()">Créer la grille de l'équipe jaune</button>
+                                <button id="number_grid_create_blue_grid_button" class="btn btn-blue d-none" onclick="fillBlueNumberGrid()">Créer la grille de l'équipe bleu</button>
                                 <div id="number_grid_random_selection_mode_section">
-                                    <button id="number_grid_random_selection_button" class="btn btn-light d-none" role="button" onclick="randomPickBall()">Piocher une boule</button>
-                                    <button id="number_grid_black_selection_button" class="btn btn-light d-none" role="button" onclick="pickBall('⚫')">Piocher une boule noire</button>
+                                    <button id="number_grid_random_selection_button" class="btn btn-light d-none" onclick="randomPickBall()">Piocher une boule</button>
+                                    <button id="number_grid_black_selection_button" class="btn btn-light d-none" onclick="pickBall('⚫')">Piocher une boule noire</button>
                                     <span id="number_grid_random_selection_left_indicator"></span>
                                 </div>
                                 <div id="number_grid_select_selection_mode_section">
                                     <select id="select_pick_ball"></select>
-                                    <button role="button" class="btn btn-light" onclick="debug_pickball()">Piocher</button>
+                                    <button class="btn btn-light" onclick="debug_pickball()">Piocher</button>
                                 </div>
                             </div>
                         </div>
@@ -141,84 +162,70 @@
                         </div>
                     </div>
                 </div>
-                
-                <!-- <div><input id="test_h" type="range" min="0" max="12" value="6" onchange="debug_grid()"/>nb_tries</div>
-                <div><input id="test_l" type="range" min="0" max="12" value="6" onchange="debug_grid()"/>nb word</div>
-                <div><button
-                        onclick='debug_grid()'>nouveau</button>
-                </div> -->
 
             </div>
 
-            <div class="protip">
-                <h3>Touches Clavier</h3>
-                <p>Supprime la lettre: <keyboardKey>erase</keyboardKey> ou <keyboardKey>flèche gauche</keyboardKey>
-                </p>
-                <p>Nouvelle ligne: <keyboardKey>1</keyboardKey> ou <keyboardKey>&</keyboardKey>
-                </p>
-                <p>Lettre Bonus: <keyboardKey>2</keyboardKey> ou <keyboardKey>é</keyboardKey>
-                </p>
-                <p>Supprime la ligne: <keyboardKey>3</keyboardKey> ou <keyboardKey>é</keyboardKey>
-                </p>
-                <p>Remplacer la ligne: <keyboardKey>4</keyboardKey> ou <keyboardKey>'</keyboardKey>
-                </p>
-                <p>Changement de main d'équipe: <keyboardKey>5</keyboardKey> ou <keyboardKey>(</keyboardKey>
-                </p>
-                <br>
-                <p>Reinitialiser la grille en cours: <keyboardKey>9</keyboardKey> ou <keyboardKey>ç</keyboardKey>
-                </p>
-                <p>Affichage de la solution: <keyboardKey>0</keyboardKey> ou <keyboardKey>à</keyboardKey>
-                </p>
-            </div>
         </div>
 
         <!-- Page: Aide -->
         <div class="page d-none style_2010 visible_keyboard" id="help_page">
 
             <div class="topbar">
-                <div class="topbar_button_group" onclick="displayPage('main_menu')" tabindex="0">
-                    <img src="./src/img/left_arrow.svg" alt="menu" />
+                <button type="button" class="topbar_button_group" onclick="displayPage('main_menu')">
+                    <img src="./src/img/left_arrow.svg" alt="" />
                     <span class="topbar_label">Menu</span>
-                </div>
+                </button>
             </div>
 
-            <div>
-                <code>
-                    En cours de création ?
-                </code>
+            <div class="p-4 help_content">
+                <h1>Aide</h1>
+
+                <h2>Chercher les mots possibles</h2>
+                <p>Recopiez ce que montre la grille : la recherche parcourt le dictionnaire des mots acceptés.</p>
+                <div class="form-group">
+                    <label for="help_length_select">Nombre de lettres</label>
+                    <select class="form-control" id="help_length_select">
+                        <option value="5">5 lettres</option>
+                        <option value="6">6 lettres</option>
+                        <option value="7">7 lettres</option>
+                        <option value="8" selected>8 lettres</option>
+                        <option value="9">9 lettres</option>
+                        <option value="10">10 lettres</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="help_well_placed">Lettres bien placées, un point pour chaque case inconnue (ex. <code>B..L.....</code>)</label>
+                    <input type="text" class="form-control" id="help_well_placed" autocomplete="off" spellcheck="false">
+                </div>
+                <div class="form-group">
+                    <label for="help_misplaced">Lettres mal placées, case par case, séparées par des virgules (ex. <code>,O,U,,E</code> : O mal placé en 2<sup>e</sup> case, U en 3<sup>e</sup>, E en 5<sup>e</sup>)</label>
+                    <input type="text" class="form-control" id="help_misplaced" autocomplete="off" spellcheck="false">
+                </div>
+                <div class="form-group">
+                    <label for="help_excluded">Lettres absentes du mot (ex. <code>VAD</code>)</label>
+                    <input type="text" class="form-control" id="help_excluded" autocomplete="off" spellcheck="false">
+                </div>
+                <button type="button" class="btn btn-primary" onclick="helpPageSearch()">Chercher</button>
+                <p id="help_result_count" role="status" aria-live="polite"></p>
+                <ul id="help_result_list" class="help_result_list"></ul>
+
+                <h2>Raccourcis clavier</h2>
+                <ul class="help_shortcuts">
+                    <li>Valider le mot : <kbd>Entrée</kbd></li>
+                    <li>Effacer une lettre : <kbd>Effacer</kbd> (<kbd>←</kbd>)</li>
+                    <li>Nouvelle ligne : <kbd>&amp;</kbd> / <kbd>1</kbd></li>
+                    <li>Lettre bonus : <kbd>é</kbd> / <kbd>2</kbd></li>
+                    <li>Supprimer la ligne : <kbd>"</kbd> / <kbd>3</kbd></li>
+                    <li>Remplacer la ligne : <kbd>'</kbd> / <kbd>4</kbd></li>
+                    <li>Changer l'équipe qui a la main : <kbd>(</kbd> / <kbd>5</kbd></li>
+                    <li>Changer de grille (mots / numéros) : <kbd>-</kbd> / <kbd>6</kbd></li>
+                    <li>Nouveau mot : <kbd>ç</kbd> / <kbd>9</kbd></li>
+                    <li>Afficher la solution : <kbd>à</kbd> / <kbd>0</kbd></li>
+                    <li>Son du temps écoulé : <kbd>$</kbd> (<kbd>¤</kbd>)</li>
+                    <li>Retour au menu / reprise de la partie : <kbd>Échap</kbd></li>
+                    <li>Avec « Confirmer chaque mot » : <kbd>Entrée</kbd>, puis <kbd>&amp;</kbd> / <kbd>1</kbd> pour confirmer ou <kbd>Effacer</kbd> pour annuler</li>
+                </ul>
             </div>
-
-            <div>
-                <div>
-                    <button id="help_select_word_length_5_button" onclick="helpPageSelectWordLength(5)">5 lettres</button>
-                    <label id="help_select_word_length_5_label" for="help_select_word_length_5_button">?</label>
-                </div>
-                <div>
-                    <button id="help_select_word_length_6_button" onclick="helpPageSelectWordLength(6)">6 lettres</button>
-                    <label id="help_select_word_length_6_label" for="help_select_word_length_6_button">?</label>
-                </div>
-                <div>
-                    <button id="help_select_word_length_7_button" onclick="helpPageSelectWordLength(7)">7 lettres</button>
-                    <label id="help_select_word_length_7_label" for="help_select_word_length_7_button">?</label>
-                </div>
-                <div>
-                    <button id="help_select_word_length_8_button" onclick="helpPageSelectWordLength(8)">8 lettres</button>
-                    <label id="help_select_word_length_8_label" for="help_select_word_length_8_button">?</label>
-                </div>
-                <div>
-                    <button id="help_select_word_length_9_button" onclick="helpPageSelectWordLength(9)">9 lettres</button>
-                    <label id="help_select_word_length_9_label" for="help_select_word_length_9_button">?</label>
-                </div>
-                <div>
-                    <button id="help_select_word_length_10_button" onclick="helpPageSelectWordLength(10)">10 lettres</button>
-                    <label id="help_select_word_length_10_label" for="help_select_word_length_10_button">?</label>
-                </div>
-            </div>
-
-            <div id="help_grid_placeholder" class="gridNEW"></div>
-
-            
-            <button onclick="helpPageVerification">Vérifier</button>
 
         </div>
 
@@ -250,11 +257,6 @@
                         reviennent à <a href="https://www.francetelevisions.fr/cgu">francetelevisions.</a></p>
                 </div>
                 <div class="section">
-                    <h3>jQuery</h3>
-                    <p>jQuery est sous licence <a
-                            href="https://tldrlegal.com/license/creative-commons-cc0-1.0-universal">CC0</a></p>
-                </div>
-                <div class="section">
                     <h3>Idée d'origine</h3>
                     <p>motusJS est construit sur les base du code de <b>sogroo</b> avec l'ancienne version de son site
                         <a
@@ -279,6 +281,53 @@
             </div>
         </div>
 
+        <!-- Page: Émissions télé -->
+        <div class="page d-none" id="tv_page">
+            <div class="d-flex topbar-page">
+                <div>
+                    <button class="btn nav-button btn-light" onclick="displayPage('main_menu')">🡰</button>
+                    <h1>Rejouer une émission</h1>
+                </div>
+                <span></span>
+            </div>
+            <div class="p-4">
+                <p>Les mots de l'émission choisie sont joués dans l'ordre, puis la partie continue avec des mots au hasard.</p>
+                <div id="tv_replay_list"></div>
+            </div>
+        </div>
+
+        <!-- Page: Historique de la partie -->
+        <div class="page d-none" id="history_page">
+            <div class="d-flex topbar-page">
+                <div>
+                    <button class="btn nav-button btn-light" onclick="displayPage('main_menu')" aria-label="Retour au menu">🡰</button>
+                    <h1>Historique de la partie</h1>
+                </div>
+                <span></span>
+            </div>
+            <div class="p-4">
+                <p id="history_summary"></p>
+                <div class="history_table_wrapper">
+                    <table id="history_table" class="history_table">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Heure</th>
+                                <th scope="col">Mot</th>
+                                <th scope="col">Lettres</th>
+                                <th scope="col">Résultat</th>
+                                <th scope="col">Lignes</th>
+                                <th scope="col">Équipe</th>
+                                <th scope="col">Points</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <button type="button" class="btn btn-primary" id="history_export_button" onclick="exportHistory()">Exporter (CSV)</button>
+            </div>
+        </div>
+
         <!-- Page: Debug -->
         <div class="page d-none" id="debug_page" style="color:white;">
             <div class="topbar-page">
@@ -286,6 +335,11 @@
                     <button class="btn nav-button btn-light" onclick="displayPage('main_menu')">🡰</button>
                     <h1>Debug</h1>
                 </span>
+            </div>
+
+            <div class="form-group">
+                <input type="checkbox" id="checkbox_debug_logs" onchange="setDebugEnabled(this.checked)">
+                <label for="checkbox_debug_logs">Afficher les logs de debug dans la console</label>
             </div>
 
             <h2>Son</h2>
@@ -405,48 +459,68 @@
             </div>
         </div>
 
+        <dialog id="word_length_dialog" class="word_length_dialog" aria-labelledby="word_length_dialog_title">
+            <h2 id="word_length_dialog_title">Nombre de lettres du prochain mot</h2>
+            <p>Touches <kbd>5</kbd> à <kbd>9</kbd>, <kbd>0</kbd> pour 10.</p>
+            <div class="word_length_choices">
+                <button type="button" class="btn btn-primary" onclick="chooseNextWordLength(5)">5</button>
+                <button type="button" class="btn btn-primary" onclick="chooseNextWordLength(6)">6</button>
+                <button type="button" class="btn btn-primary" onclick="chooseNextWordLength(7)">7</button>
+                <button type="button" class="btn btn-primary" onclick="chooseNextWordLength(8)">8</button>
+                <button type="button" class="btn btn-primary" onclick="chooseNextWordLength(9)">9</button>
+                <button type="button" class="btn btn-primary" onclick="chooseNextWordLength(10)">10</button>
+            </div>
+        </dialog>
+
         <dialog id="settings-modal" class="modal">
             <div class="modal-content">
                 <div class="modal-header">
                     <h2>Paramètres</h2>
-                    <button class="close-btn" data-dismiss="modal" aria-label="Close">&times;</button>
+                    <button class="close-btn" data-dismiss="modal" aria-label="Fermer les paramètres">&times;</button>
                 </div>
                 <div class="modal-body">
                     <div>
-                        <!-- <button role="button" onclick="exportSettings()">Exporter</button> -->
-                        <!-- <button role="button" onclick="importSettings()">Importer</button> -->
-                        <button role="button" class="btn btn-primary" onclick="resetSettings()">Reinitialiser</button>
+                        <button class="btn btn-primary" onclick="exportSettings()">Exporter</button>
+                        <button class="btn btn-primary" onclick="document.getElementById('import_settings_file').click()">Importer</button>
+                        <input type="file" id="import_settings_file" class="d-none" accept=".json,application/json"
+                            onchange="importSettings(this.files[0]); this.value = '';">
+                        <button class="btn btn-primary" onclick="resetSettings()">Reinitialiser</button>
                     </div>
-                    <ul class="nav-tabs nav ">
-                        <li class="nav-item">
-                            <button class="nav-link active" data-tab="settings_panel_jeu">Jeu</button>
+                    <ul class="nav-tabs nav " role="tablist" aria-label="Catégories de paramètres">
+                        <li class="nav-item" role="presentation">
+                            <button type="button" class="nav-link active" data-tab="settings_panel_jeu" id="settings_tab_jeu" role="tab"
+                                aria-controls="settings_panel_jeu" aria-selected="true">Jeu</button>
                         </li>
-                        <li class="nav-item">
-                            <button class="nav-link" data-tab="settings_panel_equipes">Équipes et Scores</button>
+                        <li class="nav-item" role="presentation">
+                            <button type="button" class="nav-link" data-tab="settings_panel_equipes" id="settings_tab_equipes" role="tab"
+                                aria-controls="settings_panel_equipes" aria-selected="false" tabindex="-1">Équipes et Scores</button>
                         </li>
-                        <li class="nav-item">
-                            <button class="nav-link" data-tab="settings_panel_mots">Mots</button>
+                        <li class="nav-item" role="presentation">
+                            <button type="button" class="nav-link" data-tab="settings_panel_mots" id="settings_tab_mots" role="tab"
+                                aria-controls="settings_panel_mots" aria-selected="false" tabindex="-1">Mots</button>
                         </li>
-                        <li class="nav-item">
-                            <button class="nav-link" data-tab="settings_panel_grilles">Grilles numérotées</button>
+                        <li class="nav-item" role="presentation">
+                            <button type="button" class="nav-link" data-tab="settings_panel_grilles" id="settings_tab_grilles" role="tab"
+                                aria-controls="settings_panel_grilles" aria-selected="false" tabindex="-1">Grilles numérotées</button>
                         </li>
-                        <li class="nav-item">
-                            <button class="nav-link" data-tab="settings_panel_sons">Sons</button>
+                        <li class="nav-item" role="presentation">
+                            <button type="button" class="nav-link" data-tab="settings_panel_sons" id="settings_tab_sons" role="tab"
+                                aria-controls="settings_panel_sons" aria-selected="false" tabindex="-1">Sons</button>
                         </li>
-                        <li class="nav-item">
-                            <button class="nav-link" data-tab="settings_panel_experimental">Expérimental</button>
+                        <li class="nav-item" role="presentation">
+                            <button type="button" class="nav-link" data-tab="settings_panel_experimental" id="settings_tab_experimental" role="tab"
+                                aria-controls="settings_panel_experimental" aria-selected="false" tabindex="-1">Expérimental</button>
                         </li>
                     </ul>
 
                     <div id="settings_main" class="p-4 tab-content">
 
-                        <div id="settings_panel_jeu" class="tab-pane active">
-                            <summary>Jeu</summary>
+                        <div id="settings_panel_jeu" class="tab-pane active" role="tabpanel" aria-labelledby="settings_tab_jeu" tabindex="0">
 
                             <div class="form-group">
                                 <label for="verification_speed_select">Temps de vérification</label>
                                 <select class="form-control" id="verification_speed_select"
-                                    onchange="settings.verification_time_multiplier = this.value;">
+                                    onchange="settings.verification_time_multiplier = Number(this.value);">
                                     <option value="2">Très lent</option>
                                     <option value="1.5">Lent</option>
                                     <option value="1">Normal</option>
@@ -463,13 +537,13 @@
                                     <option value="2010">Années 2010</option>
                                     <option value="2019">Année 2019</option>
                                 </select>
-                                <img id="preview_img" class="p-2" src="">
+                                <img id="preview_img" class="p-2" src="" alt="Aperçu du style de grille choisi">
                             </div>
-                            <!-- <div class="form-group">
-                                <input type="checkbox" name="checkbox_fullscreen" checked disabled
-                                    id="checkbox_fullscreen" onchange="UpdateFullscreenSettings(this.value)">
-                                <label name="grid_style" >Affichage en mode plein écran</label>
-                            </div> -->
+                            <div class="form-group">
+                                <input type="checkbox" name="checkbox_high_contrast" id="checkbox_high_contrast"
+                                    onchange="updateHighContrastSettings(this.checked)">
+                                <label for="checkbox_high_contrast">Contraste renforcé (lettres mal placées en noir, contours marqués)</label>
+                            </div>
 
                             <h3>Automatismes</h3>
 
@@ -510,6 +584,26 @@
                                     onchange="settings.automatic_behaviour_ask_new_word = this.checked">
                                 <label for="check_automatic_behaviour_new_word">Propose un nouveau mot</label>
                             </div>
+                            <div class="form-group">
+                                <input id="checkbox_reinit_line_if_unvalid_word" type="checkbox"
+                                    name="reinit_line_if_unvalid_word"
+                                    onchange="settings.reinit_line_if_unvalid_word = this.checked">
+                                <label for="checkbox_reinit_line_if_unvalid_word">Effacer la ligne d'un mot refusé</label>
+                            </div>
+
+                            <h3>Proposition</h3>
+                            <div class="form-group">
+                                <input id="checkbox_confirm_submit" type="checkbox"
+                                    name="confirm_submit"
+                                    onchange="settings.confirm_submit = this.checked">
+                                <label for="checkbox_confirm_submit">Confirmer chaque mot avant vérification (Entrée, puis 1 / &amp; pour confirmer ou Effacer pour annuler)</label>
+                            </div>
+                            <div class="form-group">
+                                <input id="checkbox_display_soluce_on_last_row" type="checkbox"
+                                    name="display_soluce_on_last_row"
+                                    onchange="settings.display_soluce_on_last_row = this.checked">
+                                <label for="checkbox_display_soluce_on_last_row">Afficher la solution sur la dernière ligne de la grille</label>
+                            </div>
 
                             <h3 class="d-none">Clavier</h3>
                             <div class="form-group d-none">
@@ -526,21 +620,23 @@
                             </div>
                         </div>
 
-                        <div id="settings_panel_equipes" class="tab-pane">
-                            <summary>Équipes et Scores</summary>
+                        <div id="settings_panel_equipes" class="tab-pane" role="tabpanel" aria-labelledby="settings_tab_equipes" tabindex="0">
 
                             <div class="form-group">
                                 <input type="checkbox" name="team_enabled_checkbox" id="team_enabled_checkbox"
                                     onchange="updateTeamSettings(this.checked)">
                                 <label for="team_enabled_checkbox">Activer les équipes</label>
                             </div>
+                            <h3>Barème</h3>
                             <div class="form-group">
-                                <label for="score_addition">Nombre de points ajoutés</label>
-                                <select class="form-control" id="score_addition_select"
-                                    onchange="score_addition = Math.floor(this.value);">
-                                    <option value=1>1 Point</option>
-                                    <option value=50>50 Points</option>
-                                </select>
+                                <label for="score_addition_select">Points par mot trouvé</label>
+                                <input type="number" class="form-control" id="score_addition_select" min="0" max="1000" step="1"
+                                    onchange="settings.score_addition = Math.max(0, Number(this.value) || 0);">
+                            </div>
+                            <div class="form-group">
+                                <label for="score_motus_input">Points par MOTUS (ligne complète sur la grille de numéros)</label>
+                                <input type="number" class="form-control" id="score_motus_input" min="0" max="1000" step="1"
+                                    onchange="settings.score_motus = Math.max(0, Number(this.value) || 0);">
                             </div>
                             <div class="form-group d-none">
                                 <label for="settings_section_team">Passer la main:</label>
@@ -567,8 +663,7 @@
                             </div>
                         </div>
 
-                        <div id="settings_panel_mots" class="tab-pane">
-                            <summary>Mots</summary>
+                        <div id="settings_panel_mots" class="tab-pane" role="tabpanel" aria-labelledby="settings_tab_mots" tabindex="0">
 
                             <h3>Vérifications des mots proposés</h3>
                             <div class="form-group">
@@ -597,7 +692,7 @@
                             <div class="form-group">
                                 <label for="select_helping_letter_amount">Nombre de lettres</label>
                                 <select class="form-control" id="select_helping_letter_amount"
-                                    onchange="settings.helping_letter_amount= this.value;">
+                                    onchange="settings.helping_letter_amount = Number(this.value);">
                                     <option value=0>0</option>
                                     <option value=1>1</option>
                                     <option value=2>2</option>
@@ -612,7 +707,7 @@
                                     onchange="updateLengthSelectionMode(this.value);">
                                     <option value="always_ask_length">Toujours utlister les mots de même longueur</option>
                                     <option value="custom_length_collection">Séléctionner le nombre de lettre</option>
-                                    <option value="always_ask_length">Demmander à chaque fois</option>
+                                    <option value="always_ask">Demmander à chaque fois</option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -623,7 +718,7 @@
                             <div class="form-group">
                                 <label for="select_always_ask_length">Toujours utlister les mots de même longueur</label>
                                 <select class="form-control" id="select_always_ask_length" disabled
-                                    onchange="settings.always_ask_length = this.value;">
+                                    onchange="updateMenuWordLength(Number(this.value), false);">
                                     <option value="5">5 lettres</option>
                                     <option value="6">6 lettres</option>
                                     <option value="7">7 lettres</option>
@@ -637,17 +732,17 @@
                                 <h3>Ajouter un mot à trouver</h3>
                                 <div class="input-group">
                                     <div>
-                                        <input type="button" class="btn btn-light" id="word_list_button_random" value="5"
+                                        <input type="button" class="btn btn-light" value="5"
                                             onclick="wordListAddRowRandom(5)">
-                                        <input type="button" class="btn btn-light" id="word_list_button_random" value="6"
+                                        <input type="button" class="btn btn-light" value="6"
                                             onclick="wordListAddRowRandom(6)">
-                                        <input type="button" class="btn btn-light" id="word_list_button_random" value="7"
+                                        <input type="button" class="btn btn-light" value="7"
                                             onclick="wordListAddRowRandom(7)">
-                                        <input type="button" class="btn btn-light" id="word_list_button_random" value="8"
+                                        <input type="button" class="btn btn-light" value="8"
                                             onclick="wordListAddRowRandom(8)">
-                                        <input type="button" class="btn btn-light" id="word_list_button_random" value="9"
+                                        <input type="button" class="btn btn-light" value="9"
                                             onclick="wordListAddRowRandom(9)">
-                                        <input type="button" class="btn btn-light" id="word_list_button_random" value="10"
+                                        <input type="button" class="btn btn-light" value="10"
                                             onclick="wordListAddRowRandom(10)">
                                     </div>
                                 </div>
@@ -672,8 +767,7 @@
                             <table id="word_list" cellpadding="2"></table>
                         </div>
 
-                        <div id="settings_panel_grilles" class="tab-pane">
-                            <summary>Grilles numérotées</summary>
+                        <div id="settings_panel_grilles" class="tab-pane" role="tabpanel" aria-labelledby="settings_tab_grilles" tabindex="0">
                             <div class="form-group">
                                 <input type="checkbox" name="checkbox_number_grid_enabled" id="checkbox_number_grid_enabled"
                                     onchange="UpdateNumberGridSettings(this.checked)" />
@@ -685,10 +779,10 @@
                                     onchange="settings.start_by_number_grid = this.checked">
                                 <label for="checkbox_start_by_number_grid">Commencer le jeu avec la grille numérotée</label>
                             </div>
-                            <div class="form-group d-none">
+                            <div class="form-group">
                                 <input type="checkbox" name="checkbox_number_grid_creation_animation" id="checkbox_number_grid_creation_animation"
                                     onchange="settings.number_grid_creation_animation = this.checked">
-                                <label for="checkbox_number_grid_creation_animation">Animation de création des grilles numérotées</label>
+                                <label for="checkbox_number_grid_creation_animation">Animer la création des grilles au début de la partie (si elle commence par la grille numérotée)</label>
                             </div>
                             <div class="form-group">
                                 <label for="input_try_picking_ball">Nombre de boules tirées</label>
@@ -738,8 +832,7 @@
                         </div>
 
                         <!-- Sons -->
-                        <div id="settings_panel_sons" class="tab-pane">
-                            <summary>Sons</summary>
+                        <div id="settings_panel_sons" class="tab-pane" role="tabpanel" aria-labelledby="settings_tab_sons" tabindex="0">
                             <!-- <summary class="h2">Sons et animations</summary> -->
 
                             <div class="form-group">
@@ -750,7 +843,34 @@
                         </div>
 
                         <!-- Experimental -->
-                        <div id="settings_panel_experimental" class="tab-pane">
+                        <div id="settings_panel_experimental" class="tab-pane" role="tabpanel" aria-labelledby="settings_tab_experimental" tabindex="0">
+                            <h3>Menu</h3>
+                            <div class="form-group">
+                                <input type="checkbox" name="checkbox_show_tv_replay"
+                                    id="checkbox_show_tv_replay" onchange="updateTvReplaySettings(this.checked);">
+                                <label for="checkbox_show_tv_replay">Afficher « Rejouer une émission » dans le menu</label>
+                            </div>
+
+                            <h3>Chronomètre</h3>
+                            <div class="form-group">
+                                <input type="checkbox" name="checkbox_timer_enabled" id="checkbox_timer_enabled"
+                                    onchange="updateTimerSettings(this.checked);">
+                                <label for="checkbox_timer_enabled">Afficher un compte à rebours pour chaque proposition</label>
+                            </div>
+                            <div class="form-group">
+                                <label for="input_timer_duration">Durée d'une proposition (secondes)</label>
+                                <input type="number" class="form-control" id="input_timer_duration" min="3" max="120" step="1"
+                                    onchange="settings.timer_duration = Math.min(120, Math.max(3, Number(this.value) || 10)); this.value = settings.timer_duration;">
+                            </div>
+                            <div class="form-group">
+                                <label for="select_timer_behaviour">À la fin du compte à rebours</label>
+                                <select class="form-control" id="select_timer_behaviour"
+                                    onchange="settings.timer_behaviour = this.value;">
+                                    <option value="sound">Jouer le son « temps écoulé »</option>
+                                    <option value="error">Jouer le son et refuser la proposition (comme un mot refusé)</option>
+                                </select>
+                            </div>
+
                             <h3>Affichage</h3>
                             <div class="form-group">
                                 <input type="checkbox" name="checkbox_display_typing_indicator"
@@ -772,30 +892,13 @@
                 </div>
                 
                 <div class="modal-footer">
-                    <button role="button" class="btn btn-primary" onclick="saveSettingsIntoLocalStorage()">Sauvegarder</button>
+                    <span id="settings_save_status" class="settings_save_status" role="status">Les modifications sont enregistrées automatiquement.</span>
                     <button class="btn btn-secondary close-btn" data-dismiss="modal">Fermer</button>
                 </div>
             </div>
         </dialog>
 
 
-        <audio controls preload="auto" style="display:none;">
-            <source src="src/sounds/lettre_ok.mp3">
-            <source src="src/sounds/lettre_mauvaise.mp3">
-            <source src="src/sounds/lettre_absente.mp3">
-            <source src="src/sounds/lettre_bonus.mp3">
-            <source src="src/sounds/erreur.mp3">
-            <source src="src/sounds/victory.mp3">
-            <source src="src/sounds/temps_ecoule.mp3">
-            <source src="src/sounds/loose.mp3">
-            <source src="src/sounds/grille_creation.mp3">
-            <source src="src/sounds/grille_numero.mp3">
-            <source src="src/sounds/grille_boule_noire.mp3">
-            <source src="src/sounds/grille_numero_tire.mp3">
-            <source src="src/sounds/motus.mp3">
-            <source src="src/sounds/boule_magique.mp3">
-            <source src="src/sounds/jingle_motus.mp3">
-        </audio>
 
         <script type="text/javascript" src="./src/js/game.js"></script>
         <script type="text/javascript" src="./src/js/letter_grid.js"></script>
@@ -803,7 +906,5 @@
         <script type="text/javascript" src="./src/js/aide.js"></script>
         <script type="text/javascript" src="./src/data/grille_tele.js"></script>
         <script type="text/javascript" src="./src/js/keyinput.js"></script>
-        <script type="text/javascript" src="./src/js/sounds/jquery-3.7.0.min.js"></script>
-        <script type="text/javascript" src="./src/js/sounds/jquery.playSound.js"></script>
     </body>
 </html>

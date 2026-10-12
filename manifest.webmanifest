@@ -1,0 +1,14 @@
+{
+    "name": "MotusJS",
+    "short_name": "MotusJS",
+    "description": "Le jeu de lettres Motus dans le navigateur, piloté au clavier par un animateur.",
+    "lang": "fr",
+    "start_url": "./",
+    "scope": "./",
+    "display": "standalone",
+    "background_color": "#A52A2E",
+    "theme_color": "#A52A2E",
+    "icons": [
+        { "src": "src/img/favicon.png", "sizes": "128x128", "type": "image/png" }
+    ]
+}

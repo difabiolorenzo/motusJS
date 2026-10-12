@@ -4,12 +4,15 @@ function initVariables() {
     setDefaultVariables();
     loadSettingsByLocalStorage();
     setHTMLFromSettings()
+    document.getElementById("checkbox_debug_logs").checked = game.debug;
     document.getElementById("version").innerHTML = "MotusJS " + game.version;
+    preloadSounds();
+    registerServiceWorker();
 }
 
 function setDefaultVariables() {
     game = {
-        version: "2.5",
+        version: "2.6",
         displayed_grid_type: "letter_grid", // "number_grid"
         displayed_page: "main_menu",
         
@@ -17,6 +20,8 @@ function setDefaultVariables() {
 
         started: false,
         pause: false,
+        debug: isDebugEnabled(),
+        history: [],        // historique de la partie (voir recordWordResult)
         
         word_to_find_list: [],
         dictionnaire_mot_a_trouver: {
@@ -190,6 +195,7 @@ function setDefaultVariables() {
     settings = {
         verification_time_multiplier: 1,
         style: "2010",
+        high_contrast: false,
 
         automatic_behaviour: true,
         automatic_behaviour_new_line_error: "add_bonus", //"replace_bonus" "replace_only" "add_bonus" "add_only" "none"
@@ -198,19 +204,19 @@ function setDefaultVariables() {
         automatic_behaviour_redirect_letter_grid: false,
         automatic_behaviour_ask_new_word: true,
 
-        display_soluce_on_last_row: false,      // pas d'option HTML
-        reinit_line_if_unvalid_word: true,      // pas d'option HTML
+        display_soluce_on_last_row: false,
+        reinit_line_if_unvalid_word: true,
 
         display_typing_indicator: false,
-        keyboard_show_cursor: false,        // pas d'option HTML
-        keyboard_start_typing_in_void: false,       // pas d'option HTML
+        keyboard_show_cursor: false,
+        keyboard_start_typing_in_void: false,
 
         check_word_presence: true,
         check_word_duplication: true,
         check_word_length: true,
         check_word_first_letter: true,
 
-        confirm_submit: false,       // pas d'option HTML, ne fonctionne pas.
+        confirm_submit: false,       // Entrée met en attente, 1 / & confirme, Effacer annule.
 
         helping_letter_amount: 1,
         always_ask: false,
@@ -224,16 +230,21 @@ function setDefaultVariables() {
         ball_picking_mode: "random",
         start_by_number_grid: false,
         number_grid_specific_display_blue_team: false,
-        number_grid_creation_animation: false,      // pas d'option HTML
-        // number_grid_manual_creation: true,       // pas d'option HTML
+        number_grid_creation_animation: false,      // seulement si la partie commence par la grille numérotée
 
         team_enabled: false,
-        score_addition: 50,
+        score_addition: 50,         // points par mot trouvé
+        score_motus: 100,           // points par MOTUS
         change_turn_mode: "by_error", // ("by_error" || "by_proposition")
         playsound_enabled: true,
         play_extra_sounds: false,
 
-        help_page_length: 8
+        help_page_length: 8,
+        show_tv_replay: false,
+
+        timer_enabled: false,       // compte à rebours par proposition (expérimental)
+        timer_duration: 10,         // secondes
+        timer_behaviour: "sound"    // à zéro, après le son : "sound" (rien de plus) | "error" (proposition refusée)
     };
 }
 
@@ -286,7 +297,9 @@ function resetGame() {
 	updateScores();
 
 	document.getElementById("letter_grid_placeolder").innerHTML = "";
-	document.getElementById("keyboard").innerHTML = "";
+	// Vider le conteneur interne : #keyboard_placeholder doit rester pour createKeyboard()
+	document.getElementById("keyboard_placeholder").innerHTML = "";
+	document.getElementById("word_list").innerHTML = "";
 	displayPage("main_menu")
 }
 
@@ -327,6 +340,7 @@ function displayNumberGrid() {
         displayLetterGrid()
         return;
     }
+    stopProposalTimer();
 
     if (game.motus_aligned == true) {
         changeNumberGrid();
@@ -360,8 +374,10 @@ function displayNumberGrid() {
 }
 
 function resetSettings() {
-    setDefaultVariables()
+    // Réglages seulement : la partie en cours (game) est conservée
+    setDefaultVariablesSettingsOnly()
     setHTMLFromSettings()
+    saveSettingsIntoLocalStorage()
 }
 
 function loadSettingsByLocalStorage() {
@@ -372,16 +388,39 @@ function loadSettingsByLocalStorage() {
 
         // Fusionne les paramètres
         settings = { ...settings, ...parsedSettings };
+        normalizeSettingTypes();
     }
 }
 
+// Remet en nombre les réglages numériques enregistrés en texte par d'anciennes versions
+// (un réglage est numérique si sa valeur par défaut l'est)
+function normalizeSettingTypes() {
+    const current_settings = settings;
+    setDefaultVariablesSettingsOnly();
+    const defaults = settings;
+    settings = current_settings;
+
+    for (const key in defaults) {
+        if (typeof defaults[key] == "number" && typeof settings[key] == "string" && settings[key].trim() != "" && !isNaN(Number(settings[key]))) {
+            settings[key] = Number(settings[key]);
+        }
+    }
+}
+
+// Valeurs par défaut de settings sans toucher à game
+function setDefaultVariablesSettingsOnly() {
+    const current_game = game;
+    setDefaultVariables();
+    game = current_game;
+}
+
 function saveSettingsIntoLocalStorage() {
-    console.log("Sauvegarde des paramètres dans le stockage local")
+    debugLog("Sauvegarde des paramètres dans le stockage local")
     const string_settings = JSON.stringify(settings);
     localStorage.removeItem("settings");
     localStorage.setItem("settings", string_settings);
 
-    console.log(string_settings)
+    debugLog(string_settings)
 }
 
 function exportSettings() {
@@ -395,12 +434,59 @@ function exportSettings() {
     downloadAnchorNode.remove();
 }
 
-function importSettings() {}
+// Lit un fichier JSON produit par exportSettings() : seules les clés connues de settings sont reprises
+function importSettings(file) {
+    if (!file) { return; }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+        let imported = null;
+        try {
+            imported = JSON.parse(reader.result);
+        } catch (error) {
+            imported = null;
+        }
+        if (imported == null || typeof imported != "object" || Array.isArray(imported)) {
+            console.error("Fichier de paramètres invalide :", file.name);
+            alert("Fichier de paramètres invalide.");
+            return;
+        }
+
+        let imported_count = 0;
+        for (const key in imported) {
+            if (Object.prototype.hasOwnProperty.call(settings, key)) {
+                settings[key] = imported[key];
+                imported_count++;
+            } else {
+                console.warn(`Paramètre inconnu ignoré : ${key}`);
+            }
+        }
+
+        normalizeSettingTypes();
+        setHTMLFromSettings();
+        saveSettingsIntoLocalStorage();
+        console.log(`${imported_count} paramètres importés depuis ${file.name}`);
+    };
+    reader.onerror = () => {
+        console.error("Lecture du fichier de paramètres impossible :", file.name);
+    };
+    reader.readAsText(file);
+}
 
 function setHTMLFromSettings() {
     document.getElementById("verification_speed_select").value = settings.verification_time_multiplier;
     document.getElementById("grid_style").value = settings.style;
     changeStyle(settings.style);
+    document.getElementById("checkbox_high_contrast").checked = settings.high_contrast;
+    document.getElementById("help_length_select").value = settings.help_page_length;
+    document.getElementById("checkbox_show_tv_replay").checked = settings.show_tv_replay;
+    document.getElementById("checkbox_timer_enabled").checked = settings.timer_enabled;
+    document.getElementById("input_timer_duration").value = settings.timer_duration;
+    if (settings.timer_behaviour != "error") { settings.timer_behaviour = "sound"; }    // ancienne valeur "none"
+    document.getElementById("select_timer_behaviour").value = settings.timer_behaviour;
+    updateTimerSettings(settings.timer_enabled);
+    updateTvReplaySettings(settings.show_tv_replay);
+    updateHighContrastSettings(settings.high_contrast);
 
     updateTypingIndicatorSettings(settings.display_typing_indicator);
     document.getElementById("checkbox_display_cursor").checked = settings.keyboard_show_cursor;
@@ -436,12 +522,17 @@ function setHTMLFromSettings() {
     document.getElementById("checkbox_start_by_number_grid").checked = settings.start_by_number_grid;
     document.getElementById("select_ball_picking_mode").value = settings.ball_picking_mode;
     UpdateNumberSelectMode(settings.ball_picking_mode);
-    document.getElementById("checkbox_number_grid_specific_display_blue_team").value = settings.number_grid_specific_display_blue_team;
-    document.getElementById("checkbox_number_grid_creation_animation").value = settings.number_grid_creation_animation;
+    document.getElementById("checkbox_number_grid_specific_display_blue_team").checked = settings.number_grid_specific_display_blue_team;
+    document.getElementById("checkbox_number_grid_creation_animation").checked = settings.number_grid_creation_animation;
+    document.getElementById("checkbox_reinit_line_if_unvalid_word").checked = settings.reinit_line_if_unvalid_word;
+    document.getElementById("checkbox_display_soluce_on_last_row").checked = settings.display_soluce_on_last_row;
+    document.getElementById("checkbox_confirm_submit").checked = settings.confirm_submit;
 
     updateTeamSettings(settings.team_enabled)
     document.getElementById("team_enabled_checkbox").checked = settings.team_enabled;
     document.getElementById("score_addition_select").value = settings.score_addition;
+    document.getElementById("score_motus_input").value = settings.score_motus;
+    updateMenuWordLength(settings.always_ask_length, false);
     document.getElementById("settings_section_team").value = settings.change_turn_mode;
     document.getElementById("checkbox_sound_activated").checked = settings.playsound_enabled;
 }
@@ -505,8 +596,34 @@ function updateAutomaticBehaviourSettings(value = settings.automatic_behaviour) 
     }
 }
 
+// Bouton « Rejouer une émission » du menu, masqué par défaut (paramètres expérimentaux)
+function updateTvReplaySettings(value = settings.show_tv_replay) {
+    settings.show_tv_replay = value;
+    document.getElementById("menu_button_tv_replay").classList.toggle("d-none", value != true);
+}
+
+function updateHighContrastSettings(value = settings.high_contrast) {
+    settings.high_contrast = value;
+    document.body.classList.toggle("high_contrast", value == true);
+}
+
+// Longueur des mots tirés au hasard : rangée 5 à 10 du menu et liste des paramètres
+function updateMenuWordLength(value = settings.always_ask_length, save = true) {
+    settings.always_ask_length = Number(value);
+    document.querySelectorAll("#menu_word_length button").forEach(button => {
+        const selected = Number(button.dataset.length) == settings.always_ask_length;
+        button.classList.toggle("active", selected);
+        button.setAttribute("aria-checked", selected ? "true" : "false");
+        button.tabIndex = selected ? 0 : -1;
+    });
+    document.getElementById("select_always_ask_length").value = settings.always_ask_length;
+    if (save) { saveSettingsIntoLocalStorage(); }
+}
+
 function updateAlwaysAskSettings(value = settings.always_ask) {
     settings.always_ask = value;
+    // La rangée du menu ne sert pas si la longueur est demandée à chaque mot
+    document.getElementById("menu_word_length").classList.toggle("d-none", value == true);
     if (value == false) {
         document.getElementById("select_always_ask_length").disabled = false;
     } else {
@@ -569,18 +686,18 @@ function updateLengthSelectionMode(value = settings.length_selection) {
             break;
         case "custom_length_collection":
             break;
-        case "always_ask_length":
+        case "always_ask":
             break;
     }
 }
 
 function updateTryPickingBall(value = settings.try_picking_ball) {
-    settings.try_picking_ball = value;
+    settings.try_picking_ball = Number(value);
     document.getElementById("input_try_picking_ball_indicator").innerHTML = value;    
 }
 
 function updateBlackBallAmount(value = settings.black_ball_amount) {
-    settings.black_ball_amount = value;
+    settings.black_ball_amount = Number(value);
     document.getElementById("input_black_ball_amount_indicator").innerHTML = value;
 }
 
@@ -667,6 +784,12 @@ function WordListAddRow(word_list_selected_word) {
 
     // Ajout du mot dans la liste de mot à trouver
     game.word_to_find_list.push(word_list_selected_word);
+
+    // Chargement du dictionnaire de vérification de cette longueur (sinon toute proposition est refusée)
+    const word_length = word_list_selected_word.length;
+    if (word_length >= 5 && word_length <= 10) {
+        loadDictionaryAsync(word_length, 'verification').catch(() => {});
+    }
 }
 
 // function wordListAddRowRandom(word_length) {
@@ -740,7 +863,7 @@ async function wordListAddRowRandom(word_length) {
         // Ajout à la grille
         WordListAddRow(random_word);
 
-        console.log(`Mot ajouté (${word_length} lettres) :`, random_word);
+        debugLog(`Mot ajouté (${word_length} lettres) :`, random_word);
 
         return true;
 
@@ -764,8 +887,8 @@ function WordListDeleteRow(word) {
     var word_list_table = document.getElementById("word_list");
     word_list_table.deleteRow(word_list_index);
 
-    // Suppresion du mot de la liste de mot à trouver
-    game.word_to_find_list.splice(word_list_index - 1, 1);
+    // Suppresion du mot de la liste de mot à trouver (le tableau n'a pas de ligne d'en-tête)
+    game.word_to_find_list.splice(word_list_index, 1);
 }
 
 function SearchWordInformations(word) {
@@ -775,90 +898,52 @@ function SearchWordInformations(word) {
 }
 
 // SON
-function playsound(sound) {
-    if (settings.playsound_enabled == true) {
-        switch (sound) {
-            case "letter_ok":
-                $.playSound("src/sounds/lettre_ok.mp3");
-                break;
-            case "letter_bad":
-                $.playSound("src/sounds/lettre_mauvaise.mp3");
-                break;
-            case "letter_missing":
-                $.playSound("src/sounds/lettre_absente.mp3");
-                break;
-            case "error":
-                $.playSound("src/sounds/lettre_absente.mp3");
-                break;
-            case "letter_bonus":
-                $.playSound("src/sounds/lettre_bonus.mp3");
-                break;
-            case "wrong":
-                $.playSound("src/sounds/erreur.mp3");
-                break;
-            case "victory":
-                $.playSound("src/sounds/victoire.mp3");
-                break;
-            case "temps_ecoule":
-                $.playSound("src/sounds/temps_ecoule.mp3");
-                break;
-            case "loose":
-                $.playSound("src/sounds/perdu.mp3");
-                break;
-            case "grille_creation":
-                $.playSound("src/sounds/grille_creation.mp3");
-                break;
-            case "grille_numero":
-                $.playSound("src/sounds/grille_numero.mp3");
-                break;
-            case "grille_boule_noire":
-                $.playSound("src/sounds/grille_boule_noire.mp3");
-                break;
-            case "grille_numero_tire":
-                $.playSound("src/sounds/grille_numero_tire.mp3");
-                break;
-            case "motus":
-                $.playSound("src/sounds/motus.mp3");
-                break;
-            case "boule_magique":
-                $.playSound("src/sounds/boule_magique.mp3");
-                break;
-            case "jingle":
-                $.playSound("src/sounds/jingle_motus.mp3");
-                break;
-            default:
-                break;
+// Fichier de chaque son joué par playsound()
+const SOUND_FILES = {
+    letter_ok: "src/sounds/lettre_ok.mp3",
+    letter_bad: "src/sounds/lettre_mauvaise.mp3",
+    letter_missing: "src/sounds/lettre_absente.mp3",
+    error: "src/sounds/lettre_absente.mp3",
+    letter_bonus: "src/sounds/lettre_bonus.mp3",
+    wrong: "src/sounds/erreur.mp3",
+    victory: "src/sounds/victoire.mp3",
+    temps_ecoule: "src/sounds/temps_ecoule.mp3",
+    loose: "src/sounds/perdu.mp3",
+    grille_creation: "src/sounds/grille_creation.mp3",
+    grille_numero: "src/sounds/grille_numero.mp3",
+    grille_boule_noire: "src/sounds/grille_boule_noire.mp3",
+    grille_numero_tire: "src/sounds/grille_numero_tire.mp3",
+    motus: "src/sounds/motus.mp3",
+    boule_magique: "src/sounds/boule_magique.mp3",
+    jingle: "src/sounds/jingle_motus.mp3"
+};
+
+// Un objet Audio par fichier, créé une fois et réutilisé (pas de délai à la lecture)
+const audio_cache = {};
+
+function preloadSounds() {
+    for (const src of new Set(Object.values(SOUND_FILES))) {
+        if (!audio_cache[src]) {
+            audio_cache[src] = new Audio(src);
+            audio_cache[src].preload = "auto";
         }
     }
 }
 
-function preloadsound(sound_file) {
-    var sound_html = '<audio class="sound_player" autoplay="autoplay" style="display:none;">'
-        + '<source src="' + sound_file + '" />'
-        + '<embed src="' + sound_file + '" hidden="true" autostart="true" loop="false"/>'
-        + '</audio>';
-console.log(sound_html)
-    document.body.appendChild(sound_html)
+function playAudio(src) {
+    if (!audio_cache[src]) {
+        audio_cache[src] = new Audio(src);
+    }
+    // Si le son joue déjà (lettres rapprochées), une copie le joue en parallèle
+    const base = audio_cache[src];
+    const audio = base.paused || base.ended ? base : base.cloneNode();
+    audio.currentTime = 0;
+    audio.play().catch(error => console.warn(`Lecture du son impossible (${src}) :`, error));
 }
 
-function editHTML(elementID, modifier, value) {
-    alert("editHTML function")
-    switch (modifier) {
-        case "innerHTML":
-            document.getElementById(elementID).innerHTML = value;
-            break;
-        case "className":
-            document.getElementById(elementID).className = value;
-            break;
-        case "style":
-            document.getElementById(elementID).style = value;
-            break;
-        case "disabled":
-            document.getElementById(elementID).disabled = value;
-            break;
-        case "disabled":
-            document.getElementById(elementID).disabled = value;
-            break;
+function playsound(sound) {
+    if (settings.playsound_enabled == true && SOUND_FILES[sound]) {
+        playAudio(SOUND_FILES[sound]);
     }
 }
 
@@ -897,6 +982,8 @@ function displayPage(page_name) {
     document.getElementById("game_page").classList.add("d-none");
     document.getElementById("debug_page").classList.add("d-none");
     document.getElementById("credit_page").classList.add("d-none");
+    document.getElementById("tv_page").classList.add("d-none");
+    document.getElementById("history_page").classList.add("d-none");
 
     game.displayed_page = page_name;
 
@@ -927,13 +1014,14 @@ function createHTMLGrid(row, column, cell_id_prefix, grid_id, hided = false) {
     let display_none = ""
     if (hided == true) { display_none = 'display: none;' }
     
-    let min_height = Math.floor(50 / (row/column) + 2);
-    
+    // Taille calculée en CSS (grid.css) selon la place disponible : --columns / --rows
+    // minmax(0, 1fr) : les cases peuvent rétrécir sous la taille de leur lettre
     let element = `<div class="gridNEW" id="${grid_id}" style="
-            grid-template-columns: repeat(${column}, 1fr);
-            grid-template-rows: repeat(${row}, 1fr);
+            grid-template-columns: repeat(${column}, minmax(0, 1fr));
+            grid-template-rows: repeat(${row}, minmax(0, 1fr));
             aspect-ratio: ${column} / ${row};
-            width: min(90vw, ${min_height}vh);
+            --columns: ${column};
+            --rows: ${row};
             ${display_none}
         ">`;
 
@@ -946,14 +1034,16 @@ function createHTMLGrid(row, column, cell_id_prefix, grid_id, hided = false) {
     return element;
 }
 
-function addTeamScore(team) {
-    if (game.team_focus == "yellow" || team == "yellow") {
-        game.score_yellow += settings.score_addition;
+// Ajoute des points à l'équipe qui a la main (ou à team) ; par défaut les points d'un mot trouvé
+function addTeamScore(team, points = settings.score_addition) {
+    if (team === undefined) { team = game.team_focus; }
+    if (team == "yellow") {
+        game.score_yellow += points;
         document.getElementById("score_yellow_panel").innerHTML = game.score_yellow;
         setTeamScore("yellow", game.score_yellow)
     }
-    if (game.team_focus == "blue" || team == "blue") {
-        game.score_blue += settings.score_addition;
+    if (team == "blue") {
+        game.score_blue += points;
         document.getElementById("score_blue_panel").innerHTML = game.score_blue;
         setTeamScore("blue", game.score_blue)
     }
@@ -1026,22 +1116,18 @@ function wordInformation(word_to_search) {
 }
 
 function wordErrorHandler(errorCode, catching_up) { // Affiche dans la console le terme de l'erreur
-    switch(errorCode) {
-        case 1:
-            console.log("La longueur du word_to_find n'est pas la bonne.");
-            break;
-        case 2:
-            console.log("Mot absent du dictionnaire.");
-            break;
-        case 3:
-            console.log("Mot déjà proposé.");
-            break;
-        case 4:
-            console.log("Mot déjà affiché.");
-            break;
-        case 5:
-            console.log("Boule non valide.");
-            break;
+    const error_messages = {
+        1: "Mot refusé : nombre de lettres incorrect.",
+        2: "Mot refusé : absent du dictionnaire.",
+        3: "Mot refusé : déjà proposé.",
+        4: "Mot déjà affiché.",
+        5: "Boule non valide.",
+        6: "Temps écoulé : proposition refusée."
+    };
+    if (error_messages[errorCode]) {
+        console.log(error_messages[errorCode]);
+        announce(error_messages[errorCode]);
+        showGameMessage(error_messages[errorCode]);
     }
     playsound("error");
 
@@ -1132,47 +1218,77 @@ function switchGameGridFocusOn(forced_value, animation = true) {
 //     }
 // }
 
+// Version des dictionnaires : à incrémenter à chaque modification de src/js/dictionary/mot_a_trouver/
+// pour que les joueurs qui les ont en cache les rechargent
+const DICTIONARY_VERSION = 1;
+
+// Renvoie les mots en cache, ou null si absents, illisibles ou d'une autre version
+function readCachedDictionary(storageKey) {
+    let cached = null;
+    try {
+        cached = JSON.parse(localStorage.getItem(storageKey));
+    } catch (error) {
+        cached = null;
+    }
+    if (cached == null) { return null; }
+
+    // Ancien format (tableau seul) ou autre version : cache invalidé
+    if (Array.isArray(cached) || cached.version != DICTIONARY_VERSION || !Array.isArray(cached.mots)) {
+        localStorage.removeItem(storageKey);
+        console.log(`Cache ${storageKey} obsolète : rechargement du dictionnaire.`);
+        return null;
+    }
+    return cached.mots;
+}
+
 function loadDictionaryAsync(word_length, type) {
     return new Promise((resolve, reject) => {
         loadDictionary(word_length, type, () => {
             resolve();
+        }, (error) => {
+            reject(error);
         });
     });
 }
 
-function loadDictionary(word_length, type, callback) {
+// callback : appelé une fois le dictionnaire chargé ; onError : appelé en cas d'échec (message déjà affiché)
+function loadDictionary(word_length, type, callback = () => {}, onError = () => {}) {
     // type == mot_a_trouver ou verification
+    word_length = Number(word_length);
 
     if (word_length < 5 || word_length > 10) {
         console.error("Seuls les mots entre 5 et 10 lettres sont gérés.");
+        onError(new Error("Longueur de mot invalide."));
         return;
     }
 
     if (type == "mot_a_trouver" && game.dictionnaire_mot_a_trouver[`length_${word_length}`].length != 0) {
-        console.log(`Le dictionnaire des mots à trouver de ${word_length} est déjà chargé.`);
+        debugLog(`Le dictionnaire des mots à trouver de ${word_length} est déjà chargé.`);
         callback();
         return;
     }
     if (type == "verification" && game.dictionnaire_verification[`length_${word_length}`].length != 0) {
-        console.log(`Le dictionnaire des mots proposables de ${word_length} est déjà chargé.`);
+        debugLog(`Le dictionnaire des mots proposables de ${word_length} est déjà chargé.`);
         callback();
         return;
     }
 
     const storageKey = `motus_${type}_${word_length}`;
-    if (localStorage.getItem(storageKey) != null) {
-        const dictionary = JSON.parse(localStorage.getItem(storageKey));
+    // Purge de l'ancien cache local des dictionnaires de vérification (plus mis en cache)
+    if (type == "verification") { localStorage.removeItem(storageKey); }
+    const dictionary = readCachedDictionary(storageKey);
+    if (dictionary != null) {
         if (type == "mot_a_trouver") {
             game.dictionnaire_mot_a_trouver[`length_${word_length}`] = dictionary;
 
             // Mise à jour des boutons de debug
             document.getElementById(`debug_button_add_dictionary_${word_length}`).disabled = true;
             document.getElementById(`debug_button_drop_dictionary_${word_length}`).disabled = false;
-        console.log(`Le dictionnaire des mots à trouver de ${word_length} lettres est chargé depuis le stockage local.`);
+        debugLog(`Le dictionnaire des mots à trouver de ${word_length} lettres est chargé depuis le stockage local.`);
         }
         if (type == "verification") {
             game.dictionnaire_verification[`length_${word_length}`] = dictionary;
-            console.log(`Le dictionnaire des mots proposables de ${word_length} lettres est chargé depuis le stockage local.`);
+            debugLog(`Le dictionnaire des mots proposables de ${word_length} lettres est chargé depuis le stockage local.`);
         }
 
         // Appel du callback
@@ -1190,8 +1306,18 @@ function loadDictionary(word_length, type, callback) {
                 console.error("Le dictionnaire n'a pas été injecté par le script.");
                 return;
             }
-            localStorage.setItem(storageKey, JSON.stringify(data));
-            console.log(`Dictionnaire ${word_length} lettres (${type}) chargé et sauvegardé.`);
+            // Pas de cache local pour la vérification (2,8 Mo, risque de dépasser le quota) :
+            // le navigateur met déjà le fichier .js en cache
+            if (type == "mot_a_trouver") {
+                try {
+                    localStorage.setItem(storageKey, JSON.stringify({ version: DICTIONARY_VERSION, mots: data }));
+                    debugLog(`Dictionnaire ${word_length} lettres (${type}) chargé et sauvegardé.`);
+                } catch (error) {
+                    console.warn(`Dictionnaire ${word_length} lettres (${type}) chargé mais non sauvegardé dans le stockage local :`, error);
+                }
+            } else {
+                debugLog(`Dictionnaire ${word_length} lettres (${type}) chargé.`);
+            }
 
 
             if (type == "mot_a_trouver") {
@@ -1205,6 +1331,11 @@ function loadDictionary(word_length, type, callback) {
         };
         script.onerror = () => {
             console.error("Erreur chargement script dictionnaire :", script.src, type);
+            script.remove();
+            const message = `Impossible de charger le dictionnaire des mots de ${word_length} lettres. Vérifiez la connexion puis réessayez.`;
+            announce(message);
+            alert(message);
+            onError(new Error(message));
         };
         document.head.appendChild(script);
     }
@@ -1215,15 +1346,22 @@ function dropDictionary(word_length, type) {
         console.error("Seuls les mots entre 5 et 10 lettres sont gérés.")
         return
     }
-    const storageKey = "motus_mot_a_trouver_" + word_length;
+    const storageKey = `motus_${type}_${word_length}`;
 
-    game.dictionnaire_mot_a_trouver[`length_${word_length}`] = "";
+    if (type == "mot_a_trouver") {
+        game.dictionnaire_mot_a_trouver[`length_${word_length}`] = [];
+
+        document.getElementById(`debug_button_add_dictionary_${word_length}`).disabled = false;
+        document.getElementById(`debug_button_drop_dictionary_${word_length}`).disabled = true;
+    } else if (type == "verification") {
+        game.dictionnaire_verification[`length_${word_length}`] = [];
+    } else {
+        console.error(`Type de dictionnaire inconnu : ${type}`);
+        return;
+    }
     localStorage.removeItem(storageKey);
 
-    document.getElementById(`debug_button_add_dictionary_${word_length}`).disabled = false;
-    document.getElementById(`debug_button_drop_dictionary_${word_length}`).disabled = true;
-
-    console.log(`Le dictionnaire des mots de ${word_length} lettres sont supprimés`);
+    console.log(`Le dictionnaire ${type} des mots de ${word_length} lettres est supprimé`);
 }
 
 
@@ -1237,7 +1375,14 @@ document.addEventListener('click', (event) => {
     if (toggleBtn) {
         const targetSelector = toggleBtn.getAttribute('data-target');
         const modal = document.querySelector(targetSelector);
-        if (modal) modal.showModal();
+        if (modal) {
+            // Jeu en pause tant que la fenêtre est ouverte (rétabli à sa fermeture, voir l'événement "close")
+            if (!modal.open) {
+                modal.dataset.pauseBefore = game.pause;
+                game.pause = true;
+            }
+            modal.showModal();
+        }
         return; // On arrête là pour ce clic
     }
 
@@ -1255,6 +1400,35 @@ document.addEventListener('click', (event) => {
     }
 });
 
+// Fermeture d'une fenêtre, quelle que soit la façon (bouton, arrière-plan, Échap) : fin de la pause
+document.addEventListener('DOMContentLoaded', function() {
+    // Sauvegarde automatique : tout changement dans les paramètres est enregistré aussitôt
+    // (le gestionnaire onchange du contrôle a déjà mis settings à jour : il s'exécute avant celui-ci)
+    const settings_modal = document.getElementById("settings-modal");
+    settings_modal.addEventListener('change', function(event) {
+        if (event.target.closest("#word_list_section_text, #import_settings_file")) { return; }
+        saveSettingsIntoLocalStorage();
+        const status = document.getElementById("settings_save_status");
+        status.textContent = "Modification enregistrée.";
+        clearTimeout(status.resetTimer);
+        status.resetTimer = setTimeout(() => { status.textContent = "Les modifications sont enregistrées automatiquement."; }, 2000);
+    });
+
+    // La fenêtre de longueur du prochain mot ne se ferme pas sans choix (Échap ignoré)
+    document.getElementById("word_length_dialog").addEventListener('cancel', function(event) {
+        event.preventDefault();
+    });
+
+    document.querySelectorAll('dialog').forEach(dialog => {
+        dialog.addEventListener('close', function() {
+            if (this.dataset.pauseBefore !== undefined) {
+                game.pause = this.dataset.pauseBefore == "true";
+                delete this.dataset.pauseBefore;
+            }
+        });
+    });
+});
+
 
 // Nav links
 document.addEventListener('DOMContentLoaded', function() {
@@ -1269,54 +1443,318 @@ document.addEventListener('DOMContentLoaded', function() {
             // Ajoute la classe "active" à l'onglet cliqué
             this.classList.add('active');
 
+            // État des onglets pour les lecteurs d'écran : seul l'onglet actif est dans l'ordre de tabulation
+            document.querySelectorAll('.nav-link').forEach(l => {
+                l.setAttribute('aria-selected', l === this ? 'true' : 'false');
+                l.setAttribute('tabindex', l === this ? '0' : '-1');
+            });
+
             // Affiche le contenu correspondant
             const tabId = this.getAttribute('data-tab');
             document.getElementById(tabId).classList.add('active');
         });
+
+        // Flèches gauche / droite, Début / Fin pour passer d'un onglet à l'autre
+        link.addEventListener('keydown', function(event) {
+            const links = Array.from(document.querySelectorAll('.nav-link'));
+            const index = links.indexOf(this);
+            let target = null;
+            if (event.key == "ArrowRight") { target = links[(index + 1) % links.length]; }
+            if (event.key == "ArrowLeft") { target = links[(index - 1 + links.length) % links.length]; }
+            if (event.key == "Home") { target = links[0]; }
+            if (event.key == "End") { target = links[links.length - 1]; }
+            if (target) {
+                event.preventDefault();
+                target.click();
+                target.focus();
+            }
+        });
     });
+});
+
+// Un clic souris sur la barre haute ou le clavier visuel ne garde pas le focus sur le bouton :
+// sinon la touche Entrée suivante activerait ce bouton au lieu de valider le mot
+document.addEventListener('mousedown', function(event) {
+    if (event.target.closest && event.target.closest('.topbar_button_group, .keyboard_key')) {
+        event.preventDefault();
+    }
 });
 
 
 
+// Outil de debug, à lancer depuis la console : numéros visibles et numéros uniques de chaque grille
 function debugListAllGridUniqueNumber() {
     for (let i=0; i<6; i++) {
         const grid_mask = game.number_grid_data.mask[i+1];
-        const grid_yellow = game.number_grid_data.yellow[i+1];
-        const grid_blue = game.number_grid_data.blue[i+1];
-        var yellow = [];
-        var blue = [];
-        var unique_yellow = [];
-        var unique_blue = [];
-
-        for (number in grid_yellow) {
-            if (grid_mask[number] == 1) {
-                yellow.push(grid_yellow[number])
-                if (!yellow.includes(number)) {
-                    unique_yellow.push(grid_yellow[number])
-                }
-            }
+        for (const team of ["yellow", "blue"]) {
+            const grid = game.number_grid_data[team][i+1];
+            const visible = grid.filter((num, index) => grid_mask[index] == 1);
+            const unique = [...new Set(visible)];
+            console.log(`Grille ${i+1} (${team}) :`, visible, "uniques :", unique);
         }
-
-        for (number in grid_blue) {
-            if (grid_mask[number] == 1) {
-                blue.push(grid_blue[number])
-                if (!blue.includes(number)) {
-                    unique_blue.push(grid_blue[number])
-                }
-            }
-        }
-
-        console.log(i+1, yellow)
-        console.log(i+1, blue)
-
-        if (i==1) {
-            console.log("unique", unique_yellow)
-            console.log("unique", unique_blue)
-        }
-        if (i==5) {
-            console.log("unique", unique_yellow)
-            console.log("unique", unique_blue)
-        }
-
     }
+}
+
+// DEBUG
+// Logs de debug : activés depuis la page Debug, mémorisés dans ce navigateur
+function isDebugEnabled() {
+    try {
+        return localStorage.getItem("motus_debug") == "true";
+    } catch (error) {
+        return false;
+    }
+}
+
+function setDebugEnabled(value) {
+    game.debug = value;
+    try {
+        localStorage.setItem("motus_debug", value);
+    } catch (error) {
+        console.warn("Impossible de mémoriser le drapeau de debug :", error);
+    }
+}
+
+function debugLog(...args) {
+    if (typeof game != "undefined" && game.debug == true) {
+        console.log(...args);
+    }
+}
+
+// ÉMISSIONS TÉLÉ
+// Liste les émissions de GRILLES_TELE (src/data/grille_tele.js) sur la page dédiée
+function displayTvPage() {
+    const list = document.getElementById("tv_replay_list");
+    list.innerHTML = "";
+
+    GRILLES_TELE.grille_tv.forEach((emission, index) => {
+        list.innerHTML += `<button class="button menu_button" onclick="startTvReplay(${index})">${emission.date} · ${emission.mots.length} mots</button>`;
+    });
+
+    displayPage("tv_page");
+}
+
+// Lance une partie avec les mots réels de l'émission, dans l'ordre
+async function startTvReplay(index) {
+    const emission = GRILLES_TELE.grille_tv[index];
+    if (!emission) {
+        console.error(`Émission introuvable : ${index}`);
+        return;
+    }
+
+    if (game.started == true) {
+        if (!confirm("Une partie est en cours. L'abandonner pour rejouer cette émission ?")) { return; }
+        resetGame();
+    }
+
+    // Mots en majuscules sans accents, comme les dictionnaires
+    const words = emission.mots.map(word => word.normalize('NFD').replace(/[̀-ͯ]/g, "").toUpperCase());
+    const lengths = [...new Set(words.map(word => word.length))].filter(length => length >= 5 && length <= 10);
+    try {
+        await Promise.all(lengths.map(length => loadDictionaryAsync(length, 'verification')));
+    } catch (error) {
+        return;
+    }
+
+    // Remplacement de la liste de mots à trouver
+    game.word_to_find_list = [];
+    document.getElementById("word_list").innerHTML = "";
+
+    words.forEach(word => {
+        const length_ok = word.length >= 5 && word.length <= 10;
+        if (!length_ok || !game.dictionnaire_verification[`length_${word.length}`].includes(word)) {
+            console.warn(`Mot de l'émission ignoré (absent du dictionnaire) : ${word}`);
+            return;
+        }
+        WordListAddRow(word);
+    });
+
+    if (game.word_to_find_list.length == 0) {
+        console.error(`Aucun mot jouable dans l'émission du ${emission.date}`);
+        return;
+    }
+
+    console.log(`Émission du ${emission.date} : ${game.word_to_find_list.length} mots, puis mots au hasard.`);
+    initGame();
+}
+
+// ACCESSIBILITÉ
+// Annonce un message aux lecteurs d'écran (zone aria-live #screen_reader_announcer)
+function announce(message) {
+    const announcer = document.getElementById("screen_reader_announcer");
+    if (!announcer) { return; }
+    // Vidage puis réécriture : un message identique au précédent est relu
+    announcer.textContent = "";
+    setTimeout(function() { announcer.textContent = message; }, 50);
+}
+
+// Vrai si le système demande de réduire les animations
+function prefersReducedMotion() {
+    return typeof window.matchMedia == "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+// MESSAGES À L'ÉCRAN
+// Bandeau bref sous la grille (#game_message). duration en ms, 0 = jusqu'à hideGameMessage().
+// Les lecteurs d'écran passent par announce() : le bandeau est aria-hidden pour ne pas lire deux fois.
+function showGameMessage(message, duration = 2500) {
+    const element = document.getElementById("game_message");
+    if (!element) { return; }
+    element.textContent = message;
+    element.classList.add("visible");
+    clearTimeout(element.hideTimer);
+    if (duration > 0) {
+        element.hideTimer = setTimeout(hideGameMessage, duration);
+    }
+}
+
+function hideGameMessage() {
+    const element = document.getElementById("game_message");
+    if (!element) { return; }
+    clearTimeout(element.hideTimer);
+    element.classList.remove("visible");
+}
+
+// Rangée « Lettres » du menu : flèches gauche / droite pour changer de longueur
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById("menu_word_length").addEventListener('keydown', function(event) {
+        let step = 0;
+        if (event.key == "ArrowRight" || event.key == "ArrowUp") { step = 1; }
+        if (event.key == "ArrowLeft" || event.key == "ArrowDown") { step = -1; }
+        if (step == 0) { return; }
+        event.preventDefault();
+        const length = Math.min(10, Math.max(5, settings.always_ask_length + step));
+        updateMenuWordLength(length);
+        this.querySelector(`button[data-length="${length}"]`).focus();
+    });
+});
+
+// CHRONOMÈTRE (expérimental)
+// Compte à rebours d'une proposition : relancé à chaque nouvelle ligne (newWordLine), arrêté à la validation.
+// Figé pendant une pause (menu, paramètres) ou une fenêtre ouverte.
+function updateTimerSettings(value = settings.timer_enabled) {
+    settings.timer_enabled = value;
+    if (value != true) { stopProposalTimer(); }
+}
+
+function startProposalTimer() {
+    stopProposalTimer();
+    if (settings.timer_enabled != true || game.focus_on == "number" || game.word_found == true || game.word_displayed == true) {
+        return;
+    }
+    game.timer_remaining = Number(settings.timer_duration) || 10;
+    renderProposalTimer();
+    document.getElementById("proposal_timer").classList.remove("d-none");
+    game.timer_interval = setInterval(tickProposalTimer, 1000);
+}
+
+function stopProposalTimer() {
+    clearInterval(game.timer_interval);
+    game.timer_interval = undefined;
+    const element = document.getElementById("proposal_timer");
+    if (element) { element.classList.add("d-none"); }
+}
+
+function tickProposalTimer() {
+    if (game.pause == true || document.querySelector("dialog[open]")) { return; }
+    game.timer_remaining--;
+    renderProposalTimer();
+    if (game.timer_remaining <= 0) {
+        clearInterval(game.timer_interval);
+        game.timer_interval = undefined;
+        proposalTimerEnded();
+    }
+}
+
+function renderProposalTimer() {
+    const element = document.getElementById("proposal_timer");
+    element.textContent = Math.max(0, game.timer_remaining);
+    element.classList.toggle("urgent", game.timer_remaining <= 3);
+}
+
+// À zéro : toujours le son « temps écoulé » ; selon le réglage, la proposition est aussi refusée
+function proposalTimerEnded() {
+    timesUp();
+    if (settings.timer_behaviour == "error") {
+        // Comme un mot refusé : bandeau, changement d'équipe et comportement après erreur
+        wordErrorHandler(6, true);
+    } else {
+        // L'animateur décide de la suite
+        showGameMessage("Temps écoulé");
+        announce("Temps écoulé.");
+    }
+}
+
+// HISTORIQUE DE LA PARTIE
+function teamLabel(team) {
+    return team == "blue" ? "Bleue" : "Jaune";
+}
+
+// Enregistre le sort du mot en cours : "trouvé", "non trouvé" (solution affichée) ou "passé" (nouveau mot demandé)
+function recordWordResult(result) {
+    if (!game.word_to_find || game.word_recorded == true) { return; }
+    game.word_recorded = true;
+    game.history.push({
+        heure: new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }),
+        mot: game.word_to_find,
+        lettres: game.word_length,
+        resultat: result,
+        lignes: game.try_count_index,
+        equipe: settings.team_enabled == true && result == "trouvé" ? teamLabel(game.team_focus) : "",
+        points: result == "trouvé" ? settings.score_addition : 0
+    });
+}
+
+function recordMotus() {
+    game.history.push({
+        heure: new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }),
+        mot: "MOTUS",
+        lettres: "",
+        resultat: "MOTUS",
+        lignes: "",
+        equipe: settings.team_enabled == true ? teamLabel(game.team_focus) : "",
+        points: settings.score_motus
+    });
+}
+
+function displayHistoryPage() {
+    const tbody = document.querySelector("#history_table tbody");
+    const history = game.history || [];
+    tbody.innerHTML = history.map((entry, index) => `<tr class="history_${entry.resultat.replace(/\s/g, "_")}">
+        <td>${index + 1}</td><td>${entry.heure}</td><td class="history_word">${entry.mot}</td><td>${entry.lettres}</td>
+        <td>${entry.resultat}</td><td>${entry.lignes}</td><td>${entry.equipe}</td><td>${entry.points}</td></tr>`).join("");
+
+    const words = history.filter(entry => entry.resultat != "MOTUS");
+    const found = words.filter(entry => entry.resultat == "trouvé").length;
+    let summary = history.length == 0
+        ? "Aucun mot joué pour l'instant."
+        : `${words.length} mot(s) joué(s), ${found} trouvé(s). Score : ${settings.team_enabled ? `jaune ${game.score_yellow || 0}, bleue ${game.score_blue || 0}` : (game.score_yellow || 0)}.`;
+    document.getElementById("history_summary").textContent = summary;
+    document.getElementById("history_table").classList.toggle("d-none", history.length == 0);
+    document.getElementById("history_export_button").disabled = history.length == 0;
+
+    displayPage("history_page");
+}
+
+// Export CSV (séparateur « ; » et BOM UTF-8 pour une ouverture directe dans un tableur)
+function exportHistory() {
+    const history = game.history || [];
+    if (history.length == 0) { return; }
+    const columns = ["heure", "mot", "lettres", "resultat", "lignes", "equipe", "points"];
+    const header = ["Heure", "Mot", "Lettres", "Résultat", "Lignes", "Équipe", "Points"];
+    const escape = value => `"${String(value).replace(/"/g, '""')}"`;
+    const lines = [header.map(escape).join(";")].concat(history.map(entry => columns.map(column => escape(entry[column])).join(";")));
+    const blob = new Blob(["\uFEFF" + lines.join("\r\n")], { type: "text/csv;charset=utf-8" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `motusJS_historique_${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+}
+
+// HORS LIGNE
+// Service worker (sw.js) : met le jeu en cache pour jouer sans connexion. Inutile en file:// (non pris en charge).
+function registerServiceWorker() {
+    if (!("serviceWorker" in navigator) || !location.protocol.startsWith("http")) { return; }
+    navigator.serviceWorker.register("sw.js").catch(error => console.warn("Mode hors ligne indisponible :", error));
 }

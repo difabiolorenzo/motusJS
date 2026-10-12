@@ -1,7 +1,31 @@
 document.addEventListener("keydown", function (event) {
+	// Choix de la longueur du prochain mot : 5 à 9, 0 pour 10 (rangée du haut ou pavé numérique)
+	if (document.getElementById("word_length_dialog").open) {
+		const length_keys = { Digit5: 5, Digit6: 6, Digit7: 7, Digit8: 8, Digit9: 9, Digit0: 10,
+			Numpad5: 5, Numpad6: 6, Numpad7: 7, Numpad8: 8, Numpad9: 9, Numpad0: 10 };
+		if (length_keys[event.code]) {
+			event.preventDefault();
+			chooseNextWordLength(length_keys[event.code]);
+		}
+		return;
+	}
+
+	// Fenêtre ouverte (paramètres) : les touches lui reviennent ; Échap la ferme sans quitter la partie
+	if (document.querySelector("dialog[open]")) {
+		return;
+	}
+
+	// Entrée / Espace sur un bouton ou un champ : le contrôle agit seul (pas de validation de mot)
+	if ((event.key == "Enter" || event.key == " ") && event.target.closest && event.target.closest("button, input, select, textarea, a")) {
+		return;
+	}
+
 	switch (event.key) {
-		case 27:	// escape
-			if (game.pause == true) { returnGame() } else { returnMenu(); }
+		case "Escape":
+			// Retour menu / reprise uniquement si une partie est commencée
+			if (game.started == true) {
+				if (game.pause == true) { returnGame() } else { returnMenu(); }
+			}
 			break;
 	}
 	if (game.started == true && game.pause == false) {
@@ -16,7 +40,8 @@ document.addEventListener("keydown", function (event) {
 		if (game.focus_on == "letter") {
 			switch (event.code) {
 				case "Backspace":
-					// cancelWordSubmission();
+					// Annulation d'une validation en attente de confirmation
+					if (cancelWordSubmission()) { break; }
 					removeLetter();
 					updateCursor()
 					break;
@@ -24,7 +49,8 @@ document.addEventListener("keydown", function (event) {
 					submitWord();
 					break;
 				case "Digit1":
-					// confirmWordSubmission();
+					// Confirmation d'une validation en attente, sinon nouvelle ligne
+					if (confirmWordSubmission()) { break; }
 					newWordLine();
 					break;
 				case "Digit2":
@@ -34,6 +60,8 @@ document.addEventListener("keydown", function (event) {
 					removeWordLine();
 					break;
 				case "Digit4":
+					reinitWordLine();
+					updateCursor();
 					break;
 				case "Digit9":
 					wordReinit();
@@ -70,6 +98,9 @@ function createKeyboard() {
 
 	keyboard_placeholder.innerHTML = "";
 	
+	keyboard_placeholder.setAttribute("role", "group");
+	keyboard_placeholder.setAttribute("aria-label", "Clavier visuel");
+
 	for (let row=0; row<rows.length; row++) {
 		const header = `<div class="keyboard_layer">`;
 		const footer = `</div>`;
@@ -78,9 +109,9 @@ function createKeyboard() {
 		let row_line_element = "";
 
 		for (let letter_key=0; letter_key<rows[row].length; letter_key++) {
-			if (row == 2 && letter_key == 0) {row_line_element += `<div style="grid-column: 1 / 3;" class="btn keyboard_key keyboard_key_submit" onclick="removeLetter()" data-keyboard="ERASE">←</div>`}
-			row_line_element += `<div class="btn keyboard_key" onclick="keyboardInput(this)" data-keyboard="${rows[row][letter_key]}">${rows[row][letter_key]}</div>`
-			if (row == 2 && letter_key == 5) {row_line_element += `<div style="grid-column: 11 / 9;" class="btn keyboard_key keyboard_key_remove" onclick="submitWord()" data-keyboard="ENTER">↲</div>`}
+			if (row == 2 && letter_key == 0) {row_line_element += `<button type="button" style="grid-column: 1 / 3;" class="btn keyboard_key keyboard_key_submit" onclick="removeLetter()" data-keyboard="ERASE" aria-label="Effacer la lettre">←</button>`}
+			row_line_element += `<button type="button" class="btn keyboard_key" onclick="keyboardInput(this)" data-keyboard="${rows[row][letter_key]}">${rows[row][letter_key]}</button>`
+			if (row == 2 && letter_key == 5) {row_line_element += `<button type="button" style="grid-column: 11 / 9;" class="btn keyboard_key keyboard_key_remove" onclick="submitWord()" data-keyboard="ENTER" aria-label="Valider le mot">↲</button>`}
 
 		}
 		keyboard_placeholder.innerHTML += `${header}${row_line_element}${footer}`;

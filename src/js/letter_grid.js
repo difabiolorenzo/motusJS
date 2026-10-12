@@ -8,23 +8,53 @@ function initLetterGrid() {
 
     if (game.word_to_find_list.length == 0) {
         if (settings.always_ask == false) {
-			wordListAddRowRandom(settings.always_ask_length).then(() => {
-                proceed();
+			wordListAddRowRandom(settings.always_ask_length).then((added) => {
+                if (added) { proceed(); } else { abortGameStart(); }
             });
             return;
         }
         
-        console.log("Aucun mot dans la liste");
-        let prompt_new_word = Number(window.prompt("Plus aucun mot n'est prédéfini dans les paramètres, veuillez entrer le nombre de lettres (compris entre 5 et 10) du prochain mot tiré au hasard:", "8"));
-        if (prompt_new_word >= 5 && prompt_new_word <= 10 ) {
-            wordListAddRowRandom(prompt_new_word).then(() => {
-                proceed();
+        // Longueur choisie dans la page (fenêtre #word_length_dialog)
+        displayPage("game_page");
+        askNextWordLength()
+            .then((word_length) => wordListAddRowRandom(word_length))
+            .then((added) => {
+                if (added) { proceed(); } else { abortGameStart(); }
             });
-        }
         return;
     }
 
     proceed();
+}
+
+// Demande la longueur du prochain mot (5 à 10) dans une fenêtre de la page.
+// Pas d'annulation possible : la partie a besoin d'un mot. La promesse se résout au choix.
+function askNextWordLength() {
+	return new Promise((resolve) => {
+		const dialog = document.getElementById("word_length_dialog");
+		game.word_length_choice = (word_length) => {
+			game.word_length_choice = undefined;
+			dialog.close();
+			resolve(word_length);
+		};
+		dialog.showModal();
+		// Focus sur la longueur habituelle
+		const default_button = dialog.querySelectorAll(".word_length_choices button")[settings.always_ask_length - 5];
+		if (default_button) { default_button.focus(); }
+		announce("Choisissez le nombre de lettres du prochain mot, de 5 à 10.");
+	});
+}
+
+function chooseNextWordLength(word_length) {
+	if (game.word_length_choice) {
+		game.word_length_choice(Number(word_length));
+	}
+}
+
+// Aucun mot n'a pu être tiré (dictionnaire introuvable) : retour au menu, « Jouer » permet de réessayer
+function abortGameStart() {
+	console.error("Partie annulée : aucun mot à trouver.");
+	resetGame();
 }
 
 function wordReinit() {
@@ -33,21 +63,21 @@ function wordReinit() {
 		return;
 	}
 
+	// Mot abandonné sans être trouvé ni affiché : noté « passé » dans l'historique
+	if (game.word_found != true && game.word_displayed != true) { recordWordResult("passé"); }
 	game.word_to_find_list.splice(0, 1);
 	if (game.word_to_find_list.length == 0) {
 		if (settings.always_ask == false) {
-			wordListAddRowRandom(settings.always_ask_length).then(() => {
-				proceed()
+			wordListAddRowRandom(settings.always_ask_length).then((added) => {
+				if (added) { proceed() }
 			});
 		} else {
-			console.log("Aucun mot dans la liste");
-
-			var prompt_new_word = Number(window.prompt("Plus aucun mot n'est prédéfini dans les paramètres, veuillez entrer le nombre de lettres (compris entre 5 et 10) du prochain mot tiré au hasard:", "8"));
-			if (prompt_new_word >= 5 && prompt_new_word <= 10 ) {
-				wordListAddRowRandom(prompt_new_word).then(() => {
-					proceed()
+			// Longueur choisie dans la page (fenêtre #word_length_dialog)
+			askNextWordLength()
+				.then((word_length) => wordListAddRowRandom(word_length))
+				.then((added) => {
+					if (added) { proceed() }
 				});
-			}			
 		}
 	} else {
 		proceed()
@@ -94,6 +124,7 @@ function wordInit() {
 	game.word_proposed_list = [];
 	game.already_proposed = false;
 	game.keyboard_cursor_position = {x: 0, y: 0}
+	game.word_recorded = false;
 	
 	if (game.word_to_find_list.length == 0) {
 		console.error("Aucun mot trouvé dans la liste")
@@ -106,6 +137,7 @@ function wordInit() {
 	breakdownWord();
 
 	console.log('Mot à trouver: ' + '%c' + game.word_to_find, 'background: black; color: gold'); // Affichage du word_to_find tiré dans la console
+	announce(`Nouveau mot de ${game.word_length} lettres, commençant par ${game.word_to_find[0]}.`);
 	
 	// console.log(game.word_to_find_details);
 	// console.log('Nombre de lettres composant le mot: ' + '%c' + game.word_length, 'background: black; color: gold');
@@ -184,6 +216,9 @@ function newWordLine() {
 	// Indicateur de frappe
 	game.word_proposed_modified = ""
 	resetTypingIndicator()
+
+	// Compte à rebours de la nouvelle proposition
+	startProposalTimer()
 }
 
 function removeWordLine() {		// Supprime la ligne
@@ -295,8 +330,6 @@ function updateTypingIndicator() {
 		}
 	}
 
-	console.log(game.word_proposed_modified)
-
 	indicator.innerText = game.word_proposed_modified + ".".repeat(game.word_length - game.word_proposed_modified.length);
 }
 
@@ -348,7 +381,7 @@ function updateCursor() {
 	let y = game.try_count_index-1;
 
 	document.getElementById(`letter_${y}_${x}`).classList.add("cursor");
-	console.log(`letter_${y}_${x}`)
+	debugLog(`letter_${y}_${x}`)
 
 	game.keyboard_cursor_position = {x:x, y:y}
 }
@@ -409,6 +442,7 @@ function addBonusLetter() {
 		document.getElementById(`letter_${game.try_count_index-1}_${index}`).innerHTML = game.word_to_find[index];
 		document.getElementById(`letter_${game.try_count_index-1}_${index}`).classList.add("bonus_letter");
 		game.letter_placement_status[index] = "correct";
+		announce(`Lettre bonus : ${game.word_to_find[index]} en position ${index + 1}.`);
 
 		setTimeout(function() {
 			document.getElementById(`letter_${game.try_count_index-1}_${index}`).classList.remove("bonus_letter");
@@ -430,16 +464,18 @@ function addBonusLetter() {
 
 function displaySolution() {
 // Affiche la solution
-	
-	console.log("test")
-	if (game.focus_on == "number_grid") { return; }
+	if (game.focus_on == "number") { return; }
 	if (game.word_displayed == true) {
 		console.log("Mot déjà affiché")
 		return;
 	}
 
-	let verification_timer = Math.floor((2000 / game.word_length) * settings.verification_time_multiplier);
-	let y_display = game.display_soluce_on_last_row ? game.try_number_max : game.try_count_index;
+	announce(`Solution : ${game.word_to_find}.`);
+	if (game.word_found != true) { recordWordResult("non trouvé"); }
+	stopProposalTimer();
+
+	let verification_timer = Math.floor((2000 / game.word_length) * (game.word_length/10) * settings.verification_time_multiplier)
+	let y_display = settings.display_soluce_on_last_row ? game.try_number_max : game.try_count_index;
 
 	for (let i = 0; i<game.word_length; i++) {
 		setTimeout(function() {
@@ -495,34 +531,48 @@ function removeLetter() {
 	updateTypingIndicator()
 }
 
+// Renvoie true si une validation était en attente et a été confirmée
 function confirmWordSubmission() {
 	if (settings.confirm_submit == true && game.conditional_submit_confirmed == true) {
 		submitWord();
-		return;
+		return true;
 	}
+	return false;
 }
 
+// Renvoie true si une validation était en attente et a été annulée
 function cancelWordSubmission() {
 	if (settings.confirm_submit == true && game.conditional_submit_confirmed == true) {
 		game.conditional_submit_confirmed = false;
-		return;
+		console.log("Validation annulée");
+		showGameMessage("Validation annulée");
+		updateCursor();
+		return true;
 	}
+	return false;
 }
 
 function submitWord() {
+	// En cas de confirmation requise : la première validation met en attente,
+	// la touche 1 / & confirme, Effacer annule
+	if (settings.confirm_submit == true && game.conditional_submit_confirmed == false) {
+		game.conditional_submit_confirmed = true;
+		console.log("Confirmation requise en tapant 1 ou &, Effacer pour annuler");
+		showGameMessage("Valider ce mot ? 1 / & pour confirmer, Effacer pour annuler", 0);
+		announce("Valider ce mot ? 1 pour confirmer, Effacer pour annuler.");
+		return;
+	}
+	if (settings.confirm_submit == true) {
+		hideGameMessage();
+	}
+	game.conditional_submit_confirmed = false;
+	stopProposalTimer();
+
 	// Suppression du curseur
 	removeCursor()
 
 	// Autocompletion
 	game.word_proposed = game.word_proposed_modified
-
-	// En cas de confirmation requise, mise à jour
-	// if (settings.confirm_submit == true && game.conditional_submit_confirmed == false) {
-	// 	game.conditional_submit_confirmed = true;
-	// 	console.log("Confirmation requise en tapant 1 ou &")
-	// 	return;
-	// }
-	// game.conditional_submit_confirmed = false;
 
 	// Si au delà de la limite alors affichage de la solution ou reinitialisation
 	if (game.try_count_index > game.try_number_max) {
@@ -585,40 +635,50 @@ function checkDuplication() {
 	checkProposition();
 }
 
+// Coloration d'une proposition, lettre par lettre : "correct" (bien placée), "wrong" (mal placée) ou "missing" (absente).
+// Les lettres bien placées sont réservées d'abord ; ensuite chaque lettre mal placée consomme une occurrence restante du mot à trouver.
+function computeLetterPlacement(word_to_find, word_proposed) {
+	const remaining_letters = {};
+	const status = [];
+
+	for (let i=0;i<word_to_find.length;i++) {
+		if (word_proposed[i] == word_to_find[i]) {
+			status[i] = "correct";
+		} else {
+			remaining_letters[word_to_find[i]] = (remaining_letters[word_to_find[i]] || 0) + 1;
+		}
+	}
+
+	for (let i=0;i<word_to_find.length;i++) {
+		if (status[i] == "correct") { continue; }
+		const letter = word_proposed[i];
+		if (remaining_letters[letter] > 0) {
+			remaining_letters[letter]--;
+			status[i] = "wrong";
+		} else {
+			status[i] = "missing";
+		}
+	}
+
+	return status;
+}
+
 function checkProposition() {
 	const word_to_find = game.word_to_find;
 	const word_proposed = game.word_proposed;
-	let word_to_find_details = structuredClone(game.word_to_find_details)
-	let proposed_letter_placement_status = []
+	const proposed_letter_placement_status = computeLetterPlacement(word_to_find, word_proposed);
 
-
+	// Enregistrement des lettres bien placées
 	for (let i=0;i<word_to_find.length;i++) {
-		const letter = word_to_find[i];
-		const checked_letter = word_proposed[i];
-		let object_ckecked = word_to_find_details.find(object => object.letter === checked_letter)
-
-		// Lettre bien placée
-		if (word_proposed[i] == word_to_find[i]) {
-			// Reduction du nombre de lettre
-			object_ckecked.count--;
-
-			// Enregistrement du bon placement de la lettre
+		if (proposed_letter_placement_status[i] == "correct") {
 			game.letter_placement_status[i] = "correct";
-			proposed_letter_placement_status.push("correct");
-		} else {
-			if (object_ckecked) {
-				// Lettre trouvée dans le mot à trouver mais à la mauvaise place
-				// Reduction du nombre de lettre
-				object_ckecked.count--;
-
-				// Enregistrement du placement de la lettre
-				proposed_letter_placement_status.push("wrong");
-
-			} else {
-				// Lettre absente du mot à trouver
-				proposed_letter_placement_status.push("missing");
-			}
 		}
+	}
+
+	// Annonce du résultat pour les lecteurs d'écran
+	if (word_proposed != word_to_find) {
+		const count = status => proposed_letter_placement_status.filter(s => s == status).length;
+		announce(`${word_proposed} : ${count("correct")} bien placée(s), ${count("wrong")} mal placée(s), ${count("missing")} absente(s).`);
 	}
 
 	// Animation 
@@ -660,6 +720,8 @@ function checkVictory() {
 
 	game.word_found = true;
 	game.word_displayed = true;
+	announce(`Mot trouvé : ${game.word_to_find} !`);
+	recordWordResult("trouvé");
 
 	playsound("victory");
 
