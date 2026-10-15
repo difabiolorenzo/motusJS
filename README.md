@@ -41,6 +41,7 @@ Pour les règles complètes, voir [la page wikipedia de Motus](https://fr.wikipe
 * Affichage du mot avec la touche **à** ou **0**
 * Son du temps écoulé avec la touche **$** (**¤**)
 * Panneau animateur avec la touche **è** / **7**
+* Vasque : tirer une boule au hasard avec la touche **_** / **8** (mode « bouton Tirer »)
 * Annuler la dernière action (lettre bonus, ligne) avec **Ctrl** + **Z**
 * Retour au menu / reprise de la partie avec la touche **Échap**
 
@@ -49,10 +50,19 @@ Avec l'option « Confirmer chaque mot avant vérification », **Entrer** met le 
 ### Partie
 
 * Le menu choisit le nombre de lettres des mots (5 à 10) sous « Jouer ».
+* Clavier coloré selon les lettres déjà trouvées (bien placées, mal placées, absentes) et progression de frappe : Paramètres > Jeu, ou les interrupteurs « Couleurs » et « Progression » au-dessus du clavier visuel. Désactivés par défaut (absents du jeu télévisé).
+* En mode équipes, « À vous » est affiché sous le score de l'équipe qui a la main.
+* « Lettre bonus », « Afficher le mot » et « Réinitialiser la grille » sont dans le panneau animateur (touche 7) et au clavier ; Paramètres > Expérimental les remet dans la barre haute.
+* Sur un téléphone à l'horizontale, le clavier visuel se place à droite de la grille.
+* Page Debug : bouton du menu visible avec les logs de debug actifs, ou en ajoutant `?debug` à l'adresse.
 * « Historique » liste les mots joués (trouvés, non trouvés, passés), les MOTUS et les points, avec un export CSV.
 * Barème réglable dans Paramètres > Équipes et Scores : points par mot trouvé et par MOTUS.
 * Chronomètre expérimental (Paramètres > Expérimental) : compte à rebours par proposition, avec durée et comportement à zéro réglables.
 * Le jeu fonctionne hors ligne après une première visite en ligne.
+
+### Vasque
+
+Dans Paramètres > Grilles numérotées, le mode de sélection « Vasque » remplace le bouton « Piocher » par une vasque animée (Matter.js) contenant les boules de l'équipe qui a la main, boules noires comprises. Selon le réglage, l'animateur clique la boule tirée ou utilise le bouton « Tirer » (au hasard) ; « Secouer » remue les boules. Les boules sont toutes identiques, sans numéro ni boule noire visible, pour que le tirage reste à l'aveugle ; les numéros n'apparaissent dans la vasque que lorsque le panneau animateur est ouvert, jamais dans la fenêtre publique. La vasque suit toujours le jeu : une boule tirée ailleurs (panneau animateur) la quitte aussi. Avec les animations réduites du système, les boules sont posées immobiles. La fenêtre publique montre la même vasque, à côté de la grille, mouvements compris. Sur un téléphone à l'horizontale, la vasque se place à gauche de la grille.
 
 ### Vue animateur
 
@@ -80,5 +90,6 @@ Option expérimentale, à activer dans Paramètres > Expérimental. Le bouton «
 * Sur les bases du code de **Sogroo** avec son site http://www.anagrammeur.com/jeux/motus/motus.php
 * Les dictionnaires de mots sont tirés du Motus de **Sogroo** et de l'ODS4 présent dans **XScrabble** ftp://ftp.ac-grenoble.fr/ge/educational\_games
 * Icones sur https://www.flaticon.com/uicons
+* Physique de la vasque : Matter.js 0.19.0 (Liam Brummitt), licence MIT https://brm.io/matter-js/
 * Méthodes de tris par [@Schraf](https://www.youtube.com/@Schraf) : [youtube.com](https://www.youtube.com/watch?v=WOMYXTmE3jc)
 

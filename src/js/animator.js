@@ -2,6 +2,7 @@
 // - Panneau réservé à l'animateur (touche 7 / è) : mot à trouver, prochains mots, boules, actions rapides, annulation.
 // - Fenêtre publique (index.html?vue=public) : n'affiche que la grille, synchronisée par postMessage
 //   (fonctionne aussi sans serveur, en file://). Elle ne reçoit que ce qui est affiché, jamais le mot à trouver.
+//   Mode « Vasque » : elle recopie aussi la vasque (positions des boules, voir vasque.js).
 
 const IS_PUBLIC_VIEW = new URLSearchParams(location.search).get("vue") == "public";
 const PUBLIC_WINDOW_NAME = "motus_public";
@@ -10,6 +11,7 @@ const UNDO_LIMIT = 5;
 let public_window = null;           // fenêtre publique (côté animateur)
 let public_sound_blocked = false;   // la fenêtre publique n'a pas encore le droit de jouer du son
 let animator_refresh_timer = null;
+let last_public_vasque = null;     // dernier état de la vasque envoyé (pas de doublon)
 let undo_stack = [];
 
 function initAnimator() {
@@ -24,6 +26,7 @@ function initAnimator() {
     observer.observe(document.body, { attributes: true, attributeFilter: ["class"] });
     window.addEventListener("message", onAnimatorMessage);
     setInterval(checkPublicWindow, 1000);
+    if (typeof Vasque != "undefined") { Vasque.onChange(sendVasqueToPublic); }
 }
 
 function scheduleAnimatorRefresh() {
@@ -41,6 +44,8 @@ function toggleAnimatorPanel(open) {
     panel.classList.toggle("d-none", !show);
     document.getElementById("game").classList.toggle("animator_open", show);
     document.getElementById("topbar_button_animator").setAttribute("aria-pressed", show ? "true" : "false");
+    // Vasque : numéros visibles seulement panneau ouvert (le joueur qui pioche ne doit pas les voir)
+    if (typeof Vasque != "undefined") { Vasque.setRevealed(show); }
     if (show) { updateAnimatorPanel(); }
 }
 
@@ -95,11 +100,11 @@ function updateAnimatorPanel() {
             const saving_ball = game.number_grid_saving_ball ? game.number_grid_saving_ball[team] : undefined;
             const saving_state = game.number_grid_saving_ball_state ? game.number_grid_saving_ball_state[team] : "unavailable";
             const summary = `Boules noires : ${black_balls} · Boule magique : ${savingBallLabel(saving_ball, saving_state)}`;
-            // Équipe qui a la main : grille cliquable ; autre équipe : liste des numéros
+            // Équipe qui a la main : grille cliquable ; autre équipe : même grille, plus petite, en lecture seule
             if (team == game.team_focus) {
                 return `<p><strong>${teamLabel(team)}</strong> (a la main)</p>${buildAnimatorBallGrid(team)}<p>${summary}</p>`;
             }
-            return `<p><strong>${teamLabel(team)}</strong> : ${numbers.join(" ") || "aucune boule"}<br>${summary}</p>`;
+            return `<p><strong>${teamLabel(team)}</strong></p>${buildAnimatorBallGrid(team, true)}<p>${summary}</p>`;
         });
         lines.push(`<p>Tirages restants : ${game.number_grid_try_left ?? "—"}${game.motus_aligned ? " · MOTUS aligné" : ""}</p>`);
         set("animator_numbers", lines.join(""));
@@ -116,8 +121,7 @@ function updateAnimatorPanel() {
 // Tirage depuis le panneau : possible sur la grille de numéros, après un mot trouvé (ou pioche déverrouillée),
 // s'il reste des tirages
 function canPickBallFromPanel() {
-    return game.started == true && game.focus_on == "number" && (game.word_found == true || game.number_grid_unlocked == true)
-        && game.number_grid_try_left > 0 && game.motus_aligned != true;
+    return canPickBall();    // règle commune (number_grid.js)
 }
 
 // L'animateur peut forcer la pioche : aucun mot trouvé, ou plus de tirage (pas après un MOTUS : il faut changer de grille)
@@ -139,8 +143,9 @@ function unlockBallPicking() {
     updateAnimatorPanel();
 }
 
-// Copie de la grille de numéros de l'équipe : boules à tirer cliquables, boules déjà sorties ou masquées grisées
-function buildAnimatorBallGrid(team) {
+// Copie de la grille de numéros de l'équipe : boules à tirer cliquables, boules déjà sorties ou masquées grisées.
+// readonly : grille de l'équipe qui n'a pas la main, sans bouton ni action
+function buildAnimatorBallGrid(team, readonly = false) {
     const grid_index = game.number_grid_index + 1;
     const grid = game.number_grid_data[team][grid_index];
     const mask = game.number_grid_data.mask[grid_index];
@@ -159,12 +164,21 @@ function buildAnimatorBallGrid(team) {
         } else if (!possible.includes(number)) {
             // Boule déjà tirée
             cells += `<span class="animator_ball animator_ball_drawn" title="Boule ${number} déjà tirée">${number}</span>`;
+        } else if (readonly) {
+            const is_saving = number === saving_ball && saving_state == "available";
+            cells += `<span class="animator_ball animator_ball_${team}${is_saving ? " animator_ball_saving" : ""}"`
+                + ` title="Boule ${number}${is_saving ? " (boule magique)" : ""}">${number}</span>`;
         } else {
             const is_saving = number === saving_ball && saving_state == "available";
             const label = is_saving ? `Tirer la boule ${number} (boule magique)` : `Tirer la boule ${number}`;
             cells += `<button type="button" class="animator_ball animator_ball_${team}${is_saving ? " animator_ball_saving" : ""}"`
                 + ` onclick="pickBallFromPanel(${number})" aria-label="${label}" title="${label}"${disabled}>${number}</button>`;
         }
+    }
+
+    const grid_label = `Grille de numéros de l'équipe ${teamLabel(team).toLowerCase()}`;
+    if (readonly) {
+        return `<div class="animator_ball_grid animator_ball_grid_small" role="img" aria-label="${grid_label} : ${possible.filter(number => number !== "⚫").sort((a, b) => a - b).join(" ") || "aucune boule"}">${cells}</div>`;
     }
 
     const black_balls = possible.filter(number => number === "⚫").length;
@@ -175,7 +189,7 @@ function buildAnimatorBallGrid(team) {
         else if (game.motus_aligned == true) { hint = "MOTUS aligné : changez de grille."; }
         else { hint = "Plus de tirage pour ce mot."; }
     }
-    return `<div class="animator_ball_grid" role="group" aria-label="Grille de numéros de l'équipe ${teamLabel(team).toLowerCase()}">${cells}</div>`
+    return `<div class="animator_ball_grid" role="group" aria-label="${grid_label}">${cells}</div>`
         + `<div class="animator_ball_actions">`
         + `<button type="button" class="animator_black_ball" onclick="pickBallFromPanel('⚫')"${black_balls > 0 ? disabled : " disabled"}>Boule noire (${black_balls})</button>`
         + `<button type="button" onclick="pickBallFromPanel('random')"${disabled}>Au hasard</button>`
@@ -230,7 +244,8 @@ function markGameBusy(duration) {
 }
 
 const UNDO_FIELDS = ["try_count_index", "word_proposed", "word_proposed_modified", "word_proposed_list", "letter_placement_status",
-    "word_displayed", "word_found", "team_focus", "score_yellow", "score_blue", "keyboard_cursor_position", "conditional_submit_confirmed"];
+    "word_displayed", "word_found", "team_focus", "score_yellow", "score_blue", "keyboard_cursor_position", "conditional_submit_confirmed",
+    "keyboard_letter_status"];
 
 function recordUndo() {
     if (game.focus_on != "letter" || !game.word_to_find || isGameBusy()) { return; }
@@ -266,6 +281,7 @@ function undoLastAction() {
     setTeamScore("yellow", game.score_yellow || 0);
     setTeamScore("blue", game.score_blue || 0);
     updateScores();
+    updateKeyboardLetterStatus();
     startProposalTimer();
     showGameMessage("Dernière action annulée");
     announce("Dernière action annulée.");
@@ -354,6 +370,20 @@ function sendPublicSnapshot() {
     }
 }
 
+// Vasque : envoyée à chaque changement (tirage, équipe, affichage) et pendant le mouvement (Vasque.onChange),
+// jamais au repos. state : état déjà calculé par la vasque, sinon lu ici.
+function sendVasqueToPublic(state) {
+    if (!isPublicWindowOpen()) { return; }
+    const section = document.getElementById("number_grid_vasque_section");
+    const shown = section != null && !section.classList.contains("d-none")
+        && typeof Vasque != "undefined" && Vasque.isReady();
+    const message = { type: "motus_vasque", shown: shown, state: shown ? (state || Vasque.getRemoteState()) : null };
+    const signature = JSON.stringify(message);
+    if (signature === last_public_vasque) { return; }
+    last_public_vasque = signature;
+    sendToPublicWindow(message);
+}
+
 function onAnimatorMessage(event) {
     const data = event.data;
     if (!data || typeof data != "object") { return; }
@@ -362,7 +392,9 @@ function onAnimatorMessage(event) {
         if (public_window !== event.source || data.first == true) {
             public_window = event.source;
             public_sound_blocked = false;
+            last_public_vasque = null;
             sendPublicSnapshot();
+            sendVasqueToPublic();
             updatePublicWindowStatus();
         }
         return;
@@ -398,13 +430,17 @@ function initPublicView() {
 function onPublicMessage(event) {
     if (event.source !== window.opener || !event.data || typeof event.data != "object") { return; }
     if (event.data.type == "motus_state") { applyPublicSnapshot(event.data.snapshot); }
+    if (event.data.type == "motus_vasque") { applyPublicVasque(event.data); }
     if (event.data.type == "motus_sound") { playPublicSound(event.data.sound); }
 }
 
 function applyPublicSnapshot(snapshot) {
     const page = document.getElementById("game_page");
-    page.className = snapshot.pageClass.replace(/\bd-none\b/g, "").trim();
+    const page_class = snapshot.pageClass.replace(/\bd-none\b/g, "").trim();
+    const theme_changed = page.className !== page_class || document.body.classList.contains("high_contrast") !== (snapshot.highContrast == true);
+    page.className = page_class;
     document.body.classList.toggle("high_contrast", snapshot.highContrast == true);
+    if (theme_changed && typeof Vasque != "undefined" && Vasque.isMirror()) { Vasque.refreshTheme(); }
 
     const root = document.getElementById("game_grid");
     // Structure différente (nouveau mot, nouvelle grille) : reconstruction complète
@@ -430,6 +466,21 @@ function applyPublicSnapshot(snapshot) {
             element.innerHTML = item.html;
         }
     }
+}
+
+// Vasque recopiée : affichée à côté de la grille tant que la vue animateur montre la sienne
+function applyPublicVasque(message) {
+    const section = document.getElementById("public_vasque_section");
+    const shown = message.shown == true && message.state != null && typeof Vasque != "undefined";
+    section.classList.toggle("d-none", !shown);
+    document.getElementById("game").classList.toggle("public_vasque_open", shown);
+    if (!shown) {
+        if (typeof Vasque != "undefined" && Vasque.isMirror()) { Vasque.pause(); }
+        return;
+    }
+    if (!Vasque.initMirror(document.getElementById("public_vasque_container"))) { return; }
+    if (!Vasque.isRunning()) { Vasque.resume(); }
+    Vasque.applyRemote(message.state);
 }
 
 function playPublicSound(sound) {

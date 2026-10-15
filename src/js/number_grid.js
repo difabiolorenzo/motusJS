@@ -149,6 +149,7 @@ function changeNumberGrid() {
 	if (settings.team_enabled == true) {
 		fillNumberGrid("blue", true);
 	}
+	updateVasque();
 }
 
 function createNumberGrid(team) {
@@ -337,6 +338,18 @@ function setDefaultNumberGridValues() {
 
 function updateNumberLeftIndicator() {
 	document.getElementById("number_grid_random_selection_left_indicator").innerHTML = `${game.number_grid_try_left} restant(s)`;
+	document.getElementById("vasque_left_indicator").innerHTML = `${game.number_grid_try_left} restant(s)`;
+}
+
+// RÈGLE DE TIRAGE (commune à tous les modes : bouton « Piocher », liste, panneau animateur, vasque)
+// Phase de tirage ouverte : mot trouvé (ou pioche déverrouillée depuis le panneau animateur), pas de MOTUS aligné
+function isBallPickingOpen() {
+	return (game.word_found == true || game.number_grid_unlocked == true) && game.motus_aligned != true;
+}
+
+// Une boule peut être tirée maintenant : grille de numéros affichée, phase ouverte, tirages restants
+function canPickBall() {
+	return game.started == true && game.focus_on == "number" && isBallPickingOpen() && game.number_grid_try_left > 0;
 }
 
 function randomPickBall() {
@@ -344,8 +357,9 @@ function randomPickBall() {
 		playsound("error");
 		showGameMessage("Plus de boule à tirer.");
 		announce("Plus de boule à tirer.");
-		return;
+		return false;
 	}
+	if (!canPickBall()) { return false; }
 
 	const team = game.team_focus;
 
@@ -365,7 +379,7 @@ function randomPickBall() {
 	// 	element.classList.remove("black_ball");
 	// }
 
-	pickBall(random_ball);
+	return pickBall(random_ball);
 }
 
 function setManuelHTMLSelectInputBallPicking(team) {
@@ -400,20 +414,22 @@ function debug_pickball() {
 	}
 }
 
+// Tire une boule ; renvoie true si elle a été tirée (la vasque ne la retire qu'à cette condition)
 function pickBall(forced_number) {
 	if (game.focus_on != "number" ||
 		game.number_grid_try_left == 0 ||
 		game.motus_aligned == true ) {
-		return;
+		return false;
 	}
 
+	// Équipe qui tire : fixée avant la boule noire, qui peut passer la main à l'autre équipe
 	const team = game.team_focus
 
 	if (game.number_grid_possible[team].indexOf(forced_number) == -1) {
 		console.log("La boule choisie n'est pas disponible dans cette grille");
 		showGameMessage("Cette boule n'est pas dans la grille.");
 		announce("Cette boule n'est pas dans la grille.");
-		return;
+		return false;
 	}
 
 	var saving_ball = game.number_grid_saving_ball[team]
@@ -483,19 +499,19 @@ function pickBall(forced_number) {
 		}
 
 		// Modification du masque dynamique pour motus
-		game.number_grid_dynamic_mask[game.team_focus][pos_index] = 0;
+		game.number_grid_dynamic_mask[team][pos_index] = 0;
 
 		// Check MOTUS
 		checkMotus();
 	}
 
-	// Purgatoire
-	game.number_grid_purgatory[game.team_focus].push(forced_number);
-	addNumberPurgatory(forced_number);
+	// Purgatoire et retrait de la liste : équipe qui a tiré (après une boule noire, game.team_focus est déjà l'autre équipe)
+	game.number_grid_purgatory[team].push(forced_number);
+	addNumberPurgatory(forced_number, team);
 
 	// Suppression de la liste & reduction du nombre d'essai
-	let forced_number_possible_grid_index = game.number_grid_possible[game.team_focus].indexOf(forced_number)
-	game.number_grid_possible[game.team_focus].splice(forced_number_possible_grid_index,1)
+	let forced_number_possible_grid_index = game.number_grid_possible[team].indexOf(forced_number)
+	game.number_grid_possible[team].splice(forced_number_possible_grid_index,1)
 
 	// si boule noire alors mis à 0
 	if (game.number_grid_try_left > 0) {
@@ -510,10 +526,57 @@ function pickBall(forced_number) {
 
 	// Mise à jour du mode de selection par liste
 	if (settings.ball_picking_mode == "input_select") {
-        setManuelHTMLSelectInputBallPicking(team)
+        setManuelHTMLSelectInputBallPicking(game.team_focus)
 	}
 
-	// A AJOUTER : AFFICHAGE VASQUE DES BOULES TIREES
+	// Vasque : la boule tirée la quitte (et l'autre équipe s'affiche après une boule noire)
+	updateVasque();
+	return true;
+}
+
+// VASQUE (mode de tirage « vasque ») : affichage, contenu et clics alignés sur le jeu.
+// Appelée après chaque tirage, changement d'équipe, de grille ou d'affichage. Renvoie true si la vasque est affichée.
+function updateVasque() {
+	if (typeof IS_PUBLIC_VIEW != "undefined" && IS_PUBLIC_VIEW) { return false; }	// fenêtre publique : vasque recopiée (animator.js)
+	const section = document.getElementById("number_grid_vasque_section");
+	const shown = settings.number_grid_enabled == true && settings.ball_picking_mode == "vasque"
+		&& game.started == true && game.focus_on == "number" && isBallPickingOpen();
+	if (!shown || typeof Vasque == "undefined" || !Vasque.init(document.getElementById("vasque_container"), onVasqueBallChosen)) {
+		section.classList.add("d-none");
+		if (typeof Vasque != "undefined" && Vasque.isReady()) { Vasque.pause(); }
+		if (typeof sendVasqueToPublic == "function") { sendVasqueToPublic(); }
+		return false;
+	}
+
+	section.classList.remove("d-none");
+	const click_mode = settings.vasque_gesture != "random";
+	Vasque.setInteractive(click_mode && canPickBall());
+	const draw_button = document.getElementById("vasque_draw_button");
+	draw_button.classList.toggle("d-none", click_mode);
+	draw_button.disabled = !canPickBall();
+	updateNumberLeftIndicator();
+	Vasque.resume();
+	Vasque.sync(game.number_grid_possible[game.team_focus] || [], game.team_focus);
+	if (typeof sendVasqueToPublic == "function") { sendVasqueToPublic(); }
+	return true;
+}
+
+// Clic sur une boule de la vasque : le jeu décide (pickBall), la vasque suit
+function onVasqueBallChosen(value) {
+	if (!canPickBall()) {
+		showGameMessage("Tirage impossible pour l'instant.");
+		return;
+	}
+	pickBall(value);
+}
+
+// Bouton « Tirer » (ou touche 8) : boule au hasard parmi celles de la vasque
+function drawRandomFromVasque() {
+	if (!canPickBall()) {
+		showGameMessage("Tirage impossible pour l'instant.");
+		return;
+	}
+	randomPickBall();
 }
 
 // Cherche une ligne complète (5 cases à 0) dans un masque 5x5 ; renvoie {position, offset} ou null
@@ -647,8 +710,7 @@ function resetPurgatory() {
 	game.number_grid_purgatory.blue = [];
 }
 
-function addNumberPurgatory(number) {
-	let element = "";
+function addNumberPurgatory(number, team = game.team_focus) {
 	let black_ball_class_name = "";
 
 	if (number == "⚫") {
@@ -656,5 +718,5 @@ function addNumberPurgatory(number) {
 		number = "";
 	}
 
-	document.getElementById(`number_grid_purgatory_${game.team_focus}`).innerHTML += `<span class='purgatory_number ${game.team_focus} ${black_ball_class_name}'>${number}<span>`;
+	document.getElementById(`number_grid_purgatory_${team}`).innerHTML += `<span class='purgatory_number ${team} ${black_ball_class_name}'>${number}</span>`;
 }

@@ -149,5 +149,30 @@ for (const length of LENGTHS) {
     }
 }
 
+// 7. Vasque : synchronisation des boules présentes avec la liste du jeu (Vasque.diff, sans Matter.js)
+{
+    const context = createContext();
+    load(context, "src/js/vasque.js");
+    const diff = (current, target) => vm.runInContext(`Vasque.diff(${JSON.stringify(current)}, ${JSON.stringify(target)})`, context);
+    const B = "⚫";
+
+    same(diff([], [3, 5, B, B]), { add: [3, 5, B, B], remove: [] }, "vasque vide : toutes les boules ajoutées, dans l'ordre du jeu");
+    same(diff([3, 5, B, B], [3, 5, B, B]), { add: [], remove: [] }, "même liste : rien ne change (synchronisation idempotente)");
+    same(diff([3, 5, 17, B], [3, 5, B]), { add: [], remove: [2] }, "boule tirée : retirée de la vasque");
+    same(diff([3, B, 5, B, B], [3, 5, B, B]), { add: [], remove: [4] }, "boule noire tirée : un seul exemplaire retiré");
+    same(diff([3, 5, B], [8, 13, B, B]), { add: [8, 13, B], remove: [0, 1] }, "nouvelle grille : anciennes boules retirées, nouvelles ajoutées");
+    same(diff([3, 5], []), { add: [], remove: [0, 1] }, "liste vide : vasque vidée");
+    same(diff(["5"], [5]), { add: [], remove: [] }, "numéro en texte ou en nombre : même boule");
+
+    // Boules posées au fond (animations réduites, fenêtre publique) : toutes dans la vasque, sans chevauchement
+    const world = vm.runInContext("Vasque.worldSize", context);
+    for (const count of [1, 20, 25]) {
+        const positions = vm.runInContext(`Vasque.staticPositions(${count})`, context);
+        check(positions.length === count, `boules posées au fond : ${count} position(s)`);
+        check(positions.every(p => Math.hypot(p.x - world / 2, p.y - world / 2) <= 280 - 40 + 1), `boules posées au fond (${count}) : toutes dans la vasque`);
+        check(positions.every((p, i) => positions.every((q, j) => i === j || Math.hypot(p.x - q.x, p.y - q.y) >= 80)), `boules posées au fond (${count}) : aucun chevauchement`);
+    }
+}
+
 console.log(`${checks - failures}/${checks} vérifications réussies.`);
 process.exit(failures === 0 ? 0 : 1);

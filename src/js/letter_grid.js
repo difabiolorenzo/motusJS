@@ -100,6 +100,7 @@ function createLetterGrid(hided) {
 	placeHelpingLetter();
 
 	resetTypingIndicator();
+	resetKeyboardLetterStatus();
 }
 
 function changeLetterGrid() {
@@ -458,6 +459,7 @@ function addBonusLetter() {
 
 		// Mise a jour de l'indicateur de frappe
 		resetTypingIndicator()
+		updateKeyboardLetterStatus();
 	} else {
 		if (settings.playsound_enabled && settings.play_extra_sounds) {
 			playsound("error");
@@ -504,6 +506,11 @@ function displaySolution() {
 }
 
 function addLetter(letter) {
+	// Ligne pleine : rien à ajouter (clavier physique comme clavier à l'écran)
+	if (game.word_proposed.length >= game.word_length) {
+		return;
+	}
+
 	// Vérification si la première lettre doit correspondre
 	if (settings.check_word_first_letter == true &&
 		game.word_proposed.length == 0 &&
@@ -527,7 +534,9 @@ function removeLetter() {
 		reinitWordLine();
 	}
 	if (game.word_proposed.length > 0) {
-		document.getElementById(`letter_${game.try_count_index-1}_${game.word_proposed.length-1}`).innerHTML = `.`;
+		// La case peut manquer si le mot a dépassé la ligne : on retire quand même la lettre
+		const cell = document.getElementById(`letter_${game.try_count_index-1}_${game.word_proposed.length-1}`);
+		if (cell) { cell.innerHTML = `.`; }
 		game.word_proposed = game.word_proposed.slice(0, -1);
 	}
 
@@ -704,8 +713,9 @@ function checkProposition() {
 					break;
 			}
 			
-			// Fin d'animation
+			// Fin d'animation : clavier coloré seulement maintenant (pas avant la révélation)
 			if (i == word_to_find.length-1) {
+				recordKeyboardLetterStatus(word_proposed, proposed_letter_placement_status);
 				checkVictory();
 			}
 		}, verification_timer * i);

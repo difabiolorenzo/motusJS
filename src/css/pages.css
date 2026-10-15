@@ -1,0 +1,980 @@
+/* pages.css : pages hors partie (menu, Aide, Crédits, Debug, Émissions) et contenu des fenêtres Paramètres et Historique.
+   Les composants génériques (boutons, cartes, fenêtres) sont dans ui.css. */
+
+
+/* ========================================================================
+   Pages et barre haute
+   Une seule page visible à la fois (displayPage). La barre haute sert aussi à la page de jeu.
+   ======================================================================== */
+.page {
+  height: 100%;
+  width: 100%;
+  scrollbar-width: thin;
+  overflow-x: hidden;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #0000001a;
+  padding: 0.5rem;
+}
+
+.topbar_button_group {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Boutons de la barre haute : apparence d'origine, sans le style par défaut des <button> */
+button.topbar_button_group {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+span.topbar_label {
+  font-weight: bold;
+  color: white;
+  text-align: center;
+}
+
+.topbar img {
+  filter: invert(1);
+  height: 2.5rem;
+  padding: 0.4rem;
+}
+
+/* Tablette : libellés plus petits pour tenir sur une ou deux lignes */
+@media (max-width: 1024px) {
+  span.topbar_label { font-size: 0.85rem; }
+}
+
+
+/* ========================================================================
+   Menu principal
+   ======================================================================== */
+div#main_menu {
+  background-color: var(--menu_background);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.style_1990#main_menu { background-color: var(--menu_background_dark_blue); }
+
+.style_2000#main_menu { background-color: var(--menu_background_red); }
+
+.style_2004#main_menu { background-color: var(--menu_background_yellow); }
+
+.style_2019#main_menu { background-image: linear-gradient(0, #2caaff 25%, #134d93 75%); }
+
+div#main_menu_content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5vh;
+}
+
+/* Bloc principal (Jouer, nombre de lettres, émissions) puis boutons secondaires plus petits, en ligne */
+.menu_play_block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.button.menu_button.menu_play_button {
+  height: 10vh;
+  min-height: 3rem;
+  font-size: 1.9em;
+}
+
+.menu_secondary {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  width: min(60vw, 40rem);
+}
+
+.menu_secondary .button.menu_button {
+  flex: 1 1 8rem;
+  width: auto;
+  height: auto;
+  min-height: 2.75rem;
+  margin: 0;
+  font-size: 1.15em;
+}
+
+#logo_placeholder {
+  display: flex;
+  justify-content: center;
+}
+
+img#logo {
+  width: clamp(0rem, 75%, 25rem);
+  margin-top: 7.5vh;
+}
+
+.button.menu_button {
+  width: min(60vw, 40rem);
+  height: 8vh;
+  font-size: 1.5em;
+  margin-bottom: 1vh;
+  background-color: #0003;
+  border-radius: 2px;
+  border: 1px solid #0000004d;
+  color: white;
+  font-weight: bold;
+}
+
+.button.menu_button:hover {
+  background-color: #0005;
+  border-color: white;
+}
+
+#version {
+  color: white;
+  padding: 0.75rem;
+  font-weight: bold;
+  font-size: larger;
+}
+
+/* Téléphone à la verticale : boutons du menu sur presque toute la largeur */
+@media (max-width: 480px) {
+  .button.menu_button, .menu_word_length, .menu_secondary { width: 85vw; }
+}
+
+/* Écran peu haut et large (téléphone à l'horizontale) : logo à gauche, boutons à droite */
+@media (max-height: 560px) and (min-aspect-ratio: 3/2) {
+  div#main_menu {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr auto;
+    align-items: center;
+  }
+
+  #logo_placeholder { grid-column: 1; grid-row: 1; }
+
+  img#logo { margin-top: 0; width: min(90%, 22rem); }
+
+  div#main_menu_content { grid-column: 2; grid-row: 1 / -1; gap: 0.6rem; padding: 0.5rem 1rem; }
+
+  #version { grid-column: 1; grid-row: 2; }
+
+  .button.menu_button, .menu_word_length, .menu_secondary { width: min(44vw, 24rem); }
+
+  .button.menu_button { height: auto; min-height: 2.5rem; font-size: 1.2em; }
+
+  .button.menu_button.menu_play_button { height: auto; min-height: 3rem; font-size: 1.5em; }
+
+  .menu_word_length { gap: 0.25rem; font-size: 0.9em; width: auto; }
+
+  .menu_word_length_label { margin-right: 0.25rem; }
+
+  .menu_word_length button { height: 2.25rem; min-width: 0; max-width: 3rem; }
+
+  .menu_secondary .button.menu_button { flex-basis: 6rem; min-height: 2.4rem; font-size: 1em; }
+}
+
+/* Menu : rangée « Lettres » 5 à 10 sous « Jouer » */
+.menu_word_length {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: min(60vw, 40rem);
+  margin-bottom: 1vh;
+  color: white;
+  font-weight: bold;
+}
+
+.menu_word_length_label { margin-right: 0.5rem; }
+
+.menu_word_length button {
+  flex: 1 1 0;
+  max-width: 4rem;
+  height: 5vh;
+  min-height: 2rem;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: white;
+  background-color: #0003;
+  border: 1px solid #0000004d;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.menu_word_length button.active {
+  background-color: white;
+  color: var(--menu_background);
+}
+
+
+/* ========================================================================
+   Pages secondaires
+   Aide, Crédits, Debug, Émissions : barre haute identique, contenu en cartes centrées.
+   ======================================================================== */
+.secondary_page {
+  overflow-y: auto;
+  background: #e9eef5;
+  color: var(--page_text);
+}
+
+.page_topbar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  gap: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: var(--menu_background);  /* même rouge que le menu pour toutes les pages hors jeu */
+}
+
+.page_topbar .topbar_button_group { min-width: 4rem; }
+
+.page_title {
+  flex: 1 1 auto;
+  margin: 0;
+  color: #fff;
+  font-size: clamp(1.2rem, 4vw, 1.75rem);
+  text-align: center;
+}
+
+.page_topbar_spacer {
+  display: flex;
+  justify-content: flex-end;
+  min-width: 4rem;
+}
+
+.page_topbar_spacer .btn { white-space: nowrap; }
+
+.page_body {
+  box-sizing: border-box;
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+}
+
+.page_intro {
+  color: var(--page_text);
+  font-size: 1.1rem;
+  margin: 0 0 1.25rem;
+}
+
+/* Grand écran : contenu plus large */
+@media (min-width: 1440px) {
+  .page_body { max-width: 72rem; }
+}
+
+/* Téléphone : flèche seule dans la barre, marges resserrées */
+@media (max-width: 480px) {
+  .page_topbar .topbar_label { display: none; }
+
+  .page_topbar .topbar_button_group, .page_topbar_spacer { min-width: 2.5rem; }
+
+  .page_body { padding: 1rem 0.75rem 2rem; }
+
+  .page_topbar {
+    gap: 0.5rem;
+    padding: 0.4rem 0.75rem;
+  }
+
+  .page_topbar_spacer .btn {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.85rem;
+  }
+}
+
+
+/* ========================================================================
+   Aide
+   ======================================================================== */
+.help_form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 1rem;
+  margin-top: 0.75rem;
+}
+
+.help_field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.help_field label {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-weight: bold;
+}
+
+.help_field .hint { margin: 0; }
+
+.help_form .form-control { box-sizing: border-box; }
+
+.help_input {
+  font-family: monospace;
+  font-size: 1.1rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.help_input::placeholder { color: #b3bac6; }
+
+.help_form .form-control:focus {
+  outline: none;
+  border-color: var(--page_accent);
+  box-shadow: 0 0 0 3px #005ea033;
+}
+
+/* Pastilles aux couleurs de la grille (rouge = bien placée, jaune = mal placée, bleu = absente) */
+.help_swatch {
+  flex: 0 0 auto;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 3px;
+}
+
+.help_swatch_ok { background-color: #e32821; }
+
+.help_swatch_bad {
+  background-color: #ffd400;
+  border-radius: 50%;
+}
+
+.help_swatch_missing { background-color: #1681c7; }
+
+.help_actions {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.help_actions .btn {
+  margin: 0;
+  min-width: 7rem;
+}
+
+.card .help_result_count {
+  margin: 1.25rem 0 0.5rem;
+  font-weight: bold;
+}
+
+.help_result_count:empty { display: none; }
+
+.help_result_list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr));
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.help_result_list li {
+  padding: 0.35rem 0.5rem;
+  border-radius: 6px;
+  background-color: #eef3fa;
+  font-family: monospace;
+  font-size: 1.05rem;
+  font-weight: bold;
+  letter-spacing: 0.08em;
+  text-align: center;
+}
+
+.help_shortcut_groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+  gap: 1rem 2rem;
+}
+
+.help_shortcuts {
+  width: 100%;
+  border-collapse: collapse;
+  align-self: start;
+}
+
+.help_shortcuts caption {
+  padding-bottom: 0.4rem;
+  text-align: left;
+  font-size: 0.8rem;
+  font-weight: bold;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--page_muted);
+}
+
+.help_shortcuts td,
+.help_shortcuts th {
+  padding: 0.4rem 0;
+  border-top: 1px solid var(--page_border);
+  vertical-align: middle;
+}
+
+.help_shortcuts td {
+  width: 1%;
+  padding-right: 1rem;
+  white-space: nowrap;
+}
+
+.help_shortcuts th {
+  font-weight: normal;
+  text-align: left;
+}
+
+/* Grand téléphone : raccourcis sur une colonne */
+@media (max-width: 768px) {
+  .help_shortcut_groups { grid-template-columns: 1fr; }
+}
+
+/* Téléphone : les touches peuvent passer à la ligne */
+@media (max-width: 480px) {
+  .help_shortcuts td { white-space: normal; }
+}
+
+
+/* ========================================================================
+   Crédits
+   ======================================================================== */
+/* Crédits */
+.credit_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 1rem;
+}
+
+.credit_grid .card { margin: 0; }
+
+.credit_card_main, .credit_card_wide { grid-column: 1 / -1; }
+
+.credit_card_main { background: linear-gradient(135deg, #ffffff 60%, #fff7d1); }
+
+.credit_card_main h2 { font-size: 1.5rem; }
+
+.credit_code {
+  margin: 0;
+  padding: 0.9rem 1rem;
+  overflow-x: auto;
+  border-radius: 8px;
+  background-color: #0f1626;
+  color: #c9e4ff;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.credit_legal {
+  background-color: #f6f8fb;
+  box-shadow: none;
+}
+
+.credit_legal p {
+  color: var(--page_muted);
+  font-size: 0.85rem;
+}
+
+
+/* ========================================================================
+   Émissions
+   ======================================================================== */
+/* Émissions */
+.tv_replay_list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+  gap: 0.75rem;
+}
+
+.tv_replay_list .button.menu_button {
+  width: 100%;
+  height: auto;
+  min-height: 4rem;
+  margin: 0;
+  padding: 0.75rem;
+  font-size: 1.1rem;
+  border-radius: var(--page_radius);
+  background-color: var(--page_surface);
+  border: 1px solid var(--page_border);
+  color: #002761;
+  cursor: pointer;
+}
+
+.tv_replay_list .button.menu_button:hover {
+  border-color: var(--page_accent);
+  background-color: #f0f6ff;
+}
+
+
+/* ========================================================================
+   Debug
+   ======================================================================== */
+/* Debug */
+.debug_sound_groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 1rem;
+}
+
+.debug_sound_groups > div {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 0.35rem;
+}
+
+.debug_sound_groups h3 { flex-basis: 100%; }
+
+.debug_sound_groups .btn { margin: 0; }
+
+.debug_dictionary_table {
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+
+.debug_dictionary_table th {
+  padding: 0.25rem 1.5rem 0.25rem 0;
+  text-align: left;
+  font-weight: normal;
+}
+
+.debug_dictionary_table td { padding: 0.15rem 0.25rem; }
+
+.debug_viewer {
+  border: 1px solid var(--page_border);
+  border-radius: 8px;
+  padding: 0;
+  margin: 0.5rem 0 0;
+  user-select: auto;
+}
+
+.debug_viewer summary {
+  margin: 0;
+  padding: 0.6rem 0.9rem;
+  cursor: pointer;
+}
+
+.debug_viewer[open] { padding: 0 0.9rem 0.9rem; }
+
+.debug_viewer[open] summary {
+  margin: 0 -0.9rem 0.75rem;
+  border-bottom: 1px solid var(--page_border);
+}
+
+.stateViewer {
+  background: #0f0f0f;
+  color: #00ff9c;
+  padding: 15px;
+  border-radius: 8px;
+  font-family: monospace;
+  font-size: 13px;
+  max-height: 400px;
+  overflow: auto;
+  white-space: pre-wrap;
+}
+
+.stateViewer:empty::before {
+  content: "Cliquer sur « Rafraîchir » pour afficher le contenu.";
+  color: #8a94a6;
+  font-style: italic;
+}
+
+
+/* ========================================================================
+   Fenêtre Paramètres
+   ======================================================================== */
+/* Paramètres : état de la sauvegarde automatique */
+.settings_save_status {
+  margin-right: 1rem;
+  color: #444;
+  font-size: 0.9rem;
+}
+
+.modal .settings_save_status {
+  margin: 0;
+  color: var(--page_muted);
+}
+
+#settings_main h3 {
+  margin: 1.5rem 0 0.5rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--page_muted);
+}
+
+/* Chaque réglage : une petite carte */
+#settings_main .form-group {
+  margin: 0 0 0.5rem;
+  padding: 0.75rem 1rem;
+  background-color: var(--page_surface);
+  border: 1px solid var(--page_border);
+  border-radius: 8px;
+}
+
+#settings_main .tab-pane > .form-group:first-child { margin-top: 0.75rem; }
+
+#settings_main .form-group:has(> input[type=checkbox]) {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+}
+
+#settings_main .form-group > input[type=checkbox] {
+  flex: 0 0 auto;
+  width: 1.1rem;
+  height: 1.1rem;
+  margin: 0.15rem 0 0;
+  accent-color: var(--page_accent);
+}
+
+#settings_main .form-group > label { cursor: pointer; }
+
+#settings_main .form-group:has(> input:disabled) > label,
+#settings_main .form-group:has(> select:disabled) > label {
+  opacity: 0.55;
+}
+
+#settings_main .form-group > label + .form-control,
+#settings_main .form-group > label + select,
+#settings_main .form-group > label + input[type=number] {
+  margin-top: 0.4rem;
+}
+
+#settings_main .form-group:has(> input[type=range]) {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 0.4rem 0.75rem;
+}
+
+#settings_main .form-group:has(> input[type=range]) > label { grid-column: 1 / -1; }
+
+#settings_main input[type=range] {
+  width: 100%;
+  accent-color: var(--page_accent);
+}
+
+img#preview_img {
+  display: block;
+  height: 8rem;
+  margin-top: 0.75rem;
+  padding: 0;
+  border-radius: 6px;
+}
+
+/* Mots à trouver ajoutés à la main */
+.word_random_buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.word_random_buttons .btn {
+  margin: 0;
+  min-width: 2.75rem;
+  font-weight: bold;
+}
+
+#settings_main .word_list_section .input-group {
+  flex-wrap: nowrap;
+  gap: 0.4rem;
+}
+
+#settings_main .word_list_section .input-group .btn { margin: 0; }
+
+#settings_main #word_list_selected_word {
+  text-transform: uppercase;
+  font-family: monospace;
+  letter-spacing: 0.08em;
+}
+
+table.word_list_table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--page_surface);
+  border: 1px solid var(--page_border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+table.word_list_table:empty { display: none; }
+
+table.word_list_table td {
+  padding: 0.4rem 0.75rem;
+  border-bottom: 1px solid var(--page_border);
+}
+
+table.word_list_table tr:last-child td { border-bottom: none; }
+
+table.word_list_table td:first-child {
+  width: 100%;
+  font-family: monospace;
+  font-size: 1.05rem;
+  font-weight: bold;
+  letter-spacing: 0.08em;
+}
+
+table.word_list_table input.button {
+  padding: 0.25rem 0.6rem;
+  border: 1px solid var(--page_border);
+  border-radius: 6px;
+  background-color: #fff;
+  font: inherit;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+table.word_list_table input.button:hover { border-color: var(--page_accent); }
+
+table.word_list_table input.button[value="Supprimer"]:hover {
+  border-color: var(--motus_red);
+  color: var(--motus_red);
+}
+
+/* Grand téléphone : l'état de sauvegarde passe sur sa propre ligne, au-dessus des boutons */
+@media (max-width: 768px) {
+  .modal .settings_save_status {
+    order: -1;
+    flex-basis: 100%;
+    font-size: 0.8rem;
+  }
+}
+
+/* Téléphone : chaque mot ajouté sur deux lignes (mot, puis boutons) */
+@media (max-width: 480px) {
+  table.word_list_table tr {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.4rem 0.75rem;
+    border-bottom: 1px solid var(--page_border);
+  }
+
+  table.word_list_table tr:last-child { border-bottom: none; }
+
+  table.word_list_table td {
+    padding: 0;
+    border: none;
+  }
+
+  table.word_list_table td:first-child { flex: 1 1 100%; }
+}
+
+
+/* ========================================================================
+   Fenêtre Historique
+   ======================================================================== */
+/* Historique */
+.history_summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.history_summary .history_empty {
+  grid-column: 1 / -1;
+  padding: 2rem 1rem 1rem;
+  text-align: center;
+  color: var(--page_muted);
+}
+
+.history_empty p { margin: 0 0 0.4rem; }
+
+.history_empty b {
+  color: var(--page_text);
+  font-size: 1.1rem;
+}
+
+#history-modal .modal-body { padding-top: 1rem; }
+
+#history-modal .card.history_table_wrapper { margin-bottom: 0; }
+
+.history_tile {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.9rem 1rem;
+  border-radius: var(--page_radius);
+  background-color: var(--page_surface);
+  border: 1px solid var(--page_border);
+  color: #002761;
+}
+
+.history_tile_value {
+  font-size: 2rem;
+  font-weight: bold;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.history_tile_label {
+  font-size: 0.9rem;
+  color: var(--page_muted);
+}
+
+.history_tile_yellow .history_tile_label,
+.history_tile_blue .history_tile_label {
+  color: inherit;
+  opacity: 0.85;
+}
+
+.history_tile_yellow {
+  background-color: var(--team_yellow);
+  border-color: var(--team_yellow);
+  color: #1a1a1a;
+}
+
+.history_tile_blue {
+  background-color: var(--team_blue);
+  border-color: var(--team_blue);
+  color: #fff;
+}
+
+.card.history_table_wrapper {
+  padding: 0;
+  overflow-x: auto;
+}
+
+.history_table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+.history_table th,
+.history_table td {
+  padding: 0.6rem 0.9rem;
+  border-bottom: 1px solid var(--page_border);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.history_table thead th {
+  position: sticky;
+  top: 0;
+  background-color: #f3f6fa;
+  color: var(--page_muted);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.history_table tbody tr:last-child td { border-bottom: none; }
+
+.history_table tbody tr:hover { background-color: #f7f9fc; }
+
+.history_table td:first-child { color: var(--page_muted); }
+
+.history_word {
+  font-family: monospace;
+  font-size: 1.05rem;
+  font-weight: bold;
+  letter-spacing: 0.08em;
+}
+
+.history_badge,
+.history_team {
+  display: inline-block;
+  padding: 0.1rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  background-color: #eef1f5;
+  color: var(--page_muted);
+}
+
+.history_trouvé .history_badge {
+  background-color: #dcf3e3;
+  color: #0a6a2a;
+}
+
+.history_non_trouvé .history_badge {
+  background-color: #fde2e2;
+  color: #a3001b;
+}
+
+.history_passé .history_badge {
+  background-color: #eef1f5;
+  color: #5b6475;
+}
+
+.history_MOTUS td { background-color: #fff6d6; }
+
+.history_MOTUS .history_badge {
+  background-color: #ffd84a;
+  color: #1a1a1a;
+}
+
+.history_MOTUS .history_word { color: #a52a2e; }
+
+/* Téléphone : une carte par mot (mot et points en haut, détails dessous) au lieu d'un tableau tronqué */
+@media (max-width: 480px) {
+  .history_table thead { display: none; }
+
+  .history_table,
+  .history_table tbody { display: block; }
+
+  .history_table tbody tr {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 0.6rem;
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid var(--page_border);
+  }
+
+  .history_table tbody tr:last-child { border-bottom: none; }
+
+  .history_table td {
+    padding: 0;
+    border: none;
+  }
+
+  .history_table td.history_index { display: none; }
+
+  .history_table td.history_word { order: -2; flex: 1 0 calc(100% - 5rem); }
+
+  .history_table td.history_points { order: -1; margin-left: auto; font-weight: bold; }
+
+  .history_table td.history_points::after { content: " pts"; font-weight: normal; color: var(--page_muted); }
+
+  .history_table td.history_letters::after { content: " lettres"; }
+
+  .history_table td.history_lines::after { content: " ligne(s)"; }
+
+  .history_table td.history_time,
+  .history_table td.history_letters,
+  .history_table td.history_lines { color: var(--page_muted); font-size: 0.9rem; }
+
+  .history_table td.history_team_cell:empty { display: none; }
+}
+
+.history_team_yellow {
+  background-color: var(--team_yellow);
+  color: #1a1a1a;
+}
+
+.history_team_blue {
+  background-color: var(--team_blue);
+  color: #fff;
+}
+
+/* Téléphone : tuiles plus compactes */
+@media (max-width: 480px) {
+  .history_tile_value { font-size: 1.5rem; }
+
+  .history_summary {
+    grid-template-columns: repeat(auto-fit, minmax(6.5rem, 1fr));
+    gap: 0.5rem;
+  }
+
+  .history_tile { padding: 0.6rem 0.75rem; }
+}

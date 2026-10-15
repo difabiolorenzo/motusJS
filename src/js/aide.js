@@ -68,3 +68,11 @@ async function helpPageSearch() {
         : `${words.length} mot(s) possible(s).`;
     list_element.innerHTML = words.slice(0, HELP_PAGE_MAX_RESULTS).map(word => `<li>${word}</li>`).join("");
 }
+
+// Bouton « Effacer » : vide aussi les résultats (le formulaire remet les champs à zéro de lui-même)
+function helpPageReset() {
+    document.getElementById("help_result_count").textContent = "";
+    document.getElementById("help_result_list").innerHTML = "";
+    // La longueur choisie est conservée
+    setTimeout(() => { document.getElementById("help_length_select").value = settings.help_page_length; });
+}

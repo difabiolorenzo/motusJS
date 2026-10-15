@@ -1,0 +1,517 @@
+/* ui.css : composants d'interface réutilisables (boutons, champs, onglets, cartes, fenêtres).
+   Inspiré de Bootstrap 5 (ancien not_bs5.css), sans en dépendre. Ne concerne pas les grilles (grid.css). */
+
+
+/* ========================================================================
+   Boutons
+   ======================================================================== */
+.select:disabled,
+.input:disabled,
+.button:disabled {
+  opacity: 0.33;
+  cursor: default;
+}
+
+.select:disabled:hover,
+.input:disabled:hover,
+.button:disabled:hover {
+  opacity: 0.175;
+}
+
+.btn {
+  margin: 2px;
+  display: inline-block;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #212529;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+  background-color: transparent;
+  border: 1px solid transparent;
+  padding: .375rem .75rem;
+  font-size: 1rem;
+  border-radius: 3px;
+  box-shadow: 2px 2px 3px 0px rgb(0 0 0 / 20%);
+}
+
+.btn:hover {
+  box-shadow: 0 3px 2px 0 rgb(0 0 0 / 20%);
+  border: 1px solid black;
+}
+
+.btn:disabled { opacity: 0.5; }
+
+.btn-light {
+  background-color: white;
+  color: #111;
+}
+
+.btn-primary {
+  background-color: #005ea0;
+  color: #fff;
+}
+
+.btn-yellow {
+  background-color: #ffed00;
+  color: #111;
+}
+
+.btn-blue {
+  background-color: #005d9e;
+  color: #fff;
+}
+
+.btn-outline-danger {
+  background-color: #fff;
+  color: var(--motus_red);
+  border-color: var(--motus_red);
+}
+
+.btn-outline-danger[data-armed="true"] {
+  background-color: var(--motus_red);
+  color: #fff;
+}
+
+
+/* ========================================================================
+   Champs de formulaire
+   ======================================================================== */
+.form-group { margin-bottom: 1rem; }
+
+.input-group {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  width: 100%;
+}
+
+.input-group > .form-control {
+  position: relative;
+  flex: 1 1 auto;
+  width: 1%;
+  margin-bottom: 0;
+}
+
+.input-group > .form-control:not(:last-child) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.form-group input[type=number], .form-group select { width: 100%; }
+
+.form-control {
+  display: block;
+  width: 100%;
+  padding: .375rem .75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #212529;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  -webkit-appearance: none;
+  appearance: none;
+  border-radius: .25rem;
+  transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+/* --- Texte d'aide sous un libellé --- */
+.hint {
+  display: block;
+  margin-top: 0.15rem;
+  color: var(--page_muted);
+  font-size: 0.85rem;
+  font-weight: normal;
+}
+
+p.hint { margin-bottom: 0.75rem; }
+
+/* --- Ligne de réglage : case à cocher + libellé, ou libellé au-dessus du contrôle --- */
+.settings_row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+}
+
+.settings_row input[type=checkbox] {
+  flex: 0 0 auto;
+  margin-top: 0.2rem;
+}
+
+.settings_row_stacked {
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.settings_row_label { font-weight: bold; }
+
+.range_value {
+  min-width: 2rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  background-color: #002761;
+  color: #fff;
+  font-weight: bold;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+
+/* ========================================================================
+   Onglets
+   ======================================================================== */
+.nav-tabs { border-bottom: 1px solid #dee2e6; }
+
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  padding-left: 0;
+  margin-bottom: 0;
+  list-style: none;
+}
+
+.nav-tabs .nav-item {
+  margin-bottom: -1px;
+  margin-right: 2px;
+}
+
+.nav-tabs .nav-item.show .nav-link,
+.nav-tabs .nav-link.active {
+  background-color: #fff;
+  border-color: #dee2e6 #dee2e6 #fff;
+}
+
+.nav-tabs .nav-link {
+  border: 1px solid transparent;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+}
+
+.nav-link {
+  display: block;
+  padding: .5rem 1rem;
+}
+
+.tab-pane { display: none; }
+
+.tab-pane.active { display: block; }
+
+
+/* ========================================================================
+   Blocs repliables (details)
+   ======================================================================== */
+details {
+  border: 1px solid #aaaaaa;
+  border-radius: 3px;
+  padding: 0.5em 0.5em 0;
+  margin-bottom: 5px;
+  user-select: none;
+}
+
+summary {
+  font-weight: bold;
+  margin: -0.5em -0.5em 0;
+  padding: 0.5em;
+}
+
+details[open] { padding: 0.5em; }
+
+details[open] summary {
+  border-bottom: 1px dashed #6a6a6a;
+  margin-bottom: 1em;
+}
+
+
+/* ========================================================================
+   Cartes
+   ======================================================================== */
+.card {
+  box-sizing: border-box;
+  background-color: var(--page_surface);
+  border: 1px solid var(--page_border);
+  border-radius: var(--page_radius);
+  box-shadow: 0 2px 10px #00000014;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.card h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.15rem;
+  color: #002761;
+}
+
+.card h3 {
+  margin: 0 0 0.5rem;
+  font-size: 0.8rem;
+  font-weight: bold;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--page_muted);
+}
+
+.card p {
+  margin: 0 0 0.75rem;
+  line-height: 1.55;
+}
+
+.card p:last-child { margin-bottom: 0; }
+
+.card a:not(.btn) {
+  color: var(--page_accent);
+  text-underline-offset: 2px;
+}
+
+.card_header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.card_header h2 { margin: 0; }
+
+
+/* ========================================================================
+   Fenêtres (dialog.modal)
+   Paramètres et Historique : en-tête, onglets éventuels, corps qui défile, pied d'actions.
+   ======================================================================== */
+dialog.modal {
+  position: fixed;
+  z-index: 1050;
+  box-sizing: border-box;
+  width: min(52rem, calc(100vw - 2rem));
+  height: 100%;
+  max-height: calc(100dvh - 2rem);
+  padding: 0;
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #ffffff;
+  background-clip: padding-box;
+  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+  color: var(--page_text);
+  outline: none;
+}
+
+dialog.modal[open] { display: flex; }
+
+.modal::backdrop { background-color: #00000080; }
+
+.modal .modal-content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-height: calc(100dvh - 2rem);
+}
+
+.modal .modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 1.25rem 0.5rem;
+}
+
+.modal .modal-header h2 {
+  margin: 0;
+  font-size: 1.4rem;
+  color: #002761;
+}
+
+.modal_close_icon {
+  width: 2.25rem;
+  height: 2.25rem;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--page_muted);
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.modal_close_icon:focus-visible {
+  outline: 2px solid var(--page_accent);
+  outline-offset: -2px;
+}
+
+.modal_close_icon:hover {
+  background-color: #eef1f5;
+  color: var(--page_text);
+}
+
+/* --- Onglets d'une fenêtre : une seule ligne qui défile horizontalement --- */
+.modal .modal-tabs {
+  padding: 0 1.25rem;
+  border-bottom: 1px solid var(--page_border);
+}
+
+.modal .nav-tabs {
+  flex-wrap: nowrap;
+  gap: 0.25rem;
+  overflow-x: auto;
+  border-bottom: none;
+  scrollbar-width: none;
+}
+
+.modal .nav-tabs .nav-item {
+  margin: 0;
+  flex: 0 0 auto;
+}
+
+.modal .nav-link {
+  padding: 0.6rem 0.8rem;
+  border: none;
+  border-bottom: 3px solid transparent;
+  border-radius: 0;
+  background: none;
+  color: var(--page_muted);
+  font: inherit;
+  font-weight: bold;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.modal .nav-link:hover { color: var(--page_text); }
+
+.modal .nav-tabs .nav-link.active {
+  background: none;
+  border-color: transparent;
+  border-bottom: 3px solid var(--motus_red);
+  color: var(--motus_red);
+}
+
+.modal .modal-body {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0.5rem 1.25rem 1.25rem;
+  background-color: #f6f8fb;
+}
+
+/* --- Pied : actions à gauche, fermeture à droite --- */
+.modal .modal-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 0;
+  text-align: right;
+  background-color: #fff;
+  border-top: 1px solid #ddd;
+}
+
+.settings_file_actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-right: auto;
+}
+
+.settings_file_actions .btn, .modal .modal-footer .btn { margin: 0; }
+
+/* Écran peu haut et large (téléphone à l'horizontale) : onglets à gauche, réglages à droite,
+   en-tête et pied compacts pour laisser la hauteur aux réglages */
+@media (max-height: 560px) and (min-aspect-ratio: 3/2) {
+  dialog.modal {
+    width: min(52rem, calc(100vw - 1rem));
+    max-height: calc(100dvh - 1rem);
+  }
+
+  .modal .modal-content { max-height: calc(100dvh - 1rem); }
+
+  .modal .modal-content:has(> .modal-tabs) {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+  }
+
+  .modal .modal-content:has(> .modal-tabs) > .modal-header,
+  .modal .modal-content:has(> .modal-tabs) > .modal-footer { grid-column: 1 / -1; }
+
+  .modal .modal-content:has(> .modal-tabs) > .modal-tabs {
+    padding: 0.25rem 0;
+    border-bottom: none;
+    border-right: 1px solid var(--page_border);
+    overflow-y: auto;
+  }
+
+  .modal .modal-content:has(> .modal-tabs) .nav-tabs {
+    flex-direction: column;
+    overflow-x: visible;
+    gap: 0;
+  }
+
+  .modal .modal-content:has(> .modal-tabs) .nav-link {
+    width: 100%;
+    text-align: left;
+    padding: 0.45rem 1rem 0.45rem 0.9rem;
+    border-bottom: none;
+    border-left: 3px solid transparent;
+  }
+
+  .modal .modal-content:has(> .modal-tabs) .nav-tabs .nav-link.active {
+    border-bottom: none;
+    border-left: 3px solid var(--motus_red);
+  }
+
+  .modal .modal-header { padding: 0.4rem 1rem 0.3rem; }
+
+  .modal .modal-header h2 { font-size: 1.15rem; }
+
+  .modal .modal-footer { padding: 0.4rem 1rem; }
+
+  .modal .settings_save_status { display: none; }
+}
+
+/* Grand écran : fenêtre plus large */
+@media (min-width: 1440px) {
+  dialog.modal { width: 60rem; }
+}
+
+/* Téléphone : fenêtre presque plein écran, marges et boutons resserrés */
+@media (max-width: 480px) {
+  dialog.modal {
+    width: calc(100vw - 1rem);
+    max-height: calc(100dvh - 1rem);
+  }
+
+  .modal .modal-content { max-height: calc(100dvh - 1rem); }
+
+  .card { padding: 1rem; }
+
+  .modal .modal-header,
+  .modal .modal-tabs,
+  .modal .modal-body,
+  .modal .modal-footer {
+    padding-left: 0.9rem;
+    padding-right: 0.9rem;
+  }
+
+  /* La croix de l'en-tête suffit pour fermer ; le pied garde les actions sur une ligne */
+  .modal .modal-footer > .close-btn { display: none; }
+
+  /* Onglets sur deux lignes : tous visibles, sans défilement caché */
+  .modal .nav-tabs {
+    flex-wrap: wrap;
+    overflow-x: visible;
+    gap: 0 0.1rem;
+  }
+
+  .modal .nav-link { padding: 0.45rem 0.55rem; }
+
+  .settings_file_actions .btn {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.9rem;
+  }
+}

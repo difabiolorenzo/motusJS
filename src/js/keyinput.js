@@ -48,6 +48,12 @@ document.addEventListener("keydown", function (event) {
 			case "Digit7":
 				toggleAnimatorPanel();
 				break;
+			case "Digit8":
+				// Vasque en mode « bouton Tirer » : tirage au hasard au clavier
+				if (game.focus_on == "number" && settings.ball_picking_mode == "vasque" && settings.vasque_gesture == "random") {
+					drawRandomFromVasque();
+				}
+				break;
 		}
 		if (game.focus_on == "letter") {
 			switch (event.code) {
@@ -128,6 +134,69 @@ function createKeyboard() {
 		}
 		keyboard_placeholder.innerHTML += `${header}${row_line_element}${footer}`;
 	}
+	updateKeyboardLetterStatus();
+}
+
+// CLAVIER COLORÉ (réglage keyboard_letter_status, désactivé par défaut : absent du jeu télévisé)
+// Chaque touche prend le meilleur résultat connu de sa lettre pour le mot en cours :
+// bien placée > mal placée > absente. Les lettres révélées (première lettre, lettres d'aide, lettre bonus)
+// comptent comme bien placées. Remis à zéro à chaque mot (createLetterGrid).
+const KEYBOARD_STATUS_RANK = { missing: 1, wrong: 2, correct: 3 };
+const KEYBOARD_STATUS_LABEL = { missing: "absente", wrong: "mal placée", correct: "bien placée" };
+
+function resetKeyboardLetterStatus() {
+	game.keyboard_letter_status = {};
+	updateKeyboardLetterStatus();
+}
+
+function mergeKeyboardLetterStatus(letter, status) {
+	if (!KEYBOARD_STATUS_RANK[status]) { return; }
+	const known = game.keyboard_letter_status;
+	if (!known[letter] || KEYBOARD_STATUS_RANK[status] > KEYBOARD_STATUS_RANK[known[letter]]) {
+		known[letter] = status;
+	}
+}
+
+// Proposition vérifiée : statut de chaque lettre (computeLetterPlacement)
+function recordKeyboardLetterStatus(word, statuses) {
+	if (!game.keyboard_letter_status) { game.keyboard_letter_status = {}; }
+	for (let i = 0; i < word.length; i++) { mergeKeyboardLetterStatus(word[i], statuses[i]); }
+	updateKeyboardLetterStatus();
+}
+
+function updateKeyboardLetterStatus() {
+	if (!game.keyboard_letter_status) { game.keyboard_letter_status = {}; }
+	const placement = game.letter_placement_status || [];
+	const word = game.word_to_find || "";
+	// Lettres révélées sur la grille
+	for (let i = 0; i < placement.length; i++) {
+		if (placement[i] == "correct" && word[i]) { mergeKeyboardLetterStatus(word[i], "correct"); }
+	}
+	const enabled = settings.keyboard_letter_status == true;
+	document.querySelectorAll("#keyboard_placeholder .keyboard_key[data-keyboard]").forEach(key => {
+		const letter = key.getAttribute("data-keyboard");
+		if (letter.length != 1) { return; }
+		const status = enabled ? game.keyboard_letter_status[letter] : undefined;
+		key.classList.toggle("key_correct", status == "correct");
+		key.classList.toggle("key_wrong", status == "wrong");
+		key.classList.toggle("key_missing", status == "missing");
+		const label = status ? `${letter}, ${KEYBOARD_STATUS_LABEL[status]}` : null;
+		if (label) { key.setAttribute("aria-label", label); } else { key.removeAttribute("aria-label"); }
+	});
+}
+
+function updateKeyboardLetterStatusSettings(value = settings.keyboard_letter_status) {
+	settings.keyboard_letter_status = value == true;
+	document.getElementById("checkbox_keyboard_letter_status").checked = settings.keyboard_letter_status;
+	document.getElementById("toggle_keyboard_letter_status").setAttribute("aria-pressed", settings.keyboard_letter_status ? "true" : "false");
+	updateKeyboardLetterStatus();
+}
+
+// Interrupteur au-dessus du clavier visuel (même réglage que Paramètres > Jeu), enregistré aussitôt
+function toggleKeyboardLetterStatus() {
+	updateKeyboardLetterStatusSettings(settings.keyboard_letter_status != true);
+	saveSettingsIntoLocalStorage();
+	announce(settings.keyboard_letter_status ? "Clavier coloré activé." : "Clavier coloré désactivé.");
 }
 
 function keyboardInput(element) {

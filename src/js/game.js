@@ -5,15 +5,17 @@ function initVariables() {
     loadSettingsByLocalStorage();
     setHTMLFromSettings()
     document.getElementById("checkbox_debug_logs").checked = game.debug;
+    updateDebugMenuButton();
     document.getElementById("version").innerHTML = "MotusJS " + game.version;
     preloadSounds();
     registerServiceWorker();
     initAnimator();
+    observeGridReserve();
 }
 
 function setDefaultVariables() {
     game = {
-        version: "2.6.1",
+        version: "2.6.2",
         displayed_grid_type: "letter_grid", // "number_grid"
         displayed_page: "main_menu",
         
@@ -209,6 +211,7 @@ function setDefaultVariables() {
         reinit_line_if_unvalid_word: true,
 
         display_typing_indicator: false,
+        keyboard_letter_status: false,      // touches du clavier visuel colorées selon les lettres connues
         keyboard_show_cursor: false,
         keyboard_start_typing_in_void: false,
 
@@ -228,7 +231,8 @@ function setDefaultVariables() {
         use_saving_ball: true,
         limiting_saving_ball: true,
         black_ball_amount: 3,
-        ball_picking_mode: "random",
+        ball_picking_mode: "random",    // "random" | "input_select" | "vasque"
+        vasque_gesture: "click",        // mode « vasque » : "click" (clic sur une boule) | "random" (bouton Tirer)
         start_by_number_grid: false,
         number_grid_specific_display_blue_team: false,
         number_grid_creation_animation: false,      // seulement si la partie commence par la grille numérotée
@@ -243,6 +247,7 @@ function setDefaultVariables() {
 
         help_page_length: 8,
         show_tv_replay: false,
+        topbar_animator_actions: false,     // actions d'animateur (lettre bonus, solution, réinitialiser) dans la barre haute
 
         timer_enabled: false,       // compte à rebours par proposition (expérimental)
         timer_duration: 10,         // secondes
@@ -307,6 +312,7 @@ function resetGame() {
 	document.getElementById("keyboard_placeholder").innerHTML = "";
 	document.getElementById("word_list").innerHTML = "";
 	displayPage("main_menu")
+	updateVasque();
 }
 
 function displayLetterGrid() {
@@ -339,6 +345,7 @@ function displayLetterGrid() {
     }
     
     displayPage("game_page");
+    updateVasque();    // grille de mots affichée : vasque cachée et arrêtée
 }
 
 function displayNumberGrid() {
@@ -384,6 +391,25 @@ function resetSettings() {
     setDefaultVariablesSettingsOnly()
     setHTMLFromSettings()
     saveSettingsIntoLocalStorage()
+}
+
+// Bouton « Réinitialiser » en deux temps : un premier clic arme le bouton, un second (dans les 4 s) réinitialise
+function confirmResetSettings(button) {
+    if (button.dataset.armed == "true") {
+        clearTimeout(button._disarmTimer);
+        button.dataset.armed = "false";
+        button.textContent = "Réinitialiser";
+        resetSettings();
+        const status = document.getElementById("settings_save_status");
+        status.textContent = "Réglages réinitialisés.";
+        return;
+    }
+    button.dataset.armed = "true";
+    button.textContent = "Confirmer la réinitialisation";
+    button._disarmTimer = setTimeout(function() {
+        button.dataset.armed = "false";
+        button.textContent = "Réinitialiser";
+    }, 4000);
 }
 
 function loadSettingsByLocalStorage() {
@@ -493,6 +519,8 @@ function setHTMLFromSettings() {
     updateTimerSettings(settings.timer_enabled);
     updateTvReplaySettings(settings.show_tv_replay);
     updateHighContrastSettings(settings.high_contrast);
+    updateKeyboardLetterStatusSettings(settings.keyboard_letter_status);
+    updateTopbarAnimatorActionsSettings(settings.topbar_animator_actions);
 
     updateTypingIndicatorSettings(settings.display_typing_indicator);
     document.getElementById("checkbox_display_cursor").checked = settings.keyboard_show_cursor;
@@ -527,6 +555,7 @@ function setHTMLFromSettings() {
     document.getElementById("checkbox_limiting_saving_ball").checked = settings.limiting_saving_ball;
     document.getElementById("checkbox_start_by_number_grid").checked = settings.start_by_number_grid;
     document.getElementById("select_ball_picking_mode").value = settings.ball_picking_mode;
+    document.getElementById("select_vasque_gesture").value = settings.vasque_gesture;
     UpdateNumberSelectMode(settings.ball_picking_mode);
     document.getElementById("checkbox_number_grid_specific_display_blue_team").checked = settings.number_grid_specific_display_blue_team;
     document.getElementById("checkbox_number_grid_creation_animation").checked = settings.number_grid_creation_animation;
@@ -609,9 +638,17 @@ function updateTvReplaySettings(value = settings.show_tv_replay) {
     document.getElementById("menu_button_tv_replay").classList.toggle("d-none", value != true);
 }
 
+// Actions d'animateur dans la barre haute : cachées par défaut (panneau animateur et clavier suffisent)
+function updateTopbarAnimatorActionsSettings(value = settings.topbar_animator_actions) {
+    settings.topbar_animator_actions = value == true;
+    document.body.classList.toggle("topbar_animator_actions", settings.topbar_animator_actions);
+    document.getElementById("checkbox_topbar_animator_actions").checked = settings.topbar_animator_actions;
+}
+
 function updateHighContrastSettings(value = settings.high_contrast) {
     settings.high_contrast = value;
     document.body.classList.toggle("high_contrast", value == true);
+    if (Vasque.isReady()) { Vasque.refreshTheme(); }
 }
 
 // Longueur des mots tirés au hasard : rangée 5 à 10 du menu et liste des paramètres
@@ -720,6 +757,7 @@ function UpdateSavingBallSettings(value = settings.use_saving_ball) {
 
 function UpdateNumberSelectMode(value = settings.ball_picking_mode) {
     settings.ball_picking_mode = value;
+    document.getElementById("vasque_gesture_group").classList.toggle("d-none", value != "vasque");
 
     // Cache autres modes
     document.getElementById("number_grid_random_selection_mode_section").classList.add("d-none");
@@ -727,15 +765,23 @@ function UpdateNumberSelectMode(value = settings.ball_picking_mode) {
 
     
 
-    // Pas de tirage avant un mot trouvé, sauf pioche déverrouillée depuis le panneau animateur
-    if (game.word_found == false && game.number_grid_unlocked != true) {
-        console.log("Pas de boule a tiré, le mot n'est pas trouvé.")
+    // Phase de tirage fermée (pas de mot trouvé ni pioche déverrouillée, ou MOTUS aligné) : règle commune (number_grid.js)
+    if (!isBallPickingOpen()) {
+        console.log(game.motus_aligned == true ? "MOTUS aligné, pas de tirage." : "Pas de boule a tiré, le mot n'est pas trouvé.")
+        updateVasque();
         return;
     }
 
-    if (game.motus_aligned == true) {
-        console.log("MOTUS aligné, pas de tirage.")
-        return;
+    // Vasque : repli sur le tirage au hasard si Matter.js n'a pas pu être chargé
+    if (value == "vasque") {
+        if (typeof Matter == "undefined") {
+            console.warn("Vasque indisponible (Matter.js absent) : tirage au hasard.");
+            value = "random";
+        } else {
+            updateVasque();
+        }
+    } else {
+        updateVasque();
     }
 
     // Affichage du mode de séléction des boules
@@ -774,6 +820,15 @@ function updateTypingIndicatorSettings(value = settings.display_typing_indicator
     } else {
         indicator.classList.add("d-none")
     }
+    document.getElementById("checkbox_display_typing_indicator").checked = value == true;
+    document.getElementById("toggle_typing_indicator").setAttribute("aria-pressed", value == true ? "true" : "false");
+}
+
+// Interrupteur au-dessus du clavier visuel (même réglage que Paramètres > Jeu), enregistré aussitôt
+function toggleTypingIndicator() {
+    updateTypingIndicatorSettings(settings.display_typing_indicator != true);
+    saveSettingsIntoLocalStorage();
+    announce(settings.display_typing_indicator ? "Progression de frappe affichée." : "Progression de frappe masquée.");
 }
 
 function WordListAddRow(word_list_selected_word) {
@@ -990,6 +1045,9 @@ function changeStyle(value) {
 
     logo_img.title = `Style ${value}`;
     document.getElementById("preview_img").src = `src/textures/grille/style_${value}.png`;
+
+    // Couleurs et police de la vasque (variables CSS du style d'époque)
+    if (Vasque.isReady()) { Vasque.refreshTheme(); }
 }
 
 function displayPage(page_name) {
@@ -1000,7 +1058,6 @@ function displayPage(page_name) {
     document.getElementById("debug_page").classList.add("d-none");
     document.getElementById("credit_page").classList.add("d-none");
     document.getElementById("tv_page").classList.add("d-none");
-    document.getElementById("history_page").classList.add("d-none");
 
     game.displayed_page = page_name;
 
@@ -1025,6 +1082,31 @@ function createGrid(placeolder_id, row, column, cell_id_prefix, id) {
 		grid_placeolder_inner += "</tr>";
 	}
 	grid_placeolder.innerHTML = grid_placeolder_inner + "</table>";
+}
+
+// Place prise par le score et l'indicateur de frappe dans la zone de jeu : grid.css la retire de la hauteur
+// disponible pour les grilles (--grid_reserve), qui restent ainsi groupées avec le score au centre.
+// Variable posée sur #game (hors de #game_grid, recopié dans la fenêtre publique).
+function observeGridReserve() {
+    const game_element = document.getElementById("game");
+    const measured = [document.getElementById("score_placeolder"), document.getElementById("word_typing_indicator_placeholder")];
+    const update = () => {
+        let reserve = 0;
+        measured.forEach(element => {
+            if (element.offsetParent === null) { return; }   // caché (grille de numéros affichée, partie non lancée)
+            // Élément rangé dans un autre élément mesuré (indicateur de frappe à côté du score) : déjà compté
+            if (measured.some(other => other !== element && other.contains(element))) { return; }
+            const style = getComputedStyle(element);
+            reserve += element.offsetHeight + parseFloat(style.marginTop) + parseFloat(style.marginBottom);
+        });
+        const value = Math.ceil(reserve) + "px";
+        if (game_element.style.getPropertyValue("--grid_reserve") !== value) {
+            game_element.style.setProperty("--grid_reserve", value);
+        }
+    };
+    const observer = new ResizeObserver(update);
+    measured.forEach(element => observer.observe(element));
+    update();
 }
 
 function createHTMLGrid(row, column, cell_id_prefix, grid_id, hided = false) {
@@ -1113,6 +1195,7 @@ function switchTeamFocus() {
         console.log("L'équipe " + game.team_focus + " a maintenant la main.");
 
         updateScores()
+        updateVasque()
     } else {
         console.log("La fonction équipe n'est pas activée.");
     }
@@ -1493,7 +1576,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Un clic souris sur la barre haute ou le clavier visuel ne garde pas le focus sur le bouton :
 // sinon la touche Entrée suivante activerait ce bouton au lieu de valider le mot
 document.addEventListener('mousedown', function(event) {
-    if (event.target.closest && event.target.closest('.topbar_button_group, .keyboard_key, .animator_panel button')) {
+    if (event.target.closest && event.target.closest('.topbar_button_group, .keyboard_key, .keyboard_toggle, .animator_panel button')) {
         event.preventDefault();
     }
 });
@@ -1523,8 +1606,15 @@ function isDebugEnabled() {
     }
 }
 
+// Bouton « Debug » du menu : affiché avec les logs de debug, ou avec ?debug dans l'adresse (pour les activer)
+function updateDebugMenuButton() {
+    const visible = game.debug == true || new URLSearchParams(location.search).has("debug");
+    document.getElementById("debug_menu_button").classList.toggle("d-none", !visible);
+}
+
 function setDebugEnabled(value) {
     game.debug = value;
+    updateDebugMenuButton();
     try {
         localStorage.setItem("motus_debug", value);
     } catch (error) {
@@ -1737,19 +1827,35 @@ function displayHistoryPage() {
     const tbody = document.querySelector("#history_table tbody");
     const history = game.history || [];
     tbody.innerHTML = history.map((entry, index) => `<tr class="history_${entry.resultat.replace(/\s/g, "_")}">
-        <td>${index + 1}</td><td>${entry.heure}</td><td class="history_word">${entry.mot}</td><td>${entry.lettres}</td>
-        <td>${entry.resultat}</td><td>${entry.lignes}</td><td>${entry.equipe}</td><td>${entry.points}</td></tr>`).join("");
+        <td class="history_index">${index + 1}</td><td class="history_time">${entry.heure}</td><td class="history_word">${entry.mot}</td><td class="history_letters">${entry.lettres}</td>
+        <td><span class="history_badge">${entry.resultat}</span></td><td class="history_lines">${entry.lignes}</td>
+        <td class="history_team_cell">${entry.equipe ? `<span class="history_team history_team_${entry.equipe == "Bleue" ? "blue" : "yellow"}">${entry.equipe}</span>` : ""}</td><td class="history_points">${entry.points}</td></tr>`).join("");
 
     const words = history.filter(entry => entry.resultat != "MOTUS");
     const found = words.filter(entry => entry.resultat == "trouvé").length;
-    let summary = history.length == 0
-        ? "Aucun mot joué pour l'instant."
-        : `${words.length} mot(s) joué(s), ${found} trouvé(s). Score : ${settings.team_enabled ? `jaune ${game.score_yellow || 0}, bleue ${game.score_blue || 0}` : (game.score_yellow || 0)}.`;
-    document.getElementById("history_summary").textContent = summary;
-    document.getElementById("history_table").classList.toggle("d-none", history.length == 0);
+    const motus = history.length - words.length;
+    const tile = (value, label, extra = "") => `<div class="history_tile ${extra}"><span class="history_tile_value">${value}</span><span class="history_tile_label">${label}</span></div>`;
+    const summary = document.getElementById("history_summary");
+    if (history.length == 0) {
+        summary.innerHTML = `<div class="history_empty"><p><b>Aucun mot joué pour l'instant.</b></p><p>Chaque mot trouvé, perdu ou passé s'ajoutera ici, avec les MOTUS de la grille de numéros.</p></div>`;
+    } else {
+        summary.innerHTML = tile(words.length, "mot(s) joué(s)")
+            + tile(found, "trouvé(s)" + (words.length ? ` · ${Math.round(found * 100 / words.length)} %` : ""))
+            + (motus ? tile(motus, "MOTUS") : "")
+            + (settings.team_enabled
+                ? tile(game.score_yellow || 0, "points jaune", "history_tile_yellow") + tile(game.score_blue || 0, "points bleue", "history_tile_blue")
+                : tile(game.score_yellow || 0, "points"));
+    }
+    document.getElementById("history_table").parentElement.classList.toggle("d-none", history.length == 0);
     document.getElementById("history_export_button").disabled = history.length == 0;
 
-    displayPage("history_page");
+    // Fenêtre comme les paramètres : jeu en pause tant qu'elle est ouverte (rétabli à la fermeture)
+    const history_modal = document.getElementById("history-modal");
+    if (!history_modal.open) {
+        history_modal.dataset.pauseBefore = game.pause;
+        game.pause = true;
+        history_modal.showModal();
+    }
 }
 
 // Export CSV (séparateur « ; » et BOM UTF-8 pour une ouverture directe dans un tableur)

@@ -1,0 +1,140 @@
+/* base.css : fondations communes à toute l'interface.
+   Ordre de chargement (index.html) : base → ui → pages → game → grid. Chaque fichier peut s'appuyer sur les précédents.
+   
+   Paliers d'écran (mêmes valeurs partout, à reprendre telles quelles dans les @media) :
+   téléphone        max-width: 480px
+   grand téléphone  max-width: 768px
+   tablette         max-width: 1024px
+   grand écran      min-width: 1440px
+   écran peu haut   max-height: 560px  (téléphone à l'horizontale, petit portable)
+   peu haut et large  (max-height: 560px) and (min-aspect-ratio: 3/2)  : éléments côte à côte (clavier, vasque, menu)
+   ordinateur       (min-width: 1025px) and (min-height: 561px)       : au-delà de la tablette, hauteur normale
+   Téléphone à la verticale : (max-width: 480px) and (orientation: portrait).
+   Les @media sont écrits juste après le composant qu'ils modifient, pas regroupés en fin de fichier. */
+
+
+/* ========================================================================
+   Police et couleurs
+   ======================================================================== */
+@font-face {
+  font-family: 'Gotham';
+  src: url('../font/Gotham\ Medium.ttf');
+  font-weight: 400 600;
+}
+
+@font-face {
+  font-family: 'Gotham';
+  src: url('../font/Gotham\ Bold.otf');
+  font-weight: 700 900;
+}
+
+/* Couleurs du jeu */
+:root {
+  --menu_background: #A52A2E;
+  --menu_background_red: #b1161b;
+  --menu_background_yellow: #fcc748;
+  --menu_background_dark: #2d2d2d;
+  --menu_background_dark_blue: #002761;
+  --motus_red: #A52A2E;
+  --motus_blue: #8cc9ff;
+  --motus_yellow: #ffe84e;
+  --team_yellow: #FBC800;
+  --team_blue: #1681C7;
+}
+
+/* Couleurs des pages et fenêtres (cartes, textes, bordures) */
+:root {
+  --page_surface: #ffffff;
+  --page_text: #1a1f2b;
+  --page_muted: #5b6475;
+  --page_border: #dde3ec;
+  --page_accent: #005ea0;
+  --page_radius: 10px;
+}
+
+
+/* ========================================================================
+   Document
+   ======================================================================== */
+/* Mode standard (<!DOCTYPE html>) : la page occupe toute la hauteur, comme en mode quirks */
+html, body { height: 100%; }
+
+/* Texte courant : police du système (lisible à toutes les tailles) ; Gotham pour les titres et les boutons
+   principaux (règle ci-dessous), comme à l'écran dans l'émission */
+body {
+  font-family: sans-serif;
+  margin: 0;
+  font-size: 1rem;
+  overflow: overlay;
+}
+
+p, label { margin-block-end: 0; }
+
+h1, h2, .page_title, .button.menu_button, .menu_word_length, span.topbar_label {
+  font-family: 'Gotham', sans-serif;
+}
+
+th {
+  font-weight: normal;
+  text-align: left;
+}
+
+input[type="checkbox"i] { transform: scale(1.5); }
+
+kbd {
+  display: inline-block;
+  min-width: 1.5em;
+  padding: 0 0.4em;
+  border: 1px solid #8a8a8a;
+  border-bottom-width: 3px;
+  border-radius: 4px;
+  background: #fff;
+  font-family: monospace;
+  text-align: center;
+  line-height: 1.6;
+}
+
+
+/* ========================================================================
+   Accessibilité
+   ======================================================================== */
+/* Contour de focus visible au clavier (blanc sur les fonds sombres) */
+:focus-visible {
+  outline: 3px solid #000;
+  outline-offset: 2px;
+}
+
+.topbar :focus-visible, #main_menu :focus-visible { outline-color: #fff; }
+
+/* Animations réduites si le système le demande */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+
+/* ========================================================================
+   Utilitaires
+   Masquer un élément (d-none) ; texte réservé aux lecteurs d'écran (visually-hidden).
+   ======================================================================== */
+.d-none { display: none !important; }
+
+/* Texte lu par les lecteurs d'écran mais invisible à l'écran */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
