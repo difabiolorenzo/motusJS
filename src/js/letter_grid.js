@@ -1,30 +1,28 @@
 function initLetterGrid() {
-	function proceed() {
-        wordInit();
-		changeLetterGrid();
+	// Longueur demandée à chaque mot : la fenêtre de choix s'ouvre sur la page de jeu
+	if (game.word_to_find_list.length === 0 && settings.always_ask !== false) { displayPage("game_page"); }
+
+	withNextWord(() => {
+		wordInit();
+		createLetterGrid();
 		game.state.letter_grid_created = true;
-		displayLetterGrid()	
-    }
+		displayLetterGrid();
+	}, abortGameStart);
+}
 
-    if (game.word_to_find_list.length == 0) {
-        if (settings.always_ask == false) {
-			wordListAddRowRandom(settings.always_ask_length).then((added) => {
-                if (added) { proceed(); } else { abortGameStart(); }
-            });
-            return;
-        }
-        
-        // Longueur choisie dans la page (fenêtre #word_length_dialog)
-        displayPage("game_page");
-        askNextWordLength()
-            .then((word_length) => wordListAddRowRandom(word_length))
-            .then((added) => {
-                if (added) { proceed(); } else { abortGameStart(); }
-            });
-        return;
-    }
-
-    proceed();
+// Prépare le mot suivant puis appelle proceed : le premier mot de la liste (aussitôt), sinon un mot tiré au hasard
+// (longueur de l'accueil, ou demandée à chaque mot). onFailure : aucun mot n'a pu être tiré.
+function withNextWord(proceed, onFailure = () => {}) {
+	if (game.word_to_find_list.length > 0) {
+		proceed();
+		return;
+	}
+	const added = settings.always_ask === false
+		? wordListAddRowRandom(settings.always_ask_length)
+		: askNextWordLength().then((word_length) => wordListAddRowRandom(word_length));
+	added.then((ok) => {
+		if (ok) { proceed(); } else { onFailure(); }
+	});
 }
 
 // Demande la longueur du prochain mot (5 à 10) dans une fenêtre de la page.
@@ -58,39 +56,22 @@ function abortGameStart() {
 }
 
 function wordReinit() {
-	if (game.focus_on != "letter") {
+	if (game.focus_on !== "letter") {
 		playsound("error");
 		return;
 	}
 
 	// Mot abandonné sans être trouvé ni affiché : noté « passé » dans l'historique
-	if (game.word_found != true && game.word_displayed != true) { recordWordResult("passé"); }
+	if (game.word_found !== true && game.word_displayed !== true) { recordWordResult("passé"); }
 	game.word_to_find_list.splice(0, 1);
-	if (game.word_to_find_list.length == 0) {
-		if (settings.always_ask == false) {
-			wordListAddRowRandom(settings.always_ask_length).then((added) => {
-				if (added) { proceed() }
-			});
-		} else {
-			// Longueur choisie dans la page (fenêtre #word_length_dialog)
-			askNextWordLength()
-				.then((word_length) => wordListAddRowRandom(word_length))
-				.then((added) => {
-					if (added) { proceed() }
-				});
-		}
-	} else {
-		proceed()
-	}
-
-	function proceed() {
+	withNextWord(() => {
 		wordInit();
-		changeLetterGrid();
-	}
+		createLetterGrid();
+	});
 }
 
 function createLetterGrid(hided) {
-	document.getElementById("letter_grid_placeolder").innerHTML = createHTMLGrid(game.try_number_max, game.word_length, "letter", "letter_grid", hided)
+	document.getElementById("letter_grid_placeholder").innerHTML = createHTMLGrid(game.try_number_max, game.word_length, "letter", "letter_grid", hided)
 	
 	game.try_count_index = 0;
 	game.word_length = game.word_to_find_list[0].length;
@@ -101,18 +82,6 @@ function createLetterGrid(hided) {
 
 	resetTypingIndicator();
 	resetKeyboardLetterStatus();
-}
-
-function changeLetterGrid() {
-	createLetterGrid();
-
-	// if (document.getElementById("letter_grid") == null) {
-	// 	createLetterGrid(true);
-	// } else {
-	// 	setTimeout(function() {
-	// 		createLetterGrid()
-	// 	}, 250);
-	// }
 }
 
 function wordInit() {
@@ -129,7 +98,7 @@ function wordInit() {
 	game.number_grid_unlocked = false;
 	clearUndo();
 	
-	if (game.word_to_find_list.length == 0) {
+	if (game.word_to_find_list.length === 0) {
 		console.error("Aucun mot trouvé dans la liste")
 		return;
 	}
@@ -141,59 +110,26 @@ function wordInit() {
 
 	console.log('Mot à trouver: ' + '%c' + game.word_to_find, 'background: black; color: gold'); // Affichage du word_to_find tiré dans la console
 	announce(`Nouveau mot de ${game.word_length} lettres, commençant par ${game.word_to_find[0]}.`);
-	
-	// console.log(game.word_to_find_details);
-	// console.log('Nombre de lettres composant le mot: ' + '%c' + game.word_length, 'background: black; color: gold');
-
-	// Initialisation du dictionnaire de mot à utliser
-	// game.dictionnaire_verification = [];
-	// if (settings.check_word_first_letter == true) {
-	// 	game.dictionnaire_verification.concat(game.dictionnaire_verification.length_8.filter((mot => mot[0] == game.word_to_find[0])))
-	// }
 }
 
 function breakdownWord() {
-	// Mise dans le tableau word_composed_letter le word_to_find
-	// word_composed_letter convertit "ELEVE" en "ELV"
-
-	game.word_to_find_details = [];
-	game.letter_placement_status = [];
-
-	const word_to_find = game.word_to_find;
-	let details = []
-
-	for (let i=0; i<word_to_find.length; i++) {
-		const checked_letter = word_to_find[i];
-		let object_ckecked = details.find(object => object.letter === checked_letter)
-
-		if (object_ckecked) {
-			// Si l'objet existe alors on ajoute 1 au count
-			object_ckecked.count += 1;
-		} else {
-			// AJout d'un objet avec la nouvelle lettre
-			details.push({letter: checked_letter, count: 1})
-		}
-
-		// Sauvegarde des placements corrects
-		game.letter_placement_status = Array(game.word_length).fill("missing")
-	}
-
-	game.word_to_find_details = details;
+	// Aucune lettre trouvée au départ : la première lettre et les lettres d'aide sont placées ensuite
+	game.letter_placement_status = Array(game.word_length).fill("missing");
 }
 
 function newWordLine() {
 	// Ajoute une nouvelle ligne avec les bonnes lettres proposées
-	if (game.word_displayed == true) {
+	if (game.word_displayed === true) {
 		console.log("Mot déjà affiché");
 		return;
 	}
 
 	// Affichage
 	if (game.try_count_index < game.try_number_max) {
-		for (var i = 0; i < game.word_length; i++) {
+		for (let i = 0; i < game.word_length; i++) {
 			document.getElementById(`letter_${game.try_count_index}_${i}`).innerHTML = ".";
 
-			if (game.letter_placement_status[i] == "correct") {
+			if (game.letter_placement_status[i] === "correct") {
 				document.getElementById(`letter_${game.try_count_index}_${i}`).innerHTML = game.word_to_find[i];
 			}
 		}
@@ -201,8 +137,8 @@ function newWordLine() {
 	}
 
 	// Trop de tentatives
-	if (game.try_count_index == game.try_number_max) {
-		if (game.word_proposed_modified.length == game.word_length) {
+	if (game.try_count_index === game.try_number_max) {
+		if (game.word_proposed_modified.length === game.word_length) {
 			playsound("wrong");
 			setTimeout(function() { displaySolution(); }, 1750);
 		} else {
@@ -225,17 +161,14 @@ function newWordLine() {
 }
 
 function removeWordLine() {		// Supprime la ligne
-	if (game.try_count_index >= 1
-		&& game.try_number_max 
-		&& game.word_displayed == false
-	){
-		for (var i=0; i < game.word_length; i++) {
+	if (game.try_count_index >= 1 && game.word_displayed === false) {
+		for (let i=0; i < game.word_length; i++) {
 			document.getElementById(`letter_${game.try_count_index-1}_${i}`).innerHTML = "";
 			document.getElementById(`letter_${game.try_count_index-1}_${i}`).className = "cellNEW";
 		}
 
 		game.try_count_index--;
-		if (game.try_count_index == 0) { newWordLine(); }
+		if (game.try_count_index === 0) { newWordLine(); }
 	}
 
 	// Mise à jour du curseur
@@ -256,48 +189,31 @@ function reinitWordLine() {
 }
 
 function retryLine() {
-    if (settings.automatic_behaviour == true) {
-		var automatic_behaviour = settings.automatic_behaviour_new_line_error
-		if (settings.team_enabled) {automatic_behaviour = settings.automatic_behaviour_new_line_team_error}
-		
-        switch (automatic_behaviour) {
-            case "replace_bonus": 
-				reinitWordLine();
-                addBonusLetter();
-				updateCursorVoidPlacement();
-				updateCursor();
-            	break;
-            case "replace_only": 
-				reinitWordLine();
-				updateCursorVoidPlacement();
-				updateCursor();
-            	break;
-            case "add_bonus": 
-                newWordLine();
-                addBonusLetter();
-				updateCursorVoidPlacement();
-				updateCursor();
-            	break;
-            case "add_only": 
-                newWordLine();
-				updateCursorVoidPlacement();
-				updateCursor();
-            	break;
-            case "shift_bonus": 
-				shiftGridLineUp();
-                newWordLine();
-                addBonusLetter();
-				updateCursorVoidPlacement();
-				updateCursor();
-            	break;
-            case "shift_only":
-				shiftGridLineUp();
-                newWordLine();
-				updateCursorVoidPlacement();
-				updateCursor();
-            	break;
-        }
-    }
+	if (settings.automatic_behaviour !== true) { return; }
+	const behaviour = settings.team_enabled ? settings.automatic_behaviour_new_line_team_error : settings.automatic_behaviour_new_line_error;
+
+	// Ligne : remplacée, ajoutée, ou grille décalée d'une ligne vers le haut puis ligne ajoutée
+	switch (behaviour) {
+		case "replace_bonus":
+		case "replace_only":
+			reinitWordLine();
+			break;
+		case "add_bonus":
+		case "add_only":
+			newWordLine();
+			break;
+		case "shift_bonus":
+		case "shift_only":
+			shiftGridLineUp();
+			newWordLine();
+			break;
+		default:
+			return;
+	}
+	// Puis lettre bonus selon le réglage
+	if (behaviour.endsWith("_bonus")) { addBonusLetter(); }
+	updateCursorVoidPlacement();
+	updateCursor();
 }
 
 function resetTypingIndicator() {
@@ -308,7 +224,7 @@ function resetTypingIndicator() {
 
 	// Affichage des bonnes positions déjà en place
 	for(let i=0; i<game.word_length; i++) {
-		if (placement[i] == "correct") {
+		if (placement[i] === "correct") {
 			pending += game.word_to_find[i];
 		} else {
 			pending += ".";
@@ -322,11 +238,11 @@ function updateTypingIndicator() {
 	// Affichage du mot proposé et des lettres déjà placées correctement
 
 	const indicator = document.getElementById("word_typing_indicator");
-	let pending = ""
+	const pending = ""
 	game.word_proposed_modified = game.word_proposed;
 
 	for(let i=game.word_proposed_modified.length; i<game.word_length; i++) {
-		if (game.letter_placement_status[i] == "correct") {
+		if (game.letter_placement_status[i] === "correct") {
 			game.word_proposed_modified += game.word_to_find[i];
 		} else {
 			break;
@@ -346,7 +262,7 @@ function shiftGridLineUp() {
 				document.getElementById(`letter_${i-1}_${j}`).innerHTML = document.getElementById(`letter_${i}_${j}`).innerHTML;
 			
 				// Nouvelle ligne
-				if (i==game.try_count_index-1) {
+				if (i===game.try_count_index-1) {
 					document.getElementById(`letter_${i}_${j}`).innerHTML = "";
 					document.getElementById(`letter_${i}_${j}`).className = "cellNEW"
 				}
@@ -376,12 +292,9 @@ function updateCursor() {
 	// Suppression curseur
 	removeCursor()
 
-	// Mise à jour position curseur
-	let x = game.word_proposed.length;
-	if (x > game.word_proposed.length - 1 && x > 1) {
-		x = game.word_proposed.length - 1;
-	}
-	let y = game.try_count_index-1;
+	// Case où sera placée la prochaine lettre (dernière case si la ligne est pleine)
+	const x = Math.min(game.word_proposed.length, game.word_length - 1);
+	const y = game.try_count_index-1;
 
 	document.getElementById(`letter_${y}_${x}`).classList.add("cursor");
 	debugLog(`letter_${y}_${x}`)
@@ -395,8 +308,8 @@ function removeCursor() {
 	}
 	
 	// Suppression curseur
-	let x = game.keyboard_cursor_position.x;
-	let y = game.keyboard_cursor_position.y;
+	const x = game.keyboard_cursor_position.x;
+	const y = game.keyboard_cursor_position.y;
 	document.getElementById(`letter_${y}_${x}`).classList.remove("cursor");
 }
 
@@ -409,14 +322,14 @@ function placeHelpingLetter() {
 	// Lettres ajoutée au premier affichage
 	if (settings.helping_letter_amount > 0) {
 
-		let posibility_placement = [];
+		const posibility_placement = [];
 		for (let i = 2; i < game.word_length; i++) {
 			posibility_placement.push(i);
 		}
 
 		for (let i=0; i<settings.helping_letter_amount; i++) {
-			let random_placement = Math.floor(Math.random() * posibility_placement.length);
-			let helping_placement = posibility_placement[random_placement];
+			const random_placement = Math.floor(Math.random() * posibility_placement.length);
+			const helping_placement = posibility_placement[random_placement];
 
 			document.getElementById(`letter_${game.try_count_index-1}_${helping_placement}`).innerHTML = game.word_to_find[helping_placement];
 			game.letter_placement_status[helping_placement] = "correct";
@@ -426,22 +339,22 @@ function placeHelpingLetter() {
 }
 
 function addBonusLetter() {
-	if (game.word_displayed == false
-		&& game.word_found == false
+	if (game.word_displayed === false
+		&& game.word_found === false
 		&& game.try_count_index <= game.try_number_max) {
 
-		let letter_left = game.letter_placement_status.filter(status => status === "missing").length;
-		markGameBusy(900);
-		
-		if (letter_left <= 1 && settings.playsound_enabled && settings.play_extra_sounds) {
-			// Pas assez de lettre à trouver
-			// playsound("error");
+		const letter_left = game.letter_placement_status.filter(status => status === "missing").length;
+
+		// Pas de lettre bonus s'il ne reste qu'une lettre à trouver (elle donnerait le mot) ou aucune
+		if (letter_left <= 1) {
+			if (settings.playsound_enabled && settings.play_extra_sounds) { playsound("error"); }
 			return;
 		}
+		markGameBusy(900);
 
 		// A changer, garder si erreur sans equipe, enlever si passage de main
 		reinitWordLine() 
-		var index = game.letter_placement_status.indexOf("missing");
+		const index = game.letter_placement_status.indexOf("missing");
 		
 		document.getElementById(`letter_${game.try_count_index-1}_${index}`).innerHTML = game.word_to_find[index];
 		document.getElementById(`letter_${game.try_count_index-1}_${index}`).classList.add("bonus_letter");
@@ -469,35 +382,35 @@ function addBonusLetter() {
 
 function displaySolution() {
 // Affiche la solution
-	if (game.focus_on == "number") { return; }
-	if (game.word_displayed == true) {
+	if (game.focus_on === "number") { return; }
+	if (game.word_displayed === true) {
 		console.log("Mot déjà affiché")
 		return;
 	}
 
 	announce(`Solution : ${game.word_to_find}.`);
 	markGameBusy((game.word_length + 1) * Math.floor((2000 / game.word_length) * (game.word_length/10) * settings.verification_time_multiplier) + 2500);
-	if (game.word_found != true) { recordWordResult("non trouvé"); }
+	if (game.word_found !== true) { recordWordResult("non trouvé"); }
 	stopProposalTimer();
 
-	let verification_timer = Math.floor((2000 / game.word_length) * (game.word_length/10) * settings.verification_time_multiplier)
-	let y_display = settings.display_soluce_on_last_row ? game.try_number_max : game.try_count_index;
+	const verification_timer = Math.floor((2000 / game.word_length) * (game.word_length/10) * settings.verification_time_multiplier)
+	const y_display = settings.display_soluce_on_last_row ? game.try_number_max : game.try_count_index;
 
 	for (let i = 0; i<game.word_length; i++) {
 		setTimeout(function() {
-			let cell_id = `letter_${y_display-1}_${i}`;
+			const cell_id = `letter_${y_display-1}_${i}`;
 			document.getElementById(cell_id).innerHTML = game.word_to_find[i];
 			document.getElementById(cell_id).classList.add("correct_placement");
 			playsound("letter_ok");
 
-			if (i == game.word_length-1) {
-				if (game.word_found == false) { playsound("loose"); }
+			if (i === game.word_length-1) {
+				if (game.word_found === false) { playsound("loose"); }
 
 				game.verification_index = undefined;
 				game.word_displayed = true;
 
 				// Change l'équipe de main
-				if (settings.team_enabled == true) { switchTeamFocus();  }
+				if (settings.team_enabled === true) { switchTeamFocus();  }
 
 				setTimeout(function() {wordReinit()}, 2000)
 			}
@@ -512,9 +425,9 @@ function addLetter(letter) {
 	}
 
 	// Vérification si la première lettre doit correspondre
-	if (settings.check_word_first_letter == true &&
-		game.word_proposed.length == 0 &&
-		letter != game.word_to_find[0]) {
+	if (settings.check_word_first_letter === true &&
+		game.word_proposed.length === 0 &&
+		letter !== game.word_to_find[0]) {
 			playsound("error");
 			return;
 	}
@@ -530,7 +443,7 @@ function addLetter(letter) {
 }
 
 function removeLetter() {
-	if (game.word_proposed.length == 0 || (settings.check_word_first_letter == true && game.word_proposed.length == 1)) {
+	if (game.word_proposed.length === 0 || (settings.check_word_first_letter === true && game.word_proposed.length === 1)) {
 		reinitWordLine();
 	}
 	if (game.word_proposed.length > 0) {
@@ -546,7 +459,7 @@ function removeLetter() {
 
 // Renvoie true si une validation était en attente et a été confirmée
 function confirmWordSubmission() {
-	if (settings.confirm_submit == true && game.conditional_submit_confirmed == true) {
+	if (settings.confirm_submit === true && game.conditional_submit_confirmed === true) {
 		submitWord();
 		return true;
 	}
@@ -555,7 +468,7 @@ function confirmWordSubmission() {
 
 // Renvoie true si une validation était en attente et a été annulée
 function cancelWordSubmission() {
-	if (settings.confirm_submit == true && game.conditional_submit_confirmed == true) {
+	if (settings.confirm_submit === true && game.conditional_submit_confirmed === true) {
 		game.conditional_submit_confirmed = false;
 		console.log("Validation annulée");
 		showGameMessage("Validation annulée");
@@ -566,16 +479,21 @@ function cancelWordSubmission() {
 }
 
 function submitWord() {
+	// Pas de validation pendant une vérification, l'affichage de la solution ou le délai après une erreur,
+	// ni une fois le mot trouvé ou affiché : une seconde validation recomptait le mot
+	// (points en double, ou « déjà proposé » avec changement d'équipe)
+	if (isGameBusy() || game.word_found === true || game.word_displayed === true) { return; }
+
 	// En cas de confirmation requise : la première validation met en attente,
 	// la touche 1 / & confirme, Effacer annule
-	if (settings.confirm_submit == true && game.conditional_submit_confirmed == false) {
+	if (settings.confirm_submit === true && game.conditional_submit_confirmed === false) {
 		game.conditional_submit_confirmed = true;
 		console.log("Confirmation requise en tapant 1 ou &, Effacer pour annuler");
 		showGameMessage("Valider ce mot ? 1 / & pour confirmer, Effacer pour annuler", 0);
 		announce("Valider ce mot ? 1 pour confirmer, Effacer pour annuler.");
 		return;
 	}
-	if (settings.confirm_submit == true) {
+	if (settings.confirm_submit === true) {
 		hideGameMessage();
 	}
 	game.conditional_submit_confirmed = false;
@@ -589,7 +507,7 @@ function submitWord() {
 
 	// Si au delà de la limite alors affichage de la solution ou reinitialisation
 	if (game.try_count_index > game.try_number_max) {
-		if (game.word_displayed == false) {
+		if (game.word_displayed === false) {
 			displaySolution();
 			return;
 		} else {
@@ -599,12 +517,12 @@ function submitWord() {
 	}
 
 	// Si le mot proposé est le bon alors verification ??
-	if (game.word_proposed == game.word_to_find) {
+	if (game.word_proposed === game.word_to_find) {
 		checkProposition();
 		return;
 	}
 
-	if (settings.check_word_length == true) {
+	if (settings.check_word_length === true) {
 		checkLength();
 	} else {
 		checkPresence();
@@ -613,7 +531,7 @@ function submitWord() {
 
 function checkLength() {
 	//La longueur du word_to_find n'est pas bonne.
-	if (game.word_proposed.length != game.word_length) {		
+	if (game.word_proposed.length !== game.word_length) {		
 		wordErrorHandler(1, true);
 		return;
 	}
@@ -623,8 +541,8 @@ function checkLength() {
 
 function checkPresence() {
 	// Vérification de la présence du word_to_find proposé dans le dictionnaire
-	if (settings.check_word_presence == true &&
-		game.dictionnaire_verification[`length_${game.word_length}`].includes(game.word_proposed) == false) {
+	if (settings.check_word_presence === true &&
+		game.dictionnaire_verification[`length_${game.word_length}`].includes(game.word_proposed) === false) {
 			//Mot non présent dans le dictionary
 			wordErrorHandler(2, true);
 			return;
@@ -635,8 +553,8 @@ function checkPresence() {
 
 function checkDuplication() {
 	// Vérification de la présence du word_to_find proposé dans le dictionnaire
-	if (settings.check_word_duplication == true) {
-		if (game.word_proposed_list.includes(game.word_proposed) == true) {
+	if (settings.check_word_duplication === true) {
+		if (game.word_proposed_list.includes(game.word_proposed) === true) {
 			// Mot déjà proposé
 			wordErrorHandler(3, true);
 			return;
@@ -655,7 +573,7 @@ function computeLetterPlacement(word_to_find, word_proposed) {
 	const status = [];
 
 	for (let i=0;i<word_to_find.length;i++) {
-		if (word_proposed[i] == word_to_find[i]) {
+		if (word_proposed[i] === word_to_find[i]) {
 			status[i] = "correct";
 		} else {
 			remaining_letters[word_to_find[i]] = (remaining_letters[word_to_find[i]] || 0) + 1;
@@ -663,7 +581,7 @@ function computeLetterPlacement(word_to_find, word_proposed) {
 	}
 
 	for (let i=0;i<word_to_find.length;i++) {
-		if (status[i] == "correct") { continue; }
+		if (status[i] === "correct") { continue; }
 		const letter = word_proposed[i];
 		if (remaining_letters[letter] > 0) {
 			remaining_letters[letter]--;
@@ -683,14 +601,14 @@ function checkProposition() {
 
 	// Enregistrement des lettres bien placées
 	for (let i=0;i<word_to_find.length;i++) {
-		if (proposed_letter_placement_status[i] == "correct") {
+		if (proposed_letter_placement_status[i] === "correct") {
 			game.letter_placement_status[i] = "correct";
 		}
 	}
 
 	// Annonce du résultat pour les lecteurs d'écran
-	if (word_proposed != word_to_find) {
-		const count = status => proposed_letter_placement_status.filter(s => s == status).length;
+	if (word_proposed !== word_to_find) {
+		const count = status => proposed_letter_placement_status.filter(s => s === status).length;
 		announce(`${word_proposed} : ${count("correct")} bien placée(s), ${count("wrong")} mal placée(s), ${count("missing")} absente(s).`);
 	}
 
@@ -714,7 +632,7 @@ function checkProposition() {
 			}
 			
 			// Fin d'animation : clavier coloré seulement maintenant (pas avant la révélation)
-			if (i == word_to_find.length-1) {
+			if (i === word_to_find.length-1) {
 				recordKeyboardLetterStatus(word_proposed, proposed_letter_placement_status);
 				checkVictory();
 			}
@@ -724,8 +642,8 @@ function checkProposition() {
 
 function checkVictory() {
 	// Mot trouvé
-	if (game.word_proposed != game.word_to_find) {
-		if (settings.team_enabled == true && settings.change_turn_mode == "by_proposition") {
+	if (game.word_proposed !== game.word_to_find) {
+		if (settings.team_enabled === true && settings.change_turn_mode === "by_proposition") {
 			switchTeamFocus();
 		}
 		newWordLine();
@@ -741,7 +659,7 @@ function checkVictory() {
 
 	playsound("victory");
 
-	for (var i=0 ; i<game.word_length ; i++) {
+	for (let i=0 ; i<game.word_length ; i++) {
 		document.getElementById("letter_" + (game.try_count_index-1) + '_' + i).classList.add("victory_cell");
 		
 		// Ajoute une donnée pour décaler l'animation
@@ -751,19 +669,14 @@ function checkVictory() {
 	}
 	setTimeout(function() {
 		addTeamScore();
-
-		// Supprime l'animation
-		// for (var i=0 ; i<game.word_length ; i++) {
-		// 	document.getElementById("letter_" + (game.try_count_index-1) + '_' + i).classList.remove("victory_cell");
-		// }
 	}, 2250);
 
-	if (settings.number_grid_enabled == true) {
-		if (settings.automatic_behaviour == true && settings.automatic_behaviour_redirect_number_grid == true) {
+	if (settings.number_grid_enabled === true) {
+		if (settings.automatic_behaviour === true && settings.automatic_behaviour_redirect_number_grid === true) {
 			setTimeout(function() { displayNumberGrid() } , 4000); //reinitialisation de la grille
 		}
 	} else {
-		if (settings.automatic_behaviour == true && settings.automatic_behaviour_ask_new_word == true) {
+		if (settings.automatic_behaviour === true && settings.automatic_behaviour_ask_new_word === true) {
 			setTimeout(function() { wordReinit() } , 4000); //reinitialisation de la grille
 		}
 	}

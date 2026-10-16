@@ -95,6 +95,23 @@ div#main_menu_content {
   font-size: 1.9em;
 }
 
+/* « Reprendre la partie » : résumé (mots joués, score, date) sous le libellé */
+.button.menu_button.menu_resume_button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: auto;
+  min-height: 10vh;
+  padding: 0.4rem 1rem;
+}
+
+.menu_resume_summary {
+  font-size: 0.5em;
+  font-weight: normal;
+  opacity: 0.9;
+}
+
 .menu_secondary {
   display: flex;
   flex-wrap: wrap;

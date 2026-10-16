@@ -34,7 +34,11 @@
             <div id="main_menu_content">
                 <!-- Bloc principal : jouer (place prévue pour « Mode Club ») -->
                 <div class="menu_play_block">
-                <button class="button menu_button menu_play_button" onclick="initGame()" autofocus=true>Jouer</button>
+                <!-- Partie en cours ou sauvegardée dans le navigateur (save.js) : « Reprendre », et « Jouer » devient « Nouvelle partie » -->
+                <button type="button" class="button menu_button menu_play_button menu_resume_button d-none" id="menu_button_resume" onclick="resumeGame()">
+                    Reprendre la partie<span class="menu_resume_summary" id="menu_resume_summary"></span>
+                </button>
+                <button type="button" class="button menu_button menu_play_button" id="menu_button_play" onclick="newGame(this)" autofocus=true>Jouer</button>
                 <div id="menu_word_length" class="menu_word_length" role="radiogroup" aria-label="Nombre de lettres des mots">
                     <span class="menu_word_length_label" aria-hidden="true">Lettres</span>
                     <button type="button" role="radio" data-length="5" onclick="updateMenuWordLength(5)">5</button>
@@ -71,30 +75,26 @@
                         <span class="topbar_label">Lettre bonus</span>
                     </button>
                     <button type="button" id="topbar_button_display_solution" class="topbar_button_group d-none"
-                        onclick="displaySolution(true)">
+                        onclick="animatorCommand('solution')">
                         <img src="./src/img/dots.svg" alt="" />
                         <span class="topbar_label">Afficher le mot</span>
                     </button>
                     <button type="button" id="topbar_button_word_reinit" class="topbar_button_group d-none"
-                        onclick="wordReinit()">
+                        onclick="animatorCommand('new_word')">
                         <img src="./src/img/refresh.svg" alt="" />
                         <span class="topbar_label">Réinitialiser la grille</span>
                     </button>
                     <button type="button" id="topbar_button_display_number_grid" class="topbar_button_group d-none"
-                        onclick="displayNumberGrid()">
+                        onclick="animatorCommand('switch_grid')">
                         <img src="./src/img/number_ball.svg" alt="" />
                         <span class="topbar_label">Grille des numéros</span>
                     </button>
 
                     <button type="button" id="topbar_button_display_letter_grid" class="topbar_button_group d-none"
-                        onclick="displayLetterGrid()">
+                        onclick="animatorCommand('switch_grid')">
                         <img src="./src/img/letter_grid.svg" alt="" />
                         <span class="topbar_label">Grille de mots</span>
                     </button>
-                    <!-- <div id="topbar_button_change_team" class="topbar_button_group" onclick="switchTeamFocus()" tabindex="0">
-                        <img src="./src/img/dice_20.svg" alt="switch_panel" id="switch-panel-icon"/>
-                        <span class="topbar_label">TEAM</span>
-                    </div> -->
                 </div>
                 <div class="topbar_game_buttons">
                     <button type="button" id="topbar_button_animator" class="topbar_button_group" onclick="toggleAnimatorPanel()"
@@ -112,27 +112,6 @@
                         <span class="topbar_label">Paramètres</span>
                     </button>
                 </div>
-
-                <!-- <button class="button flex_button" id="new_line_button" onclick="newWordLine();">Nouvelle Ligne</button>
-                <button class="button flex_button" id="delete_line_button" onclick="removeWordLine();">Supprimer la ligne</button>
-                </div>
-
-                <div class="flex_section">
-                    <select class="button flex_button" id="proposed_word_information_select" style="width: auto;" disabled>
-                    <option value=undefined>Mot proposés</option>
-                    </select>
-                    <button class="button flex_button" id="proposed_word_information_button" onclick="wordInformation(document.getElementById('proposed_word_information_select').value)" disabled >Informations sur le mot proposé</button>
-                    <button class="button flex_button" id="found_word_information_button" onclick="wordFoundInformation()" disabled >Informations sur le mot trouvé</button>
-                </div>
-
-                <div class="flex_section">
-                    <button class="button flex_button" id="change_team_letter_grid_button" onclick="switchTeamFocus()" style="display:none;">Changer d'équipe</button>
-                </div>
-
-                <div class="flex_section">
-                    <button class="button flex_button" id="display_word_button" onclick="displaySolution();">Afficher la réponse</button>
-                </div>
-                <div class="flex_section"> -->
             </div>
             <div id="game">
                 <!-- Panneau animateur (touche 7) : visible seulement sur l'écran de l'animateur -->
@@ -179,17 +158,17 @@
 
                 <div id="game_grid">
                     <div id="letter_grid_section">
-                        <div id="letter_grid_placeolder"></div>
+                        <div id="letter_grid_placeholder"></div>
                     </div>
                     <div id="number_grids">
-                        <div id="number_grid_yellow_placeolder" class="number_grid_placeolder active"></div>
-                        <div id="number_grid_blue_placeolder" class="number_grid_placeolder"></div>
+                        <div id="number_grid_yellow_placeholder" class="number_grid_placeholder active"></div>
+                        <div id="number_grid_blue_placeholder" class="number_grid_placeholder"></div>
                     </div>
                     <!-- Bandeau des messages de jeu (erreurs, confirmation), affiché par-dessus le bas de la grille -->
                     <div id="game_message_anchor">
                         <div id="game_message" class="game_message" aria-hidden="true"></div>
                     </div>
-                    <div id="score_placeolder">
+                    <div id="score_placeholder">
                         <div class='score' id='score_yellow_panel'>.</div>
                         <div class='score d-none' id='score_blue_panel'>.</div>
                         <div id="word_typing_indicator_placeholder"><span id="word_typing_indicator"></span></div>
@@ -225,8 +204,6 @@
                             <div id="number_grid_post_action">
                                 <button id="number_grid_return_to_letter_grid" class="btn btn-light d-none" onclick="displayLetterGrid()">Grille de mot</button>
                                 <button id="number_grid_change_grid_button" class="btn btn-light d-none" onclick="changeNumberGrid()">Changer la grille</button>
-                                <button id="number_grid_create_yellow_grid_button" class="btn btn-yellow d-none" onclick="fillYellowNumberGrid()">Créer la grille de l'équipe jaune</button>
-                                <button id="number_grid_create_blue_grid_button" class="btn btn-blue d-none" onclick="fillBlueNumberGrid()">Créer la grille de l'équipe bleu</button>
                                 <div id="number_grid_random_selection_mode_section">
                                     <button id="number_grid_random_selection_button" class="btn btn-light d-none" onclick="randomPickBall()">Piocher une boule</button>
                                     <button id="number_grid_black_selection_button" class="btn btn-light d-none" onclick="pickBall('⚫')">Piocher une boule noire</button>
@@ -833,15 +810,6 @@
                             </div>
 
                             <h3>Longueur des mots</h3>
-                            <div class="form-group d-none">
-                                <label for="select_always_ask_length"></label>
-                                <select class="form-control" id="select_length_selection"
-                                    onchange="updateLengthSelectionMode(this.value);">
-                                    <option value="always_ask_length">Toujours utiliser les mots de même longueur</option>
-                                    <option value="custom_length_collection">Sélectionner le nombre de lettres</option>
-                                    <option value="always_ask">Demander à chaque fois</option>
-                                </select>
-                            </div>
                             <div class="form-group">
                                 <input type="checkbox" name="checkbox_always_ask_word_length"
                                     id="checkbox_always_ask_word_length" onchange="updateAlwaysAskSettings(this.checked);">
@@ -886,7 +854,7 @@
                                     <div class="input-group">
                                         <input type="text" id="word_list_selected_word" class="form-control" name="word_list_selected_word"
                                         onchange="this.value = this.value.toUpperCase()" placeholder="Ajouter un mot manuellement">
-                                        <input type="button" class="btn btn-primary" value="Ajouter" onclick="WordAddCustom()">
+                                        <input type="button" class="btn btn-primary" value="Ajouter" onclick="wordAddCustom()">
                                     </div>
                                     
                                     <span class="hint">Le mot doit contenir entre 5 et 10 lettres.</span>
@@ -903,7 +871,7 @@
                         <div id="settings_panel_grilles" class="tab-pane" role="tabpanel" aria-labelledby="settings_tab_grilles" tabindex="0">
                             <div class="form-group">
                                 <input type="checkbox" name="checkbox_number_grid_enabled" id="checkbox_number_grid_enabled"
-                                    onchange="UpdateNumberGridSettings(this.checked)" />
+                                    onchange="updateNumberGridSettings(this.checked)" />
                                 <label for="checkbox_number_grid_enabled">Utiliser la grille</label>
                             </div>
                             <div class="form-group">
@@ -935,7 +903,7 @@
                             <h3>Boule magique</h3>
                             <div class="form-group">
                                 <input type="checkbox" name="checkbox_use_saving_ball" id="checkbox_use_saving_ball"
-                                    onchange="UpdateSavingBallSettings(this.checked)">
+                                    onchange="updateSavingBallSettings(this.checked)">
                                 <label for="checkbox_use_saving_ball">Utiliser la "boule magique"</label>
                             </div>
                             <div class="form-group">
@@ -949,7 +917,7 @@
                             <div class="form-group">
                                 <label for="select_ball_picking_mode">Mode de sélection des boules</label>
                                 <select class="form-control" id="select_ball_picking_mode"
-                                    onchange="UpdateNumberSelectMode(this.value);">
+                                    onchange="updateNumberSelectMode(this.value);">
                                     <option value="random">Au hasard</option>
                                     <option value="input_select">Par liste (choix manuel)</option>
                                     <option value="vasque">Vasque (tirage physique)</option>
@@ -1068,6 +1036,7 @@
         <script type="text/javascript" src="./src/data/grille_tele.js"></script>
         <script type="text/javascript" src="./src/js/keyinput.js"></script>
         <script type="text/javascript" src="./src/js/animator.js"></script>
+        <script type="text/javascript" src="./src/js/save.js"></script>
         <script type="text/javascript" src="./src/js/lib/matter.min.js"></script>
         <script type="text/javascript" src="./src/js/vasque.js"></script>
     </body>

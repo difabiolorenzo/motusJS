@@ -57,7 +57,7 @@ div#letter_grid_section {
   width: 100%;
 }
 
-div#letter_grid_placeolder {
+div#letter_grid_placeholder {
   flex: 0 1 auto;
   min-height: 0;
   width: 100%;
@@ -75,12 +75,12 @@ div#number_grids {
   align-items: center;
 }
 
-.number_grid_placeolder {
+.number_grid_placeholder {
   width: 0;
   opacity: 0;
 }
 
-.number_grid_placeolder.active {
+.number_grid_placeholder.active {
   width: unset;
   opacity: 1;
 }
@@ -221,7 +221,7 @@ span#number_grid_random_selection_left_indicator {
     font-size: 1.75rem;
   }
 
-  #game_page #score_placeolder { margin-top: 4px; }
+  #game_page #score_placeholder { margin-top: 4px; }
 }
 
 
@@ -909,7 +909,7 @@ body.public_view #animator_panel {
 body.public_view #game_page { display: flex !important; }
 
 /* Score décollé du bas de l'écran (pas de clavier sous la grille dans la fenêtre publique) */
-body.public_view #score_placeolder { margin-bottom: clamp(0.5rem, 2vh, 1.5rem); }
+body.public_view #score_placeholder { margin-bottom: clamp(0.5rem, 2vh, 1.5rem); }
 
 /* Vasque recopiée (mode de tirage « Vasque ») : à droite de la grille, aussi haute que possible */
 .public_vasque_section { display: none; }

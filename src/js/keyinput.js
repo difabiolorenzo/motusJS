@@ -19,21 +19,21 @@ document.addEventListener("keydown", function (event) {
 	}
 
 	// Entrée / Espace sur un bouton ou un champ : le contrôle agit seul (pas de validation de mot)
-	if ((event.key == "Enter" || event.key == " ") && event.target.closest && event.target.closest("button, input, select, textarea, a")) {
+	if ((event.key === "Enter" || event.key === " ") && event.target.closest && event.target.closest("button, input, select, textarea, a")) {
 		return;
 	}
 
 	switch (event.key) {
 		case "Escape":
 			// Retour menu / reprise uniquement si une partie est commencée
-			if (game.started == true) {
-				if (game.pause == true) { returnGame() } else { returnMenu(); }
+			if (game.started === true) {
+				if (game.pause === true) { returnGame() } else { returnMenu(); }
 			}
 			break;
 	}
-	if (game.started == true && game.pause == false) {
+	if (game.started === true && game.pause === false) {
 		// Annuler la dernière action de l'animateur
-		if ((event.ctrlKey || event.metaKey) && event.code == "KeyZ") {
+		if ((event.ctrlKey || event.metaKey) && event.code === "KeyZ") {
 			event.preventDefault();
 			animatorCommand("undo");
 			return;
@@ -50,18 +50,17 @@ document.addEventListener("keydown", function (event) {
 				break;
 			case "Digit8":
 				// Vasque en mode « bouton Tirer » : tirage au hasard au clavier
-				if (game.focus_on == "number" && settings.ball_picking_mode == "vasque" && settings.vasque_gesture == "random") {
+				if (game.focus_on === "number" && settings.ball_picking_mode === "vasque" && settings.vasque_gesture === "random") {
 					drawRandomFromVasque();
 				}
 				break;
 		}
-		if (game.focus_on == "letter") {
+		if (game.focus_on === "letter") {
 			switch (event.code) {
 				case "Backspace":
 					// Annulation d'une validation en attente de confirmation
 					if (cancelWordSubmission()) { break; }
 					removeLetter();
-					updateCursor()
 					break;
 				case "Enter":
 					submitWord();
@@ -81,21 +80,18 @@ document.addEventListener("keydown", function (event) {
 					animatorCommand("replace_line");
 					break;
 				case "Digit9":
-					wordReinit();
+					animatorCommand("new_word");
 					break;
 				case "Digit0":
-					displaySolution();
+					animatorCommand("solution");
 					break;
 				case "BracketRight":
 					timesUp();
 					break;
-				case "Backslash":
-					// wordFoundInformation();
-					break;
 			}
 			if (game.word_proposed.length < game.word_length) {
 				// Une seule lettre de a à z, sans Ctrl / Alt / Cmd (sinon « Shift », « Tab »… passaient le test)
-				if (event.key.length == 1 && /[a-zA-Z]/.test(event.key) && !event.ctrlKey && !event.altKey && !event.metaKey) {
+				if (event.key.length === 1 && /[a-zA-Z]/.test(event.key) && !event.ctrlKey && !event.altKey && !event.metaKey) {
 					addLetter(event.key.toUpperCase());
 				}
 			}
@@ -105,8 +101,8 @@ document.addEventListener("keydown", function (event) {
 
 function createKeyboard() {
 	const keyboard_placeholder = document.getElementById("keyboard_placeholder");
-	let left_arrow = "";
-	let right_arrow = "";
+	const left_arrow = "";
+	const right_arrow = "";
 
 	const rows = [
 		["A","Z","E","R","T","Y","U","I","O","P"],
@@ -122,14 +118,14 @@ function createKeyboard() {
 	for (let row=0; row<rows.length; row++) {
 		const header = `<div class="keyboard_layer">`;
 		const footer = `</div>`;
-		let letter = undefined
-		let letter_element = undefined
+		const letter = undefined
+		const letter_element = undefined
 		let row_line_element = "";
 
 		for (let letter_key=0; letter_key<rows[row].length; letter_key++) {
-			if (row == 2 && letter_key == 0) {row_line_element += `<button type="button" style="grid-column: 1 / 3;" class="btn keyboard_key keyboard_key_submit" onclick="removeLetter()" data-keyboard="ERASE" aria-label="Effacer la lettre">←</button>`}
+			if (row === 2 && letter_key === 0) {row_line_element += `<button type="button" style="grid-column: 1 / 3;" class="btn keyboard_key keyboard_key_submit" onclick="removeLetter()" data-keyboard="ERASE" aria-label="Effacer la lettre">←</button>`}
 			row_line_element += `<button type="button" class="btn keyboard_key" onclick="keyboardInput(this)" data-keyboard="${rows[row][letter_key]}">${rows[row][letter_key]}</button>`
-			if (row == 2 && letter_key == 5) {row_line_element += `<button type="button" style="grid-column: 11 / 9;" class="btn keyboard_key keyboard_key_remove" onclick="submitWord()" data-keyboard="ENTER" aria-label="Valider le mot">↲</button>`}
+			if (row === 2 && letter_key === 5) {row_line_element += `<button type="button" style="grid-column: 11 / 9;" class="btn keyboard_key keyboard_key_remove" onclick="submitWord()" data-keyboard="ENTER" aria-label="Valider le mot">↲</button>`}
 
 		}
 		keyboard_placeholder.innerHTML += `${header}${row_line_element}${footer}`;
@@ -170,23 +166,23 @@ function updateKeyboardLetterStatus() {
 	const word = game.word_to_find || "";
 	// Lettres révélées sur la grille
 	for (let i = 0; i < placement.length; i++) {
-		if (placement[i] == "correct" && word[i]) { mergeKeyboardLetterStatus(word[i], "correct"); }
+		if (placement[i] === "correct" && word[i]) { mergeKeyboardLetterStatus(word[i], "correct"); }
 	}
-	const enabled = settings.keyboard_letter_status == true;
+	const enabled = settings.keyboard_letter_status === true;
 	document.querySelectorAll("#keyboard_placeholder .keyboard_key[data-keyboard]").forEach(key => {
 		const letter = key.getAttribute("data-keyboard");
-		if (letter.length != 1) { return; }
+		if (letter.length !== 1) { return; }
 		const status = enabled ? game.keyboard_letter_status[letter] : undefined;
-		key.classList.toggle("key_correct", status == "correct");
-		key.classList.toggle("key_wrong", status == "wrong");
-		key.classList.toggle("key_missing", status == "missing");
+		key.classList.toggle("key_correct", status === "correct");
+		key.classList.toggle("key_wrong", status === "wrong");
+		key.classList.toggle("key_missing", status === "missing");
 		const label = status ? `${letter}, ${KEYBOARD_STATUS_LABEL[status]}` : null;
 		if (label) { key.setAttribute("aria-label", label); } else { key.removeAttribute("aria-label"); }
 	});
 }
 
 function updateKeyboardLetterStatusSettings(value = settings.keyboard_letter_status) {
-	settings.keyboard_letter_status = value == true;
+	settings.keyboard_letter_status = value === true;
 	document.getElementById("checkbox_keyboard_letter_status").checked = settings.keyboard_letter_status;
 	document.getElementById("toggle_keyboard_letter_status").setAttribute("aria-pressed", settings.keyboard_letter_status ? "true" : "false");
 	updateKeyboardLetterStatus();
@@ -194,7 +190,7 @@ function updateKeyboardLetterStatusSettings(value = settings.keyboard_letter_sta
 
 // Interrupteur au-dessus du clavier visuel (même réglage que Paramètres > Jeu), enregistré aussitôt
 function toggleKeyboardLetterStatus() {
-	updateKeyboardLetterStatusSettings(settings.keyboard_letter_status != true);
+	updateKeyboardLetterStatusSettings(settings.keyboard_letter_status !== true);
 	saveSettingsIntoLocalStorage();
 	announce(settings.keyboard_letter_status ? "Clavier coloré activé." : "Clavier coloré désactivé.");
 }

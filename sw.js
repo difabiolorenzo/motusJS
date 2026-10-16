@@ -22,6 +22,7 @@ const PRECACHE_FILES = [
     "src/js/animator.js",
     "src/js/lib/matter.min.js",
     "src/js/vasque.js",
+    "src/js/save.js",
     "src/data/grille_tele.js",
     "src/js/dictionary/mot_a_trouver/5_lettres.js",
     "src/js/dictionary/mot_a_trouver/6_lettres.js",

@@ -50,6 +50,7 @@ Avec l'option « Confirmer chaque mot avant vérification », **Entrer** met le 
 ### Partie
 
 * Le menu choisit le nombre de lettres des mots (5 à 10) sous « Jouer ».
+* La partie est sauvegardée automatiquement dans le navigateur : scores, équipe qui a la main, historique, mots à venir et grilles de numéros (boules tirées). Après une fermeture ou un rechargement, « Reprendre la partie » au menu la reprend avec un nouveau mot (le mot en cours et les tirages restants ne sont pas gardés). « Nouvelle partie » efface la partie en cours après confirmation (second clic).
 * Clavier coloré selon les lettres déjà trouvées (bien placées, mal placées, absentes) et progression de frappe : Paramètres > Jeu, ou les interrupteurs « Couleurs » et « Progression » au-dessus du clavier visuel. Désactivés par défaut (absents du jeu télévisé).
 * En mode équipes, « À vous » est affiché sous le score de l'équipe qui a la main.
 * « Lettre bonus », « Afficher le mot » et « Réinitialiser la grille » sont dans le panneau animateur (touche 7) et au clavier ; Paramètres > Expérimental les remet dans la barre haute.

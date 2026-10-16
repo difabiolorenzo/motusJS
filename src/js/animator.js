@@ -4,7 +4,7 @@
 //   (fonctionne aussi sans serveur, en file://). Elle ne reçoit que ce qui est affiché, jamais le mot à trouver.
 //   Mode « Vasque » : elle recopie aussi la vasque (positions des boules, voir vasque.js).
 
-const IS_PUBLIC_VIEW = new URLSearchParams(location.search).get("vue") == "public";
+const IS_PUBLIC_VIEW = new URLSearchParams(location.search).get("vue") === "public";
 const PUBLIC_WINDOW_NAME = "motus_public";
 const UNDO_LIMIT = 5;
 
@@ -26,7 +26,7 @@ function initAnimator() {
     observer.observe(document.body, { attributes: true, attributeFilter: ["class"] });
     window.addEventListener("message", onAnimatorMessage);
     setInterval(checkPublicWindow, 1000);
-    if (typeof Vasque != "undefined") { Vasque.onChange(sendVasqueToPublic); }
+    if (typeof Vasque !== "undefined") { Vasque.onChange(sendVasqueToPublic); }
 }
 
 function scheduleAnimatorRefresh() {
@@ -40,12 +40,12 @@ function scheduleAnimatorRefresh() {
 // PANNEAU
 function toggleAnimatorPanel(open) {
     const panel = document.getElementById("animator_panel");
-    const show = open === undefined ? panel.classList.contains("d-none") : open == true;
+    const show = open === undefined ? panel.classList.contains("d-none") : open === true;
     panel.classList.toggle("d-none", !show);
     document.getElementById("game").classList.toggle("animator_open", show);
     document.getElementById("topbar_button_animator").setAttribute("aria-pressed", show ? "true" : "false");
     // Vasque : numéros visibles seulement panneau ouvert (le joueur qui pioche ne doit pas les voir)
-    if (typeof Vasque != "undefined") { Vasque.setRevealed(show); }
+    if (typeof Vasque !== "undefined") { Vasque.setRevealed(show); }
     if (show) { updateAnimatorPanel(); }
 }
 
@@ -65,7 +65,7 @@ function updateAnimatorPanel() {
         const element = document.getElementById(id);
         if (element.innerHTML !== html) { element.innerHTML = html; }
     };
-    const has_word = game.started == true && !!game.word_to_find;
+    const has_word = game.started === true && !!game.word_to_find;
 
     // Grille de mots
     set("animator_word", has_word ? game.word_to_find : "—");
@@ -89,7 +89,7 @@ function updateAnimatorPanel() {
         : `Score : ${score_yellow}`);
 
     // Grille de numéros
-    const has_numbers = settings.number_grid_enabled == true && game.state && game.state.number_grid_complete == true && game.number_grid_possible;
+    const has_numbers = settings.number_grid_enabled === true && game.state && game.state.number_grid_complete === true && game.number_grid_possible;
     document.getElementById("animator_numbers_section").classList.toggle("d-none", !has_numbers);
     if (has_numbers) {
         const teams = settings.team_enabled ? ["yellow", "blue"] : ["yellow"];
@@ -101,7 +101,7 @@ function updateAnimatorPanel() {
             const saving_state = game.number_grid_saving_ball_state ? game.number_grid_saving_ball_state[team] : "unavailable";
             const summary = `Boules noires : ${black_balls} · Boule magique : ${savingBallLabel(saving_ball, saving_state)}`;
             // Équipe qui a la main : grille cliquable ; autre équipe : même grille, plus petite, en lecture seule
-            if (team == game.team_focus) {
+            if (team === game.team_focus) {
                 return `<p><strong>${teamLabel(team)}</strong> (a la main)</p>${buildAnimatorBallGrid(team)}<p>${summary}</p>`;
             }
             return `<p><strong>${teamLabel(team)}</strong></p>${buildAnimatorBallGrid(team, true)}<p>${summary}</p>`;
@@ -112,7 +112,7 @@ function updateAnimatorPanel() {
 
     // Annulation
     const undo_button = document.getElementById("animator_undo_button");
-    undo_button.disabled = undo_stack.length == 0;
+    undo_button.disabled = undo_stack.length === 0;
     set("animator_undo_count", undo_stack.length ? `(${undo_stack.length})` : "");
 
     updatePublicWindowStatus();
@@ -126,7 +126,7 @@ function canPickBallFromPanel() {
 
 // L'animateur peut forcer la pioche : aucun mot trouvé, ou plus de tirage (pas après un MOTUS : il faut changer de grille)
 function canUnlockBallPicking() {
-    return game.started == true && game.focus_on == "number" && game.motus_aligned != true && !canPickBallFromPanel();
+    return game.started === true && game.focus_on === "number" && game.motus_aligned !== true && !canPickBallFromPanel();
 }
 
 function unlockBallPicking() {
@@ -136,7 +136,7 @@ function unlockBallPicking() {
         game.number_grid_try_left = Number(settings.try_picking_ball);
     }
     updateNumberLeftIndicator();
-    UpdateNumberSelectMode();
+    updateNumberSelectMode();
     displayNumberGridUserAction("return_letter_grid", false);
     // Pas de bandeau : la décision de l'animateur n'est pas montrée au public
     announce(`Pioche déverrouillée : ${game.number_grid_try_left} tirage(s).`);
@@ -158,18 +158,18 @@ function buildAnimatorBallGrid(team, readonly = false) {
     let cells = "";
     for (let i = 0; i < grid.length; i++) {
         const number = grid[i];
-        if (mask[i] == 0) {
+        if (mask[i] === 0) {
             // Case déjà remplie au départ
             cells += `<span class="animator_ball animator_ball_placed" aria-hidden="true"></span>`;
         } else if (!possible.includes(number)) {
             // Boule déjà tirée
             cells += `<span class="animator_ball animator_ball_drawn" title="Boule ${number} déjà tirée">${number}</span>`;
         } else if (readonly) {
-            const is_saving = number === saving_ball && saving_state == "available";
+            const is_saving = number === saving_ball && saving_state === "available";
             cells += `<span class="animator_ball animator_ball_${team}${is_saving ? " animator_ball_saving" : ""}"`
                 + ` title="Boule ${number}${is_saving ? " (boule magique)" : ""}">${number}</span>`;
         } else {
-            const is_saving = number === saving_ball && saving_state == "available";
+            const is_saving = number === saving_ball && saving_state === "available";
             const label = is_saving ? `Tirer la boule ${number} (boule magique)` : `Tirer la boule ${number}`;
             cells += `<button type="button" class="animator_ball animator_ball_${team}${is_saving ? " animator_ball_saving" : ""}"`
                 + ` onclick="pickBallFromPanel(${number})" aria-label="${label}" title="${label}"${disabled}>${number}</button>`;
@@ -184,9 +184,9 @@ function buildAnimatorBallGrid(team, readonly = false) {
     const black_balls = possible.filter(number => number === "⚫").length;
     let hint = "";
     if (!enabled) {
-        if (game.focus_on != "number") { hint = "Passez sur la grille de numéros (touche 6) pour tirer."; }
-        else if (game.word_found != true) { hint = "Tirage possible après un mot trouvé."; }
-        else if (game.motus_aligned == true) { hint = "MOTUS aligné : changez de grille."; }
+        if (game.focus_on !== "number") { hint = "Passez sur la grille de numéros (touche 6) pour tirer."; }
+        else if (game.word_found !== true) { hint = "Tirage possible après un mot trouvé."; }
+        else if (game.motus_aligned === true) { hint = "MOTUS aligné : changez de grille."; }
         else { hint = "Plus de tirage pour ce mot."; }
     }
     return `<div class="animator_ball_grid" role="group" aria-label="${grid_label}">${cells}</div>`
@@ -212,10 +212,17 @@ function pickBallFromPanel(number) {
 // Commandes du panneau, des raccourcis clavier et de la barre haute : les actions de la grille de mots
 // sont mémorisées pour pouvoir être annulées (Ctrl+Z)
 function animatorCommand(command) {
-    if (game.started != true) { return; }
+    if (game.started !== true) { return; }
     const letter_commands = ["new_line", "bonus", "remove_line", "replace_line", "new_word", "solution", "times_up"];
-    if (letter_commands.includes(command) && game.focus_on != "letter") {
+    if (letter_commands.includes(command) && game.focus_on !== "letter") {
         showGameMessage("Action disponible sur la grille de mots.");
+        return;
+    }
+    // Grille en mouvement (vérification, solution, délai après une erreur, victoire) : agir maintenant décalait la suite
+    // (ex. mot suivant demandé pendant la victoire, puis de nouveau automatiquement : un mot sauté)
+    const busy_commands = ["new_line", "bonus", "remove_line", "replace_line", "switch_team", "switch_grid", "new_word", "solution"];
+    if (busy_commands.includes(command) && isGameBusy()) {
+        showGameMessage("Action impossible pendant une vérification.");
         return;
     }
     switch (command) {
@@ -248,13 +255,13 @@ const UNDO_FIELDS = ["try_count_index", "word_proposed", "word_proposed_modified
     "keyboard_letter_status"];
 
 function recordUndo() {
-    if (game.focus_on != "letter" || !game.word_to_find || isGameBusy()) { return; }
+    if (game.focus_on !== "letter" || !game.word_to_find || isGameBusy()) { return; }
     const state = {};
     UNDO_FIELDS.forEach(field => { state[field] = structuredClone(game[field]); });
     undo_stack.push({
         word: game.word_to_find,
         state: state,
-        grid: document.getElementById("letter_grid_placeolder").innerHTML,
+        grid: document.getElementById("letter_grid_placeholder").innerHTML,
         indicator: document.getElementById("word_typing_indicator").innerText
     });
     if (undo_stack.length > UNDO_LIMIT) { undo_stack.shift(); }
@@ -270,13 +277,13 @@ function undoLastAction() {
         return;
     }
     const snapshot = undo_stack[undo_stack.length - 1];
-    if (!snapshot || snapshot.word != game.word_to_find || game.focus_on != "letter") {
+    if (!snapshot || snapshot.word !== game.word_to_find || game.focus_on !== "letter") {
         showGameMessage("Rien à annuler.");
         return;
     }
     undo_stack.pop();
     UNDO_FIELDS.forEach(field => { game[field] = structuredClone(snapshot.state[field]); });
-    document.getElementById("letter_grid_placeolder").innerHTML = snapshot.grid;
+    document.getElementById("letter_grid_placeholder").innerHTML = snapshot.grid;
     document.getElementById("word_typing_indicator").innerText = snapshot.indicator;
     setTeamScore("yellow", game.score_yellow || 0);
     setTeamScore("blue", game.score_blue || 0);
@@ -328,14 +335,14 @@ function updatePublicWindowStatus() {
             ? "Ouverte. Son bloqué : cliquez une fois dans la fenêtre publique (les sons sont joués ici en attendant)."
             : "Ouverte.";
     }
-    if (status.textContent != text) { status.textContent = text; }
+    if (status.textContent !== text) { status.textContent = text; }
     const label = isPublicWindowOpen() ? "Fermer la fenêtre publique" : "Ouvrir la fenêtre publique";
-    if (button.textContent != label) { button.textContent = label; }
+    if (button.textContent !== label) { button.textContent = label; }
 }
 
 // Les sons partent vers la fenêtre publique si elle est ouverte et autorisée à jouer (réglage « public_window_sounds »)
 function shouldPlaySoundInPublicWindow() {
-    return !IS_PUBLIC_VIEW && settings.public_window_sounds == true && isPublicWindowOpen() && !public_sound_blocked;
+    return !IS_PUBLIC_VIEW && settings.public_window_sounds === true && isPublicWindowOpen() && !public_sound_blocked;
 }
 
 function sendToPublicWindow(message) {
@@ -376,7 +383,7 @@ function sendVasqueToPublic(state) {
     if (!isPublicWindowOpen()) { return; }
     const section = document.getElementById("number_grid_vasque_section");
     const shown = section != null && !section.classList.contains("d-none")
-        && typeof Vasque != "undefined" && Vasque.isReady();
+        && typeof Vasque !== "undefined" && Vasque.isReady();
     const message = { type: "motus_vasque", shown: shown, state: shown ? (state || Vasque.getRemoteState()) : null };
     const signature = JSON.stringify(message);
     if (signature === last_public_vasque) { return; }
@@ -386,10 +393,10 @@ function sendVasqueToPublic(state) {
 
 function onAnimatorMessage(event) {
     const data = event.data;
-    if (!data || typeof data != "object") { return; }
-    if (data.type == "motus_public_hello") {
+    if (!data || typeof data !== "object") { return; }
+    if (data.type === "motus_public_hello") {
         // Ouverture, rechargement de la fenêtre publique ou de cette page : la fenêtre publique se signale
-        if (public_window !== event.source || data.first == true) {
+        if (public_window !== event.source || data.first === true) {
             public_window = event.source;
             public_sound_blocked = false;
             last_public_vasque = null;
@@ -400,8 +407,8 @@ function onAnimatorMessage(event) {
         return;
     }
     if (event.source !== public_window) { return; }
-    if (data.type == "motus_sound_blocked") { public_sound_blocked = true; updatePublicWindowStatus(); }
-    if (data.type == "motus_sound_ok") { public_sound_blocked = false; updatePublicWindowStatus(); }
+    if (data.type === "motus_sound_blocked") { public_sound_blocked = true; updatePublicWindowStatus(); }
+    if (data.type === "motus_sound_ok") { public_sound_blocked = false; updatePublicWindowStatus(); }
 }
 
 // FENÊTRE PUBLIQUE (côté public)
@@ -428,19 +435,19 @@ function initPublicView() {
 }
 
 function onPublicMessage(event) {
-    if (event.source !== window.opener || !event.data || typeof event.data != "object") { return; }
-    if (event.data.type == "motus_state") { applyPublicSnapshot(event.data.snapshot); }
-    if (event.data.type == "motus_vasque") { applyPublicVasque(event.data); }
-    if (event.data.type == "motus_sound") { playPublicSound(event.data.sound); }
+    if (event.source !== window.opener || !event.data || typeof event.data !== "object") { return; }
+    if (event.data.type === "motus_state") { applyPublicSnapshot(event.data.snapshot); }
+    if (event.data.type === "motus_vasque") { applyPublicVasque(event.data); }
+    if (event.data.type === "motus_sound") { playPublicSound(event.data.sound); }
 }
 
 function applyPublicSnapshot(snapshot) {
     const page = document.getElementById("game_page");
     const page_class = snapshot.pageClass.replace(/\bd-none\b/g, "").trim();
-    const theme_changed = page.className !== page_class || document.body.classList.contains("high_contrast") !== (snapshot.highContrast == true);
+    const theme_changed = page.className !== page_class || document.body.classList.contains("high_contrast") !== (snapshot.highContrast === true);
     page.className = page_class;
-    document.body.classList.toggle("high_contrast", snapshot.highContrast == true);
-    if (theme_changed && typeof Vasque != "undefined" && Vasque.isMirror()) { Vasque.refreshTheme(); }
+    document.body.classList.toggle("high_contrast", snapshot.highContrast === true);
+    if (theme_changed && typeof Vasque !== "undefined" && Vasque.isMirror()) { Vasque.refreshTheme(); }
 
     const root = document.getElementById("game_grid");
     // Structure différente (nouveau mot, nouvelle grille) : reconstruction complète
@@ -471,11 +478,11 @@ function applyPublicSnapshot(snapshot) {
 // Vasque recopiée : affichée à côté de la grille tant que la vue animateur montre la sienne
 function applyPublicVasque(message) {
     const section = document.getElementById("public_vasque_section");
-    const shown = message.shown == true && message.state != null && typeof Vasque != "undefined";
+    const shown = message.shown === true && message.state != null && typeof Vasque !== "undefined";
     section.classList.toggle("d-none", !shown);
     document.getElementById("game").classList.toggle("public_vasque_open", shown);
     if (!shown) {
-        if (typeof Vasque != "undefined" && Vasque.isMirror()) { Vasque.pause(); }
+        if (typeof Vasque !== "undefined" && Vasque.isMirror()) { Vasque.pause(); }
         return;
     }
     if (!Vasque.initMirror(document.getElementById("public_vasque_container"))) { return; }

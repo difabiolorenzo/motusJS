@@ -29,7 +29,7 @@ const Vasque = (function () {
     let canvas = null;
     let context = null;
     let items = [];                  // { id, value, body, removing_since }
-    let mirror_balls = new Map();    // fenêtre publique : id → { id, value, x, y, target_x, target_y, scale }
+    const mirror_balls = new Map();    // fenêtre publique : id → { id, value, x, y, target_x, target_y, scale }
     let next_id = 1;
     let current_team = null;
     let on_ball_chosen = null;
@@ -46,7 +46,7 @@ const Vasque = (function () {
     let theme = null;
 
     const key = value => String(value);
-    const reducedMotion = () => typeof prefersReducedMotion == "function" && prefersReducedMotion();
+    const reducedMotion = () => typeof prefersReducedMotion === "function" && prefersReducedMotion();
 
     // Différence entre les boules présentes et la liste du jeu ; les boules noires (« ⚫ ») existent en plusieurs exemplaires.
     // Renvoie { add: valeurs à ajouter (dans l'ordre de la liste du jeu), remove: index des boules présentes à retirer }.
@@ -94,7 +94,7 @@ const Vasque = (function () {
     function init(element, callback) {
         if (engine) { return true; }
         if (mirror) { return false; }
-        if (typeof Matter == "undefined") {
+        if (typeof Matter === "undefined") {
             console.warn("Vasque indisponible : Matter.js n'est pas chargé.");
             return false;
         }
@@ -224,7 +224,7 @@ const Vasque = (function () {
             : items.filter(item => item.removing_since === null);
         // Nombre de boules noires annoncé seulement quand elles sont visibles (vue animateur)
         const black_balls = revealed ? live.filter(item => item.value === "⚫").length : 0;
-        canvas.setAttribute("aria-label", live.length == 0 ? "Vasque vide"
+        canvas.setAttribute("aria-label", live.length === 0 ? "Vasque vide"
             : `Vasque : ${live.length} boule(s)${black_balls ? `, dont ${black_balls} noire(s)` : ""}`);
     }
 
@@ -422,7 +422,7 @@ const Vasque = (function () {
         if (radius < 1) { return; }
         // Numéros cachés : boule noire dessinée comme les autres, sans numéro
         const black = revealed && value === "⚫";
-        const blue = current_team == "blue";
+        const blue = current_team === "blue";
 
         context.beginPath();
         context.arc(x, y, radius, 0, Math.PI * 2);
@@ -504,13 +504,13 @@ const Vasque = (function () {
     // AFFICHAGE
     // Vue animateur : numéros et boules noires visibles (jamais en mode miroir)
     function setRevealed(value) {
-        revealed = value == true && !mirror;
+        revealed = value === true && !mirror;
         updateLabel();
         requestFrame();
     }
 
     function setInteractive(value) {
-        interactive = value == true && !mirror;
+        interactive = value === true && !mirror;
         if (canvas) {
             canvas.classList.toggle("vasque_interactive", interactive);
             if (!interactive) { setHovered(null); }

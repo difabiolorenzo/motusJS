@@ -174,5 +174,41 @@ for (const length of LENGTHS) {
     }
 }
 
+// 8. Dictionnaires en cache (readCachedDictionary) : seule une liste non vide de la version en cours est reprise
+{
+    const context = createContext();
+    load(context, "src/js/game.js");
+    const version = vm.runInContext("DICTIONARY_VERSION", context);
+    const read = stored => {
+        context.localStorage.setItem("cle_test", stored);
+        return vm.runInContext(`readCachedDictionary("cle_test")`, context);
+    };
+
+    same(read(JSON.stringify({ version: version, mots: ["TABLE", "CHAISE"] })), ["TABLE", "CHAISE"], "cache valide : mots repris");
+    same(read(JSON.stringify({ version: version, mots: [] })), null, "cache vide : rechargement du dictionnaire");
+    check(context.localStorage.getItem("cle_test") === null, "cache vide : supprimé du stockage local");
+    same(read(JSON.stringify({ version: version + 1, mots: ["TABLE"] })), null, "autre version : rechargement du dictionnaire");
+    same(read(JSON.stringify(["TABLE"])), null, "ancien format (tableau seul) : rechargement du dictionnaire");
+    same(read("{illisible"), null, "cache illisible : rechargement du dictionnaire");
+}
+
+// 9. Réglages enregistrés (loadSettingsByLocalStorage) : une sauvegarde illisible ne bloque pas le démarrage
+{
+    const context = createContext();
+    load(context, "src/js/game.js");
+    const load_settings = stored => {
+        context.localStorage.setItem("settings", stored);
+        vm.runInContext("setDefaultVariables(); loadSettingsByLocalStorage();", context);
+        return vm.runInContext("settings", context);
+    };
+
+    let threw = false;
+    try { load_settings("{illisible"); } catch (error) { threw = true; }
+    check(!threw, "réglages illisibles : pas d'erreur au démarrage");
+    same(load_settings("{illisible").score_addition, 50, "réglages illisibles : valeurs par défaut");
+    same(load_settings(JSON.stringify(["x"])).score_addition, 50, "réglages qui ne sont pas un objet : valeurs par défaut");
+    same(load_settings(JSON.stringify({ score_addition: "100" })).score_addition, 100, "réglage numérique enregistré en texte : remis en nombre");
+}
+
 console.log(`${checks - failures}/${checks} vérifications réussies.`);
 process.exit(failures === 0 ? 0 : 1);

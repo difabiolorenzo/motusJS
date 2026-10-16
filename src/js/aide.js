@@ -9,18 +9,18 @@ Array.prototype.bienPlacees = function(mot) {
 
 //
 Array.prototype.exclure = function(lettres) {
-    if (lettres == "") return this;
+    if (lettres === "") return this;
     return this.filter(m => !new RegExp([...lettres].join('|')).test(m))
 };
 
 Array.prototype.pasCettePosition = function(lettres, pos) {
     return [...lettres].reduce((a,l) =>
-        a.filter(m => m.includes(l) && m[pos] != l),
+        a.filter(m => m.includes(l) && m[pos] !== l),
     this)
 };
 
 Array.prototype.malPlacees = function(chaine) {
-    return chaine.split(",").reduce((a, l, k) => l != "" ? a.pasCettePosition(l, k) : a,
+    return chaine.split(",").reduce((a, l, k) => l !== "" ? a.pasCettePosition(l, k) : a,
     this)
 };
 
@@ -56,10 +56,10 @@ async function helpPageSearch() {
     }
 
     let words = game.dictionnaire_verification[`length_${word_length}`].bienPlacees("^" + well_placed + "$");
-    if (misplaced.replace(/,/g, "") != "") { words = words.malPlacees(misplaced); }
+    if (misplaced.replace(/,/g, "") !== "") { words = words.malPlacees(misplaced); }
     words = words.exclure(excluded);
 
-    if (words.length == 0) {
+    if (words.length === 0) {
         count_element.textContent = "Aucun mot ne correspond.";
         return;
     }

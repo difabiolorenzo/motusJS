@@ -1,4 +1,6 @@
-
+// État du jeu partagé par tous les scripts : rempli par setDefaultVariables(), réglages par loadSettingsByLocalStorage()
+let game;
+let settings;
 
 function initVariables() {
     setDefaultVariables();
@@ -11,11 +13,12 @@ function initVariables() {
     registerServiceWorker();
     initAnimator();
     observeGridReserve();
+    initGameSave();
 }
 
 function setDefaultVariables() {
     game = {
-        version: "2.6.2",
+        version: "2.6.3",
         displayed_grid_type: "letter_grid", // "number_grid"
         displayed_page: "main_menu",
         
@@ -46,6 +49,7 @@ function setDefaultVariables() {
 
         word_displayed: false,
         word_found: false,
+        word_proposed: "",          // saisie en cours : vide tant qu'aucun mot n'est chargé (touche 6 avant le premier mot)
         try_number_max: 6,
 
         number_grid_data: {
@@ -257,7 +261,7 @@ function setDefaultVariables() {
 
 function initGame() {
     // Pas d'initialisation du mot si la partie est commencée
-    if (game.started == true) {
+    if (game.started === true) {
         returnGame();
         return;
     }
@@ -265,6 +269,7 @@ function initGame() {
     // Panneau animateur fermé à chaque lancement : le mot n'apparaît jamais par accident à l'écran
     toggleAnimatorPanel(false);
     clearUndo();
+    clearGameSave();    // nouvelle partie : l'ancienne sauvegarde est remplacée (save.js)
 
     game.state = {
         letter_grid_created: false,
@@ -286,11 +291,9 @@ function initGame() {
 
 
     // Creation initiale selon le parametre
-    if (settings.number_grid_enabled == true) {
+    if (settings.number_grid_enabled === true) {
 		displayNumberGridUserAction("change_grid_button", false)
 		displayNumberGridUserAction("return_letter_grid", false)
-		displayNumberGridUserAction("create_yellow_grid_button", false)
-		displayNumberGridUserAction("create_blue_grid_button", false)
 		displayNumberGridUserAction("pick_left_indicator", false)
 
         initNumberGrid();
@@ -307,7 +310,7 @@ function resetGame() {
 
 	updateScores();
 
-	document.getElementById("letter_grid_placeolder").innerHTML = "";
+	document.getElementById("letter_grid_placeholder").innerHTML = "";
 	// Vider le conteneur interne : #keyboard_placeholder doit rester pour createKeyboard()
 	document.getElementById("keyboard_placeholder").innerHTML = "";
 	document.getElementById("word_list").innerHTML = "";
@@ -316,71 +319,52 @@ function resetGame() {
 }
 
 function displayLetterGrid() {
-    if (game.state.letter_grid_created == false) {
+    if (game.state.letter_grid_created === false) {
         initLetterGrid();
     }
 
     game.focus_on = "letter";
+    showGridArea("letter");
 
-    // Masquer la grille de numéro
-    document.getElementById("letter_grid_section").classList.remove("d-none")
-
-    document.getElementById("keyboard").classList.remove("hided");
-
-    // Masquer la grille de numéro
-    document.getElementById("number_grids").classList.add("d-none")
-
-    // Affichage des options dans la barre haute
-    document.getElementById("topbar_button_bonus_letter").classList.remove("d-none");
-    document.getElementById("topbar_button_display_solution").classList.remove("d-none");
-    document.getElementById("topbar_button_word_reinit").classList.remove("d-none");
-    document.getElementById("topbar_button_display_number_grid").classList.remove("d-none");
-    document.getElementById("topbar_button_display_letter_grid").classList.add("d-none");
-    
     // Renouvellement du mot si le mot était trouvé
-    if (settings.number_grid_enabled == true) {
-        if (game.word_found == true) {
-            wordReinit();
-        }
+    if (settings.number_grid_enabled === true && game.word_found === true) {
+        wordReinit();
     }
     
     displayPage("game_page");
     updateVasque();    // grille de mots affichée : vasque cachée et arrêtée
 }
 
+// Zone de jeu : grille de mots (avec le clavier) ou grilles de numéros, et boutons de la barre haute qui vont avec
+function showGridArea(grid) {
+    const on_numbers = grid === "number";
+    document.getElementById("letter_grid_section").classList.toggle("d-none", on_numbers);
+    document.getElementById("keyboard").classList.toggle("hided", on_numbers);
+    document.getElementById("number_grids").classList.toggle("d-none", !on_numbers);
+
+    ["topbar_button_bonus_letter", "topbar_button_display_solution", "topbar_button_word_reinit", "topbar_button_display_number_grid"]
+        .forEach(id => document.getElementById(id).classList.toggle("d-none", on_numbers));
+    document.getElementById("topbar_button_display_letter_grid").classList.toggle("d-none", !on_numbers);
+}
+
 function displayNumberGrid() {
-    if (settings.number_grid_enabled == false) { 
+    if (settings.number_grid_enabled === false) { 
         displayLetterGrid()
         return;
     }
     stopProposalTimer();
 
-    if (game.motus_aligned == true) {
+    if (game.motus_aligned === true) {
         changeNumberGrid();
     }
 
     game.focus_on = "number";
-
-    // Masquer la grille de mot
-    document.getElementById("letter_grid_section").classList.add("d-none")
-
-    document.getElementById("keyboard").classList.add("hided");
-
-    // Afficher la grille de numéro
-    document.getElementById("number_grids").classList.remove("d-none")
-
-    // Affichage des options dans la barre haute
-    document.getElementById("topbar_button_bonus_letter").classList.add("d-none");
-    document.getElementById("topbar_button_display_solution").classList.add("d-none");
-    document.getElementById("topbar_button_word_reinit").classList.add("d-none");
-    document.getElementById("topbar_button_display_number_grid").classList.add("d-none");
-    
-    document.getElementById("topbar_button_display_letter_grid").classList.remove("d-none");
+    showGridArea("number");
 	game.number_grid_try_left = settings.try_picking_ball;
 
     // Affichage du mode de séléction des boules si les grilles sont créées
-    if (game.state.number_grid_complete == true) {
-        UpdateNumberSelectMode();
+    if (game.state.number_grid_complete === true) {
+        updateNumberSelectMode();
     }
 
     displayPage("game_page");
@@ -395,7 +379,7 @@ function resetSettings() {
 
 // Bouton « Réinitialiser » en deux temps : un premier clic arme le bouton, un second (dans les 4 s) réinitialise
 function confirmResetSettings(button) {
-    if (button.dataset.armed == "true") {
+    if (button.dataset.armed === "true") {
         clearTimeout(button._disarmTimer);
         button.dataset.armed = "false";
         button.textContent = "Réinitialiser";
@@ -416,7 +400,17 @@ function loadSettingsByLocalStorage() {
     const savedSettings = localStorage.getItem("settings");
     if (savedSettings != null) {
         console.log("Paramètres trouvés dans le stockage local");
-        const parsedSettings = JSON.parse(savedSettings);
+        let parsedSettings = null;
+        try {
+            parsedSettings = JSON.parse(savedSettings);
+        } catch (error) {
+            parsedSettings = null;
+        }
+        // Sauvegarde illisible : réglages par défaut (elle sera remplacée au prochain changement)
+        if (parsedSettings == null || typeof parsedSettings !== "object" || Array.isArray(parsedSettings)) {
+            console.warn("Paramètres enregistrés illisibles : réglages par défaut.");
+            return;
+        }
 
         // Fusionne les paramètres
         settings = { ...settings, ...parsedSettings };
@@ -433,7 +427,7 @@ function normalizeSettingTypes() {
     settings = current_settings;
 
     for (const key in defaults) {
-        if (typeof defaults[key] == "number" && typeof settings[key] == "string" && settings[key].trim() != "" && !isNaN(Number(settings[key]))) {
+        if (typeof defaults[key] === "number" && typeof settings[key] === "string" && settings[key].trim() !== "" && !isNaN(Number(settings[key]))) {
             settings[key] = Number(settings[key]);
         }
     }
@@ -457,8 +451,8 @@ function saveSettingsIntoLocalStorage() {
 
 function exportSettings() {
     const exportName = "motusJS_settings";
-    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(settings));
-    var downloadAnchorNode = document.createElement('a');
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(settings));
+    const downloadAnchorNode = document.createElement('a');
     downloadAnchorNode.setAttribute("href",     dataStr);
     downloadAnchorNode.setAttribute("download", exportName + ".json");
     document.body.appendChild(downloadAnchorNode); // required for firefox
@@ -478,7 +472,7 @@ function importSettings(file) {
         } catch (error) {
             imported = null;
         }
-        if (imported == null || typeof imported != "object" || Array.isArray(imported)) {
+        if (imported == null || typeof imported !== "object" || Array.isArray(imported)) {
             console.error("Fichier de paramètres invalide :", file.name);
             alert("Fichier de paramètres invalide.");
             return;
@@ -514,7 +508,7 @@ function setHTMLFromSettings() {
     document.getElementById("checkbox_show_tv_replay").checked = settings.show_tv_replay;
     document.getElementById("checkbox_timer_enabled").checked = settings.timer_enabled;
     document.getElementById("input_timer_duration").value = settings.timer_duration;
-    if (settings.timer_behaviour != "error") { settings.timer_behaviour = "sound"; }    // ancienne valeur "none"
+    if (settings.timer_behaviour !== "error") { settings.timer_behaviour = "sound"; }    // ancienne valeur "none"
     document.getElementById("select_timer_behaviour").value = settings.timer_behaviour;
     updateTimerSettings(settings.timer_enabled);
     updateTvReplaySettings(settings.show_tv_replay);
@@ -547,7 +541,7 @@ function setHTMLFromSettings() {
     document.getElementById("select_always_ask_length").value = settings.always_ask_length;
 
     document.getElementById("checkbox_number_grid_enabled").checked = settings.number_grid_enabled;
-    UpdateNumberGridSettings(settings.number_grid_enabled);
+    updateNumberGridSettings(settings.number_grid_enabled);
 
     updateTryPickingBall(settings.try_picking_ball);
     updateBlackBallAmount(settings.black_ball_amount);
@@ -556,7 +550,7 @@ function setHTMLFromSettings() {
     document.getElementById("checkbox_start_by_number_grid").checked = settings.start_by_number_grid;
     document.getElementById("select_ball_picking_mode").value = settings.ball_picking_mode;
     document.getElementById("select_vasque_gesture").value = settings.vasque_gesture;
-    UpdateNumberSelectMode(settings.ball_picking_mode);
+    updateNumberSelectMode(settings.ball_picking_mode);
     document.getElementById("checkbox_number_grid_specific_display_blue_team").checked = settings.number_grid_specific_display_blue_team;
     document.getElementById("checkbox_number_grid_creation_animation").checked = settings.number_grid_creation_animation;
     document.getElementById("checkbox_reinit_line_if_unvalid_word").checked = settings.reinit_line_if_unvalid_word;
@@ -617,37 +611,28 @@ function debug_random_sound_speed_change(value) {
 
 function updateAutomaticBehaviourSettings(value = settings.automatic_behaviour) {
     settings.automatic_behaviour = value;
-    if (value == true) {
-        document.getElementById("check_automatic_behaviour_new_line_error").disabled= false;
-        document.getElementById("check_automatic_behaviour_new_line_team_error").disabled= false;
-        document.getElementById("check_automatic_behaviour_redirect_number_grid").disabled= false;
-        document.getElementById("check_automatic_behaviour_redirect_letter_grid").disabled= false;
-        document.getElementById("check_automatic_behaviour_new_word").disabled= false;
-    } else {
-        document.getElementById("check_automatic_behaviour_new_line_error").disabled= true;
-        document.getElementById("check_automatic_behaviour_new_line_team_error").disabled= true;
-        document.getElementById("check_automatic_behaviour_redirect_number_grid").disabled= true;
-        document.getElementById("check_automatic_behaviour_redirect_letter_grid").disabled= true;
-        document.getElementById("check_automatic_behaviour_new_word").disabled= true;
-    }
+    // Réglages des comportements automatiques : modifiables seulement s'ils sont activés
+    ["check_automatic_behaviour_new_line_error", "check_automatic_behaviour_new_line_team_error", "check_automatic_behaviour_redirect_number_grid",
+        "check_automatic_behaviour_redirect_letter_grid", "check_automatic_behaviour_new_word"]
+        .forEach(id => { document.getElementById(id).disabled = value !== true; });
 }
 
 // Bouton « Rejouer une émission » du menu, masqué par défaut (paramètres expérimentaux)
 function updateTvReplaySettings(value = settings.show_tv_replay) {
     settings.show_tv_replay = value;
-    document.getElementById("menu_button_tv_replay").classList.toggle("d-none", value != true);
+    document.getElementById("menu_button_tv_replay").classList.toggle("d-none", value !== true);
 }
 
 // Actions d'animateur dans la barre haute : cachées par défaut (panneau animateur et clavier suffisent)
 function updateTopbarAnimatorActionsSettings(value = settings.topbar_animator_actions) {
-    settings.topbar_animator_actions = value == true;
+    settings.topbar_animator_actions = value === true;
     document.body.classList.toggle("topbar_animator_actions", settings.topbar_animator_actions);
     document.getElementById("checkbox_topbar_animator_actions").checked = settings.topbar_animator_actions;
 }
 
 function updateHighContrastSettings(value = settings.high_contrast) {
     settings.high_contrast = value;
-    document.body.classList.toggle("high_contrast", value == true);
+    document.body.classList.toggle("high_contrast", value === true);
     if (Vasque.isReady()) { Vasque.refreshTheme(); }
 }
 
@@ -655,7 +640,7 @@ function updateHighContrastSettings(value = settings.high_contrast) {
 function updateMenuWordLength(value = settings.always_ask_length, save = true) {
     settings.always_ask_length = Number(value);
     document.querySelectorAll("#menu_word_length button").forEach(button => {
-        const selected = Number(button.dataset.length) == settings.always_ask_length;
+        const selected = Number(button.dataset.length) === settings.always_ask_length;
         button.classList.toggle("active", selected);
         button.setAttribute("aria-checked", selected ? "true" : "false");
         button.tabIndex = selected ? 0 : -1;
@@ -667,8 +652,8 @@ function updateMenuWordLength(value = settings.always_ask_length, save = true) {
 function updateAlwaysAskSettings(value = settings.always_ask) {
     settings.always_ask = value;
     // La rangée du menu ne sert pas si la longueur est demandée à chaque mot
-    document.getElementById("menu_word_length").classList.toggle("d-none", value == true);
-    if (value == false) {
+    document.getElementById("menu_word_length").classList.toggle("d-none", value === true);
+    if (value === false) {
         document.getElementById("select_always_ask_length").disabled = false;
     } else {
         document.getElementById("select_always_ask_length").disabled = true;
@@ -677,61 +662,25 @@ function updateAlwaysAskSettings(value = settings.always_ask) {
 
 function updateTeamSettings(value = settings.team_enabled) {
     settings.team_enabled = value;
-    
-    if (value == true) {
-        document.getElementById("team_enabled_checkbox").checked = true;
-        document.getElementById("settings_section_team").disabled = false;
+    const enabled = value === true;
 
-        document.getElementById("score_yellow_panel").classList.remove("disabled")
-        document.getElementById("score_blue_panel").classList.remove("disabled")
-        document.getElementById("score_blue_panel").classList.remove("d-none")
-    } else {
-        document.getElementById("team_enabled_checkbox").checked = false;
-        document.getElementById("settings_section_team").disabled = true;
-        
-        document.getElementById("score_yellow_panel").classList.remove("disabled")
-        document.getElementById("score_blue_panel").classList.add("d-none")
-    }
+    document.getElementById("team_enabled_checkbox").checked = enabled;
+    document.getElementById("settings_section_team").disabled = !enabled;
+    document.getElementById("score_yellow_panel").classList.remove("disabled");
+    if (enabled) { document.getElementById("score_blue_panel").classList.remove("disabled"); }
+    document.getElementById("score_blue_panel").classList.toggle("d-none", !enabled);
 }
 
-function UpdateNumberGridSettings(value = settings.number_grid_enabled) {
+function updateNumberGridSettings(value = settings.number_grid_enabled) {
     settings.number_grid_enabled = value;
-    if (value == true) {
-        document.getElementById("checkbox_use_saving_ball").disabled = false;
-        document.getElementById("input_black_ball_amount").disabled = false;
-        document.getElementById("input_try_picking_ball").disabled = false;
-        document.getElementById("select_ball_picking_mode").disabled = false;
-        document.getElementById("checkbox_number_grid_specific_display_blue_team").disabled = false;
-        document.getElementById("checkbox_start_by_number_grid").disabled = false;
-        document.getElementById("checkbox_number_grid_creation_animation").disabled = false;
-        
-        if (settings.use_saving_ball == true) {
-            document.getElementById("checkbox_limiting_saving_ball").disabled = false;
-        }
-    }
-    if (value == false) {
-        document.getElementById("checkbox_use_saving_ball").disabled = true;
-        document.getElementById("input_black_ball_amount").disabled = true;
-        document.getElementById("input_try_picking_ball").disabled = true;
-        document.getElementById("select_ball_picking_mode").disabled = true;
-        document.getElementById("checkbox_number_grid_specific_display_blue_team").disabled = true;
-        document.getElementById("checkbox_start_by_number_grid").disabled = true;
-        document.getElementById("checkbox_number_grid_creation_animation").disabled = true;
+    if (value !== true && value !== false) { return; }
 
-        document.getElementById("checkbox_limiting_saving_ball").disabled = true;
-    }
-}
-
-function updateLengthSelectionMode(value = settings.length_selection) {
-    settings.length_selection = value;
-
-    switch (value) {
-        case "always_ask_length":
-            break;
-        case "custom_length_collection":
-            break;
-        case "always_ask":
-            break;
+    ["checkbox_use_saving_ball", "input_black_ball_amount", "input_try_picking_ball", "select_ball_picking_mode",
+        "checkbox_number_grid_specific_display_blue_team", "checkbox_start_by_number_grid", "checkbox_number_grid_creation_animation"]
+        .forEach(id => { document.getElementById(id).disabled = !value; });
+    // Limitation de la boule magique : réactivée seulement si la boule magique est utilisée
+    if (value === false || settings.use_saving_ball === true) {
+        document.getElementById("checkbox_limiting_saving_ball").disabled = !value;
     }
 }
 
@@ -745,19 +694,16 @@ function updateBlackBallAmount(value = settings.black_ball_amount) {
     document.getElementById("input_black_ball_amount_indicator").innerHTML = value;
 }
 
-function UpdateSavingBallSettings(value = settings.use_saving_ball) {
+function updateSavingBallSettings(value = settings.use_saving_ball) {
     settings.use_saving_ball = value;
-    if (value == true) {
-        document.getElementById("checkbox_limiting_saving_ball").disabled = false;
-    }
-    if (value == false) {
-        document.getElementById("checkbox_limiting_saving_ball").disabled = true;
+    if (value === true || value === false) {
+        document.getElementById("checkbox_limiting_saving_ball").disabled = !value;
     }
 }
 
-function UpdateNumberSelectMode(value = settings.ball_picking_mode) {
+function updateNumberSelectMode(value = settings.ball_picking_mode) {
     settings.ball_picking_mode = value;
-    document.getElementById("vasque_gesture_group").classList.toggle("d-none", value != "vasque");
+    document.getElementById("vasque_gesture_group").classList.toggle("d-none", value !== "vasque");
 
     // Cache autres modes
     document.getElementById("number_grid_random_selection_mode_section").classList.add("d-none");
@@ -767,14 +713,14 @@ function UpdateNumberSelectMode(value = settings.ball_picking_mode) {
 
     // Phase de tirage fermée (pas de mot trouvé ni pioche déverrouillée, ou MOTUS aligné) : règle commune (number_grid.js)
     if (!isBallPickingOpen()) {
-        console.log(game.motus_aligned == true ? "MOTUS aligné, pas de tirage." : "Pas de boule a tiré, le mot n'est pas trouvé.")
+        console.log(game.motus_aligned === true ? "MOTUS aligné, pas de tirage." : "Pas de boule a tiré, le mot n'est pas trouvé.")
         updateVasque();
         return;
     }
 
     // Vasque : repli sur le tirage au hasard si Matter.js n'a pas pu être chargé
-    if (value == "vasque") {
-        if (typeof Matter == "undefined") {
+    if (value === "vasque") {
+        if (typeof Matter === "undefined") {
             console.warn("Vasque indisponible (Matter.js absent) : tirage au hasard.");
             value = "random";
         } else {
@@ -785,11 +731,11 @@ function UpdateNumberSelectMode(value = settings.ball_picking_mode) {
     }
 
     // Affichage du mode de séléction des boules
-    if (value == "input_select") {
+    if (value === "input_select") {
         setManuelHTMLSelectInputBallPicking(game.team_focus)
         document.getElementById("number_grid_select_selection_mode_section").classList.remove("d-none");
     }
-    if (value == "direct_click") {
+    if (value === "direct_click") {
         document.getElementById("number_grid_random_selection_mode_section").classList.remove("d-none");
         
         updateNumberLeftIndicator();
@@ -799,7 +745,7 @@ function UpdateNumberSelectMode(value = settings.ball_picking_mode) {
         displayNumberGridUserAction("random_selection_button", false)
 		displayNumberGridUserAction("pick_left_indicator", true)
     }
-    if (value == "random") {
+    if (value === "random") {
         document.getElementById("number_grid_random_selection_mode_section").classList.remove("d-none");
         
         updateNumberLeftIndicator();
@@ -815,33 +761,33 @@ function updateTypingIndicatorSettings(value = settings.display_typing_indicator
     settings.display_typing_indicator = value;
     const indicator = document.getElementById("word_typing_indicator");
 
-    if (value == true) {
+    if (value === true) {
         indicator.classList.remove("d-none")
     } else {
         indicator.classList.add("d-none")
     }
-    document.getElementById("checkbox_display_typing_indicator").checked = value == true;
-    document.getElementById("toggle_typing_indicator").setAttribute("aria-pressed", value == true ? "true" : "false");
+    document.getElementById("checkbox_display_typing_indicator").checked = value === true;
+    document.getElementById("toggle_typing_indicator").setAttribute("aria-pressed", value === true ? "true" : "false");
 }
 
 // Interrupteur au-dessus du clavier visuel (même réglage que Paramètres > Jeu), enregistré aussitôt
 function toggleTypingIndicator() {
-    updateTypingIndicatorSettings(settings.display_typing_indicator != true);
+    updateTypingIndicatorSettings(settings.display_typing_indicator !== true);
     saveSettingsIntoLocalStorage();
     announce(settings.display_typing_indicator ? "Progression de frappe affichée." : "Progression de frappe masquée.");
 }
 
-function WordListAddRow(word_list_selected_word) {
+function wordListAddRow(word_list_selected_word) {
 
-    var word_list_selected_word = word_list_selected_word.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toUpperCase();
-    var word_list_table = document.getElementById("word_list");
+    word_list_selected_word = word_list_selected_word.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toUpperCase();
+    const word_list_table = document.getElementById("word_list");
 
-    var word_list_rowCount = word_list_table.rows.length;
-    var word_list_row = word_list_table.insertRow(word_list_rowCount);
+    const word_list_rowCount = word_list_table.rows.length;
+    const word_list_row = word_list_table.insertRow(word_list_rowCount);
 
     word_list_row.insertCell(0).innerHTML = word_list_selected_word;
-    word_list_row.insertCell(1).innerHTML = `<input type="button" class="button" value = "Information sur ce mot" onclick="SearchWordInformations('${word_list_selected_word}')">`;
-    word_list_row.insertCell(2).innerHTML = '<input type="button" class="button" value = "Supprimer" onClick="Javascript:WordListDeleteRow(this)">';
+    word_list_row.insertCell(1).innerHTML = `<input type="button" class="button" value = "Information sur ce mot" onclick="searchWordInformations('${word_list_selected_word}')">`;
+    word_list_row.insertCell(2).innerHTML = '<input type="button" class="button" value = "Supprimer" onClick="Javascript:wordListDeleteRow(this)">';
 
     document.getElementById('word_list_selected_word').value = "";
 
@@ -854,41 +800,6 @@ function WordListAddRow(word_list_selected_word) {
         loadDictionaryAsync(word_length, 'verification').catch(() => {});
     }
 }
-
-// function wordListAddRowRandom(word_length) {
-//     // Vérifie si la longueur du mot est valide
-//     if (word_length < 5 || word_length > 10) {
-//         console.error("Seuls les mots entre 5 et 10 lettres sont gérés.");
-//         return Promise.reject("Longueur de mot invalide.");
-//     }
-
-//     const dictionary_index = `length_${word_length}`;
-
-//     // Si le dictionnaire est déjà chargé, on utilise une promesse résolue
-//     if (game.dictionnaire_mot_a_trouver[dictionary_index] && game.dictionnaire_mot_a_trouver[dictionary_index].length > 0) {
-//         const word_list_random_word_index = Math.floor(Math.random() * game.dictionnaire_mot_a_trouver[dictionary_index].length);
-//         const word_list_random_word = game.dictionnaire_mot_a_trouver[dictionary_index][word_list_random_word_index];
-//         WordListAddRow(word_list_random_word);
-//         return Promise.resolve();
-//     }
-//     // Sinon, on charge le dictionnaire et on attend sa disponibilité
-//     else {
-//         return new Promise((resolve, reject) => {
-//             loadDictionary(word_length, 'mot_a_trouver', () => {
-//                 // Une fois le dictionnaire chargé, on essaie à nouveau
-//                 if (game.dictionnaire_mot_a_trouver[dictionary_index] && game.dictionnaire_mot_a_trouver[dictionary_index].length > 0) {
-//                     const word_list_random_word_index = Math.floor(Math.random() * game.dictionnaire_mot_a_trouver[dictionary_index].length);
-//                     const word_list_random_word = game.dictionnaire_mot_a_trouver[dictionary_index][word_list_random_word_index];
-//                     WordListAddRow(word_list_random_word);
-//                     resolve();
-//                 } else {
-//                     console.error(`Le dictionnaire pour les mots de ${word_length} lettres n'est toujours pas disponible.`);
-//                     reject("Dictionnaire non disponible.");
-//                 }
-//             });
-//         });
-//     }
-// }
 
 async function wordListAddRowRandom(word_length) {
     // Vérifie la validité
@@ -924,7 +835,7 @@ async function wordListAddRowRandom(word_length) {
         const random_word = dict_mot[random_index];
 
         // Ajout à la grille
-        WordListAddRow(random_word);
+        wordListAddRow(random_word);
 
         debugLog(`Mot ajouté (${word_length} lettres) :`, random_word);
 
@@ -936,25 +847,25 @@ async function wordListAddRowRandom(word_length) {
     }
 }
 
-function WordAddCustom() {
-    var wordInput = document.getElementById('word_list_selected_word').value
+function wordAddCustom() {
+    const wordInput = document.getElementById('word_list_selected_word').value
     const regex = /^[a-zA-Z\u00C0-\u00ff]+$/;
 
-    if (wordInput.length >= 5 && wordInput.length <= 10 && regex.test(wordInput) == true) {
-        WordListAddRow(wordInput)
+    if (wordInput.length >= 5 && wordInput.length <= 10 && regex.test(wordInput) === true) {
+        wordListAddRow(wordInput)
     }
 }
 
-function WordListDeleteRow(word) {
-    var word_list_index = word.parentNode.parentNode.rowIndex;
-    var word_list_table = document.getElementById("word_list");
+function wordListDeleteRow(word) {
+    const word_list_index = word.parentNode.parentNode.rowIndex;
+    const word_list_table = document.getElementById("word_list");
     word_list_table.deleteRow(word_list_index);
 
     // Suppresion du mot de la liste de mot à trouver (le tableau n'a pas de ligne d'en-tête)
     game.word_to_find_list.splice(word_list_index, 1);
 }
 
-function SearchWordInformations(word) {
+function searchWordInformations(word) {
     if (confirm("Voulez-vous ouvrir une page wiktionary.org sur le mot " + word.toLowerCase() + "?")) {
         window.open("https://fr.wiktionary.org/w/index.php?search=" + word.toLowerCase(), "_blank");
     }
@@ -1009,7 +920,7 @@ function playAudio(src) {
 }
 
 function playsound(sound) {
-    if (settings.playsound_enabled == true && SOUND_FILES[sound]) {
+    if (settings.playsound_enabled === true && SOUND_FILES[sound]) {
         // Fenêtre publique ouverte : c'est elle qui joue le son (haut-parleurs de la salle)
         if (shouldPlaySoundInPublicWindow()) {
             sendToPublicWindow({ type: "motus_sound", sound: sound });
@@ -1034,7 +945,7 @@ function changeStyle(value) {
     document.getElementById("main_menu").classList.add("style_" + value);
     document.getElementById("game_page").classList.add("style_" + value);
 
-    var logo_img = document.getElementById("logo");
+    const logo_img = document.getElementById("logo");
 
     //Même logo pour 2010-2019
     if (value != "2019") {
@@ -1053,7 +964,6 @@ function changeStyle(value) {
 function displayPage(page_name) {
     document.getElementById("main_menu").classList.add("d-none");
     document.getElementById("help_page").classList.add("d-none");
-    // document.getElementById("settings_page").classList.add("d-none");
     document.getElementById("game_page").classList.add("d-none");
     document.getElementById("debug_page").classList.add("d-none");
     document.getElementById("credit_page").classList.add("d-none");
@@ -1061,27 +971,14 @@ function displayPage(page_name) {
 
     game.displayed_page = page_name;
 
-    if (page_name != "game_page") {
+    if (page_name !== "game_page") {
         game.pause = true;
     } else {
         game.pause = false;
     }
 
     document.getElementById(page_name).classList.remove("d-none");
-}
-
-function createGrid(placeolder_id, row, column, cell_id_prefix, id) {
-    var grid_placeolder = document.getElementById(placeolder_id);
-
-	grid_placeolder_inner = "<table id='" + id + "' class='grid'>";
-    for (var j = 0; j <= row-1; j++) {
-		grid_placeolder_inner += "<tr id='" + cell_id_prefix + "_line_" + j + "'>";
-		for (var i = 0; i < column; i++) {
-			grid_placeolder_inner += "<td id=" + cell_id_prefix + "_" + j + "_" + i + " class=\"background\"></td>";
-		}
-		grid_placeolder_inner += "</tr>";
-	}
-	grid_placeolder.innerHTML = grid_placeolder_inner + "</table>";
+    if (page_name === "main_menu") { updateMenuPlayButtons(); }
 }
 
 // Place prise par le score et l'indicateur de frappe dans la zone de jeu : grid.css la retire de la hauteur
@@ -1089,7 +986,7 @@ function createGrid(placeolder_id, row, column, cell_id_prefix, id) {
 // Variable posée sur #game (hors de #game_grid, recopié dans la fenêtre publique).
 function observeGridReserve() {
     const game_element = document.getElementById("game");
-    const measured = [document.getElementById("score_placeolder"), document.getElementById("word_typing_indicator_placeholder")];
+    const measured = [document.getElementById("score_placeholder"), document.getElementById("word_typing_indicator_placeholder")];
     const update = () => {
         let reserve = 0;
         measured.forEach(element => {
@@ -1111,7 +1008,7 @@ function observeGridReserve() {
 
 function createHTMLGrid(row, column, cell_id_prefix, grid_id, hided = false) {
     let display_none = ""
-    if (hided == true) { display_none = 'display: none;' }
+    if (hided === true) { display_none = 'display: none;' }
     
     // Taille calculée en CSS (grid.css) selon la place disponible : --columns / --rows
     // minmax(0, 1fr) : les cases peuvent rétrécir sous la taille de leur lettre
@@ -1124,8 +1021,8 @@ function createHTMLGrid(row, column, cell_id_prefix, grid_id, hided = false) {
             ${display_none}
         ">`;
 
-    for (var j = 0; j < row; j++) {
-        for (var i = 0; i < column; i++) {
+    for (let j = 0; j < row; j++) {
+        for (let i = 0; i < column; i++) {
 			element += `<div id="${cell_id_prefix}_${j}_${i}" class="cellNEW"></div>`;
 		}
 	}
@@ -1134,51 +1031,39 @@ function createHTMLGrid(row, column, cell_id_prefix, grid_id, hided = false) {
 }
 
 // Ajoute des points à l'équipe qui a la main (ou à team) ; par défaut les points d'un mot trouvé
-function addTeamScore(team, points = settings.score_addition) {
-    if (team === undefined) { team = game.team_focus; }
-    if (team == "yellow") {
-        game.score_yellow += points;
-        document.getElementById("score_yellow_panel").innerHTML = game.score_yellow;
-        setTeamScore("yellow", game.score_yellow)
-    }
-    if (team == "blue") {
-        game.score_blue += points;
-        document.getElementById("score_blue_panel").innerHTML = game.score_blue;
-        setTeamScore("blue", game.score_blue)
-    }
+function addTeamScore(team = game.team_focus, points = settings.score_addition) {
+    if (team === "yellow") { setTeamScore("yellow", game.score_yellow + points); }
+    if (team === "blue") { setTeamScore("blue", game.score_blue + points); }
 }
 
 function setTeamScore(team, score) {
-    // Affichage des "0" avant le score
-    let score_text = ""
-    if (score.toString().length == 1) {score_text = "00" + score;} else
-    if (score.toString().length == 2) {score_text = "0" + score;} else
-	{score_text = score;}
+    // Affichage sur 3 chiffres au moins ("050")
+    const score_text = String(score).padStart(3, "0");
 
-    if (team == "yellow") {
+    if (team === "yellow") {
         document.getElementById("score_yellow_panel").innerHTML = score_text;
         game.score_yellow = score;
     }
-    if (team == "blue") {
+    if (team === "blue") {
         document.getElementById("score_blue_panel").innerHTML = score_text;
         game.score_blue = score;
     }
 }
 
 function updateScores() {
-    if (game.team_focus == "yellow") {
+    if (game.team_focus === "yellow") {
         document.getElementById("score_yellow_panel").classList.add("active");
         document.getElementById("score_blue_panel").classList.remove("active");
 
-        document.getElementById("number_grid_yellow_placeolder").classList.add("active");
-        document.getElementById("number_grid_blue_placeolder").classList.remove("active");
+        document.getElementById("number_grid_yellow_placeholder").classList.add("active");
+        document.getElementById("number_grid_blue_placeholder").classList.remove("active");
     }
-    if (game.team_focus == "blue") {
+    if (game.team_focus === "blue") {
         document.getElementById("score_yellow_panel").classList.remove("active");
         document.getElementById("score_blue_panel").classList.add("active");
 
-        document.getElementById("number_grid_yellow_placeolder").classList.remove("active");
-        document.getElementById("number_grid_blue_placeolder").classList.add("active");
+        document.getElementById("number_grid_yellow_placeholder").classList.remove("active");
+        document.getElementById("number_grid_blue_placeholder").classList.add("active");
     }
 
     setTeamScore("yellow", game.score_yellow);
@@ -1186,8 +1071,8 @@ function updateScores() {
 }
 
 function switchTeamFocus() {
-    if (settings.team_enabled == true) {
-        if (game.team_focus == "yellow") {
+    if (settings.team_enabled === true) {
+        if (game.team_focus === "yellow") {
             game.team_focus = "blue"
         } else {
             game.team_focus = "yellow"
@@ -1198,20 +1083,6 @@ function switchTeamFocus() {
         updateVasque()
     } else {
         console.log("La fonction équipe n'est pas activée.");
-    }
-}
-
-function wordFoundInformation() {
-    if (game.word_displayed == true || game.word_displayed == true) {
-        wordInformation(game.word_to_find);
-    } else {
-        alert("Vous devez trouver le mot ou l'afficher pour pouvoir avoir des informations dessus.");
-    }
-}
-
-function wordInformation(word_to_search) {
-    if (confirm("Voulez-vous ouvrir une page wiktionary.org sur le mot " + word_to_search.toLowerCase() + "?")) {
-        window.open("https://fr.wiktionary.org/w/index.php?search=" + word_to_search.toLowerCase(), "_blank");
     }
 }
 
@@ -1231,11 +1102,11 @@ function wordErrorHandler(errorCode, catching_up) { // Affiche dans la console l
     }
     playsound("error");
 
-    if (catching_up == true) {
+    if (catching_up === true) {
         markGameBusy(3500);
-        if (settings.team_enabled == true) { switchTeamFocus(); }
+        if (settings.team_enabled === true) { switchTeamFocus(); }
         setTimeout(function () {
-            if (settings.reinit_line_if_unvalid_word == true) {
+            if (settings.reinit_line_if_unvalid_word === true) {
                 reinitWordLine();
             }
             retryLine();
@@ -1244,19 +1115,8 @@ function wordErrorHandler(errorCode, catching_up) { // Affiche dans la console l
     }
 }
 
-function goLetterGrid() {
-    if (game.word_displayed == true) { wordReinit(); }
-    displayPage('game_page');
-}
-
 function timesUp() {
 	playsound("temps_ecoule");
-}
-
-function DebugWordListDeleteRow(word) {
-    var debug_word_list_index = word.parentNode.parentNode.rowIndex;
-    var debug_word_list_table = document.getElementById("debug_word_list");
-    debug_word_list_table.deleteRow(debug_word_list_index);
 }
 
 function returnMenu() {
@@ -1270,54 +1130,14 @@ function returnGame() {
 }
 
 function switchGameGridFocusOn(forced_value, animation = true) {
-    if (game.focus_on == "number" || forced_value == "letter" || settings.number_grid_enabled == false) {
+    if (game.focus_on === "number" || forced_value === "letter" || settings.number_grid_enabled === false) {
         // Bascule vers grille de mot
         displayLetterGrid()
-    } else if (game.focus_on == "letter" || forced_value == "number") {
+    } else if (game.focus_on === "letter" || forced_value === "number") {
         // Bascule vers grille de numéros        
         displayNumberGrid()
     }
 }
-
-// function animationGrid(grid_type, mode_direction, change) {
-//     // grid_element_id == id de l'element
-//     // mode_direction = in ou out
-//     // change = add ou remove
-
-//     let mode = undefined;
-
-//     if (mode_direction == "in") { mode = "changing_grid_in"; }
-//     if (mode_direction == "out") { mode = "changing_grid_out"; }
-
-//     if (change == "add") {
-//         if (grid_type == "letter") {
-//             document.getElementById("letter_grid").classList.add(mode)
-//             setTimeout(function() { document.getElementById("letter_grid").classList.remove(mode)}, 250)
-//         }
-//         if (grid_type == "number") {
-//             document.getElementById("number_grid_yellow").classList.add(mode)
-//             setTimeout(function() { document.getElementById("number_grid_yellow").classList.remove(mode)}, 250)
-//             if (settings.team_enabled) { 
-//                 document.getElementById("number_grid_blue").classList.add(mode)
-//                 setTimeout(function() { document.getElementById("number_grid_blue").classList.remove(mode)}, 250)
-//             }
-//         }
-//     }
-//     if (change == "remove") {
-//         if (grid_type == "letter") {
-//             document.getElementById("letter_grid").classList.remove(mode);
-//             setTimeout(function() { document.getElementById("letter_grid").classList.add(mode)}, 250)
-//         }
-//         if (grid_type == "number") {
-//             document.getElementById("number_grid_yellow").classList.remove(mode)
-//             setTimeout(function() { document.getElementById("number_grid_yellow").classList.add(mode)}, 250)
-//             if (settings.team_enabled) {
-//                 document.getElementById("number_grid_blue").classList.remove(mode)
-//             setTimeout(function() { document.getElementById("number_grid_blue").classList.add(mode)}, 250)
-//             }
-//         }
-//     }
-// }
 
 // Version des dictionnaires : à incrémenter à chaque modification de src/js/dictionary/mot_a_trouver/
 // pour que les joueurs qui les ont en cache les rechargent
@@ -1333,8 +1153,8 @@ function readCachedDictionary(storageKey) {
     }
     if (cached == null) { return null; }
 
-    // Ancien format (tableau seul) ou autre version : cache invalidé
-    if (Array.isArray(cached) || cached.version != DICTIONARY_VERSION || !Array.isArray(cached.mots)) {
+    // Ancien format (tableau seul), autre version ou liste vide : cache invalidé
+    if (Array.isArray(cached) || cached.version !== DICTIONARY_VERSION || !Array.isArray(cached.mots) || cached.mots.length === 0) {
         localStorage.removeItem(storageKey);
         console.log(`Cache ${storageKey} obsolète : rechargement du dictionnaire.`);
         return null;
@@ -1363,12 +1183,12 @@ function loadDictionary(word_length, type, callback = () => {}, onError = () => 
         return;
     }
 
-    if (type == "mot_a_trouver" && game.dictionnaire_mot_a_trouver[`length_${word_length}`].length != 0) {
+    if (type === "mot_a_trouver" && game.dictionnaire_mot_a_trouver[`length_${word_length}`].length !== 0) {
         debugLog(`Le dictionnaire des mots à trouver de ${word_length} est déjà chargé.`);
         callback();
         return;
     }
-    if (type == "verification" && game.dictionnaire_verification[`length_${word_length}`].length != 0) {
+    if (type === "verification" && game.dictionnaire_verification[`length_${word_length}`].length !== 0) {
         debugLog(`Le dictionnaire des mots proposables de ${word_length} est déjà chargé.`);
         callback();
         return;
@@ -1376,10 +1196,10 @@ function loadDictionary(word_length, type, callback = () => {}, onError = () => 
 
     const storageKey = `motus_${type}_${word_length}`;
     // Purge de l'ancien cache local des dictionnaires de vérification (plus mis en cache)
-    if (type == "verification") { localStorage.removeItem(storageKey); }
+    if (type === "verification") { localStorage.removeItem(storageKey); }
     const dictionary = readCachedDictionary(storageKey);
     if (dictionary != null) {
-        if (type == "mot_a_trouver") {
+        if (type === "mot_a_trouver") {
             game.dictionnaire_mot_a_trouver[`length_${word_length}`] = dictionary;
 
             // Mise à jour des boutons de debug
@@ -1387,7 +1207,7 @@ function loadDictionary(word_length, type, callback = () => {}, onError = () => 
             document.getElementById(`debug_button_drop_dictionary_${word_length}`).disabled = false;
         debugLog(`Le dictionnaire des mots à trouver de ${word_length} lettres est chargé depuis le stockage local.`);
         }
-        if (type == "verification") {
+        if (type === "verification") {
             game.dictionnaire_verification[`length_${word_length}`] = dictionary;
             debugLog(`Le dictionnaire des mots proposables de ${word_length} lettres est chargé depuis le stockage local.`);
         }
@@ -1395,21 +1215,28 @@ function loadDictionary(word_length, type, callback = () => {}, onError = () => 
         // Appel du callback
         callback();
     } else {
-        var script = document.createElement('script');
+        const script = document.createElement('script');
         script.src = `./src/js/dictionary/${type}/${word_length}_lettres.js`;
         script.onload = () => {
             let data = [];
-            if (type == "mot_a_trouver") { data = game.dictionnaire_mot_a_trouver[`length_${word_length}`] }
-            if (type == "verification") { data = game.dictionnaire_verification[`length_${word_length}`]
+            if (type === "mot_a_trouver") { data = game.dictionnaire_mot_a_trouver[`length_${word_length}`] }
+            if (type === "verification") { data = game.dictionnaire_verification[`length_${word_length}`]
                 
             }
-            if (!data) {
-                console.error("Le dictionnaire n'a pas été injecté par le script.");
+            // Script chargé sans dictionnaire : même traitement qu'un échec de chargement
+            // (avant, la partie attendait indéfiniment et une liste vide restait en cache)
+            if (!Array.isArray(data) || data.length === 0) {
+                console.error("Le dictionnaire n'a pas été injecté par le script :", script.src);
+                script.remove();
+                const message = `Impossible de charger le dictionnaire des mots de ${word_length} lettres. Vérifiez la connexion puis réessayez.`;
+                announce(message);
+                alert(message);
+                onError(new Error(message));
                 return;
             }
             // Pas de cache local pour la vérification (2,8 Mo, risque de dépasser le quota) :
             // le navigateur met déjà le fichier .js en cache
-            if (type == "mot_a_trouver") {
+            if (type === "mot_a_trouver") {
                 try {
                     localStorage.setItem(storageKey, JSON.stringify({ version: DICTIONARY_VERSION, mots: data }));
                     debugLog(`Dictionnaire ${word_length} lettres (${type}) chargé et sauvegardé.`);
@@ -1421,7 +1248,7 @@ function loadDictionary(word_length, type, callback = () => {}, onError = () => 
             }
 
 
-            if (type == "mot_a_trouver") {
+            if (type === "mot_a_trouver") {
                 // Mise à jour des boutons de debug
                 document.getElementById(`debug_button_add_dictionary_${word_length}`).disabled = true;
                 document.getElementById(`debug_button_drop_dictionary_${word_length}`).disabled = false;
@@ -1449,12 +1276,12 @@ function dropDictionary(word_length, type) {
     }
     const storageKey = `motus_${type}_${word_length}`;
 
-    if (type == "mot_a_trouver") {
+    if (type === "mot_a_trouver") {
         game.dictionnaire_mot_a_trouver[`length_${word_length}`] = [];
 
         document.getElementById(`debug_button_add_dictionary_${word_length}`).disabled = false;
         document.getElementById(`debug_button_drop_dictionary_${word_length}`).disabled = true;
-    } else if (type == "verification") {
+    } else if (type === "verification") {
         game.dictionnaire_verification[`length_${word_length}`] = [];
     } else {
         console.error(`Type de dictionnaire inconnu : ${type}`);
@@ -1465,8 +1292,6 @@ function dropDictionary(word_length, type) {
     console.log(`Le dictionnaire ${type} des mots de ${word_length} lettres est supprimé`);
 }
 
-
-const modal = document.querySelector('#settings-modal');
 
 // Modal
 document.addEventListener('click', (event) => {
@@ -1523,7 +1348,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('dialog').forEach(dialog => {
         dialog.addEventListener('close', function() {
             if (this.dataset.pauseBefore !== undefined) {
-                game.pause = this.dataset.pauseBefore == "true";
+                game.pause = this.dataset.pauseBefore === "true";
                 delete this.dataset.pauseBefore;
             }
         });
@@ -1560,10 +1385,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const links = Array.from(document.querySelectorAll('.nav-link'));
             const index = links.indexOf(this);
             let target = null;
-            if (event.key == "ArrowRight") { target = links[(index + 1) % links.length]; }
-            if (event.key == "ArrowLeft") { target = links[(index - 1 + links.length) % links.length]; }
-            if (event.key == "Home") { target = links[0]; }
-            if (event.key == "End") { target = links[links.length - 1]; }
+            if (event.key === "ArrowRight") { target = links[(index + 1) % links.length]; }
+            if (event.key === "ArrowLeft") { target = links[(index - 1 + links.length) % links.length]; }
+            if (event.key === "Home") { target = links[0]; }
+            if (event.key === "End") { target = links[links.length - 1]; }
             if (target) {
                 event.preventDefault();
                 target.click();
@@ -1589,7 +1414,7 @@ function debugListAllGridUniqueNumber() {
         const grid_mask = game.number_grid_data.mask[i+1];
         for (const team of ["yellow", "blue"]) {
             const grid = game.number_grid_data[team][i+1];
-            const visible = grid.filter((num, index) => grid_mask[index] == 1);
+            const visible = grid.filter((num, index) => grid_mask[index] === 1);
             const unique = [...new Set(visible)];
             console.log(`Grille ${i+1} (${team}) :`, visible, "uniques :", unique);
         }
@@ -1600,7 +1425,7 @@ function debugListAllGridUniqueNumber() {
 // Logs de debug : activés depuis la page Debug, mémorisés dans ce navigateur
 function isDebugEnabled() {
     try {
-        return localStorage.getItem("motus_debug") == "true";
+        return localStorage.getItem("motus_debug") === "true";
     } catch (error) {
         return false;
     }
@@ -1608,7 +1433,7 @@ function isDebugEnabled() {
 
 // Bouton « Debug » du menu : affiché avec les logs de debug, ou avec ?debug dans l'adresse (pour les activer)
 function updateDebugMenuButton() {
-    const visible = game.debug == true || new URLSearchParams(location.search).has("debug");
+    const visible = game.debug === true || new URLSearchParams(location.search).has("debug");
     document.getElementById("debug_menu_button").classList.toggle("d-none", !visible);
 }
 
@@ -1623,7 +1448,7 @@ function setDebugEnabled(value) {
 }
 
 function debugLog(...args) {
-    if (typeof game != "undefined" && game.debug == true) {
+    if (typeof game !== "undefined" && game.debug === true) {
         console.log(...args);
     }
 }
@@ -1649,7 +1474,7 @@ async function startTvReplay(index) {
         return;
     }
 
-    if (game.started == true) {
+    if (game.started === true) {
         if (!confirm("Une partie est en cours. L'abandonner pour rejouer cette émission ?")) { return; }
         resetGame();
     }
@@ -1673,10 +1498,10 @@ async function startTvReplay(index) {
             console.warn(`Mot de l'émission ignoré (absent du dictionnaire) : ${word}`);
             return;
         }
-        WordListAddRow(word);
+        wordListAddRow(word);
     });
 
-    if (game.word_to_find_list.length == 0) {
+    if (game.word_to_find_list.length === 0) {
         console.error(`Aucun mot jouable dans l'émission du ${emission.date}`);
         return;
     }
@@ -1697,7 +1522,7 @@ function announce(message) {
 
 // Vrai si le système demande de réduire les animations
 function prefersReducedMotion() {
-    return typeof window.matchMedia == "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    return typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
 // MESSAGES À L'ÉCRAN
@@ -1725,9 +1550,9 @@ function hideGameMessage() {
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById("menu_word_length").addEventListener('keydown', function(event) {
         let step = 0;
-        if (event.key == "ArrowRight" || event.key == "ArrowUp") { step = 1; }
-        if (event.key == "ArrowLeft" || event.key == "ArrowDown") { step = -1; }
-        if (step == 0) { return; }
+        if (event.key === "ArrowRight" || event.key === "ArrowUp") { step = 1; }
+        if (event.key === "ArrowLeft" || event.key === "ArrowDown") { step = -1; }
+        if (step === 0) { return; }
         event.preventDefault();
         const length = Math.min(10, Math.max(5, settings.always_ask_length + step));
         updateMenuWordLength(length);
@@ -1740,12 +1565,12 @@ document.addEventListener('DOMContentLoaded', function() {
 // Figé pendant une pause (menu, paramètres) ou une fenêtre ouverte.
 function updateTimerSettings(value = settings.timer_enabled) {
     settings.timer_enabled = value;
-    if (value != true) { stopProposalTimer(); }
+    if (value !== true) { stopProposalTimer(); }
 }
 
 function startProposalTimer() {
     stopProposalTimer();
-    if (settings.timer_enabled != true || game.focus_on == "number" || game.word_found == true || game.word_displayed == true) {
+    if (settings.timer_enabled !== true || game.focus_on === "number" || game.word_found === true || game.word_displayed === true) {
         return;
     }
     game.timer_remaining = Number(settings.timer_duration) || 10;
@@ -1762,7 +1587,7 @@ function stopProposalTimer() {
 }
 
 function tickProposalTimer() {
-    if (game.pause == true || document.querySelector("dialog[open]")) { return; }
+    if (game.pause === true || document.querySelector("dialog[open]")) { return; }
     game.timer_remaining--;
     renderProposalTimer();
     if (game.timer_remaining <= 0) {
@@ -1781,7 +1606,7 @@ function renderProposalTimer() {
 // À zéro : toujours le son « temps écoulé » ; selon le réglage, la proposition est aussi refusée
 function proposalTimerEnded() {
     timesUp();
-    if (settings.timer_behaviour == "error") {
+    if (settings.timer_behaviour === "error") {
         // Comme un mot refusé : bandeau, changement d'équipe et comportement après erreur
         wordErrorHandler(6, true);
     } else {
@@ -1793,12 +1618,12 @@ function proposalTimerEnded() {
 
 // HISTORIQUE DE LA PARTIE
 function teamLabel(team) {
-    return team == "blue" ? "Bleue" : "Jaune";
+    return team === "blue" ? "Bleue" : "Jaune";
 }
 
 // Enregistre le sort du mot en cours : "trouvé", "non trouvé" (solution affichée) ou "passé" (nouveau mot demandé)
 function recordWordResult(result) {
-    if (!game.word_to_find || game.word_recorded == true) { return; }
+    if (!game.word_to_find || game.word_recorded === true) { return; }
     game.word_recorded = true;
     game.history.push({
         heure: new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }),
@@ -1806,8 +1631,8 @@ function recordWordResult(result) {
         lettres: game.word_length,
         resultat: result,
         lignes: game.try_count_index,
-        equipe: settings.team_enabled == true && result == "trouvé" ? teamLabel(game.team_focus) : "",
-        points: result == "trouvé" ? settings.score_addition : 0
+        equipe: settings.team_enabled === true && result === "trouvé" ? teamLabel(game.team_focus) : "",
+        points: result === "trouvé" ? settings.score_addition : 0
     });
 }
 
@@ -1818,7 +1643,7 @@ function recordMotus() {
         lettres: "",
         resultat: "MOTUS",
         lignes: "",
-        equipe: settings.team_enabled == true ? teamLabel(game.team_focus) : "",
+        equipe: settings.team_enabled === true ? teamLabel(game.team_focus) : "",
         points: settings.score_motus
     });
 }
@@ -1829,14 +1654,14 @@ function displayHistoryPage() {
     tbody.innerHTML = history.map((entry, index) => `<tr class="history_${entry.resultat.replace(/\s/g, "_")}">
         <td class="history_index">${index + 1}</td><td class="history_time">${entry.heure}</td><td class="history_word">${entry.mot}</td><td class="history_letters">${entry.lettres}</td>
         <td><span class="history_badge">${entry.resultat}</span></td><td class="history_lines">${entry.lignes}</td>
-        <td class="history_team_cell">${entry.equipe ? `<span class="history_team history_team_${entry.equipe == "Bleue" ? "blue" : "yellow"}">${entry.equipe}</span>` : ""}</td><td class="history_points">${entry.points}</td></tr>`).join("");
+        <td class="history_team_cell">${entry.equipe ? `<span class="history_team history_team_${entry.equipe === "Bleue" ? "blue" : "yellow"}">${entry.equipe}</span>` : ""}</td><td class="history_points">${entry.points}</td></tr>`).join("");
 
-    const words = history.filter(entry => entry.resultat != "MOTUS");
-    const found = words.filter(entry => entry.resultat == "trouvé").length;
+    const words = history.filter(entry => entry.resultat !== "MOTUS");
+    const found = words.filter(entry => entry.resultat === "trouvé").length;
     const motus = history.length - words.length;
     const tile = (value, label, extra = "") => `<div class="history_tile ${extra}"><span class="history_tile_value">${value}</span><span class="history_tile_label">${label}</span></div>`;
     const summary = document.getElementById("history_summary");
-    if (history.length == 0) {
+    if (history.length === 0) {
         summary.innerHTML = `<div class="history_empty"><p><b>Aucun mot joué pour l'instant.</b></p><p>Chaque mot trouvé, perdu ou passé s'ajoutera ici, avec les MOTUS de la grille de numéros.</p></div>`;
     } else {
         summary.innerHTML = tile(words.length, "mot(s) joué(s)")
@@ -1846,8 +1671,8 @@ function displayHistoryPage() {
                 ? tile(game.score_yellow || 0, "points jaune", "history_tile_yellow") + tile(game.score_blue || 0, "points bleue", "history_tile_blue")
                 : tile(game.score_yellow || 0, "points"));
     }
-    document.getElementById("history_table").parentElement.classList.toggle("d-none", history.length == 0);
-    document.getElementById("history_export_button").disabled = history.length == 0;
+    document.getElementById("history_table").parentElement.classList.toggle("d-none", history.length === 0);
+    document.getElementById("history_export_button").disabled = history.length === 0;
 
     // Fenêtre comme les paramètres : jeu en pause tant qu'elle est ouverte (rétabli à la fermeture)
     const history_modal = document.getElementById("history-modal");
@@ -1861,7 +1686,7 @@ function displayHistoryPage() {
 // Export CSV (séparateur « ; » et BOM UTF-8 pour une ouverture directe dans un tableur)
 function exportHistory() {
     const history = game.history || [];
-    if (history.length == 0) { return; }
+    if (history.length === 0) { return; }
     const columns = ["heure", "mot", "lettres", "resultat", "lignes", "equipe", "points"];
     const header = ["Heure", "Mot", "Lettres", "Résultat", "Lignes", "Équipe", "Points"];
     const escape = value => `"${String(value).replace(/"/g, '""')}"`;
